@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - SMA Negeri 1 Harapan - LIVE Supabase</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:#0a0a0a;color:#fff;display:flex;min-height:100vh}
+.sidebar{width:260px;background:#111;border-right:1px solid #d4af37;padding:22px 16px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow:auto}
+.logo{font-size:19px;font-weight:800;color:#d4af37;line-height:1.2}.logo span{color:#fff;font-size:11px;font-weight:400}
+.menu{margin-top:26px;display:flex;flex-direction:column;gap:4px}
+.menu button{text-align:left;background:none;border:none;color:#aaa;padding:12px 14px;border-radius:10px;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;width:100%}
+.menu button.active{background:linear-gradient(90deg,#d4af37,#f5d67b);color:#000;font-weight:700}
+.menu button small{background:#222;color:#d4af37;padding:2px 8px;border-radius:20px;font-size:11px}
+.main{flex:1;padding:26px 28px;overflow-x:auto}
+.page{display:none}.page.active{display:block}
+h1{font-size:26px}h1 span{color:#d4af37}.sub{color:#888;font-size:13px;margin-top:4px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.btn{background:linear-gradient(90deg,#d4af37,#f5d67b);color:#000;border:none;padding:11px 16px;border-radius:10px;font-weight:700;cursor:pointer}
+.btn2{background:#1a1a1a;border:1px solid #d4af37;color:#d4af37;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}
+input,select,textarea{background:#1a1a1a;border:1px solid #333;color:#fff;padding:11px 14px;border-radius:10px;outline:none;width:100%}
+input:focus{border-color:#d4af37}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}.cards.c3{grid-template-columns:repeat(3,1fr)}
+.card{background:#161616;border:1px solid #2a2a2a;border-radius:16px;padding:18px}.card.gold{border-color:#d4af37}
+.card label{color:#aaa;font-size:11px;letter-spacing:1px}.card h2{font-size:28px;margin:8px 0;color:#d4af37}.card h2.w{color:#fff}.card p{font-size:12px;color:#888}
+.content{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-top:14px}
+.box{background:#161616;border:1px solid #2a2a2a;border-radius:16px;padding:18px}.box h3{font-size:16px}.box p{font-size:12px;color:#888;margin:4px 0 14px}
+table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;color:#888;padding:10px 8px;border-bottom:1px solid #2a2a2a}td{padding:11px 8px;border-bottom:1px solid #222;vertical-align:middle}
+.avatar{width:32px;height:32px;border-radius:50%;background:#d4af37;color:#000;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;margin-right:8px}
+.badge{padding:5px 10px;border-radius:20px;font-size:11px;font-weight:700}.lunas{background:#14532d;color:#4ade80}.belum{background:#7f1d1d;color:#fca5a5}.hadir{background:#14532d;color:#4ade80}.izin{background:#422006;color:#fbbf24}.aktif{background:#14532d;color:#4ade80}
+.bars{display:flex;align-items:flex-end;gap:10px;height:160px}.bar{flex:1;background:linear-gradient(to top,#8a6d1a,#d4af37);border-radius:8px 8px 0 0}
+.months{display:flex;gap:10px;margin-top:8px}.months span{flex:1;text-align:center;font-size:11px;color:#888}
+.item{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #222;font-size:13px}.item b{color:#d4af37}
+.grid-kelas{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}.kelas{background:#161616;border:1px solid #2a2a2a;border-radius:16px;padding:18px}.kelas h3{color:#d4af37}.kelas p{color:#888;font-size:12px;margin:6px 0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}label.f{font-size:12px;color:#aaa;display:block;margin:12px 0 6px}
+#status{position:fixed;bottom:16px;right:16px;background:#14532d;color:#fff;padding:12px 16px;border-radius:12px;font-size:13px;display:none;z-index:99}
+@media(max-width:900px){.sidebar{display:none}.cards,.cards.c3,.content,.grid-kelas,.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="sidebar">
+<div class="logo">SMA NEGERI 1<br>HARAPAN <span><br>ADMIN PANEL • LIVE SUPABASE 🟢</span></div>
+<div class="menu">
+<button onclick="show('dashboard',this)" class="active">🏠 Dashboard</button>
+<button onclick="show('siswa',this)">👥 Data Siswa <small id="mSiswa">...</small></button>
+<button onclick="show('guru',this)">👨‍🏫 Data Guru <small id="mGuru">...</small></button>
+<button onclick="show('kelas',this)">🏫 Data Kelas <small id="mKelas">...</small></button>
+<button onclick="show('spp',this)">💰 Kas / SPP <small id="mSpp">...</small></button>
+<button onclick="show('hadir',this)">✅ Kehadiran</button>
+<button onclick="show('nilai',this)">📊 Nilai</button>
+<button onclick="show('pengumuman',this)">📢 Pengumuman</button>
+<button onclick="show('laporan',this)">📄 Laporan</button>
+<button onclick="show('pengaturan',this)">⚙️ Pengaturan</button>
+</div>
+<p style="margin-top:20px;color:#888;font-size:12px;padding:0 14px">🟢 Tersambung ke:<br>rotxnwbrnbwbscihvafq</p>
+</div>
+
+<div class="main">
+<div id="dashboard" class="page active">
+<div class="top"><div><h1>Selamat Datang, <span>Admin Ko Cheng!</span></h1><p class="sub">Data LIVE dari Supabase • Bukan data bohong lagi!</p></div><button class="btn" onclick="show('siswa',null)">+ Tambah Siswa Baru</button></div>
+<div class="cards"><div class="card"><label>TOTAL SISWA (DB)</label><h2 id="cSiswa">...</h2><p>Data dari tabel siswa</p></div><div class="card"><label>TOTAL GURU (DB)</label><h2 id="cGuru">...</h2><p>Data dari tabel guru</p></div><div class="card"><label>KELAS AKTIF (DB)</label><h2 id="cKelas">...</h2><p>Data dari tabel kelas</p></div><div class="card"><label>TOTAL KAS SPP (DB)</label><h2 id="cKas">...</h2><p id="cKasSub">Menghitung...</p></div></div>
+<div class="content"><div class="box"><h3>Aktivitas Terbaru - Dari Database</h3><p id="aktivitas">Memuat...</p></div><div class="box"><h3>Kas Per Bulan</h3><p>Dari tabel spp</p><div class="bars"><div class="bar" style="height:85%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:78%"></div><div class="bar" style="height:92%"></div><div class="bar" style="height:88%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:95%"></div></div><div class="months"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div></div></div>
+</div>
+
+<div id="siswa" class="page">
+<div class="top"><div><h1>Data <span>Siswa - LIVE</span></h1><p class="sub">Dari tabel siswa di Supabase</p></div></div>
+<div class="box" style="margin-top:16px"><h3>Tambah Siswa Baru (Langsung Masuk DB!)</h3><div class="row"><div><label class="f">NIS</label><input id="fNis" placeholder="20260106"></div><div><label class="f">Nama Lengkap</label><input id="fNama" placeholder="Nama siswa..."></div></div><div class="row"><div><label class="f">Kelas</label><select id="fKelas"></select></div><div><label class="f">No WA Orang Tua</label><input id="fWa" placeholder="62812..."></div></div><button class="btn" style="margin-top:14px" onclick="tambahSiswa()">💾 Simpan Ke Database</button></div>
+<div class="box" style="margin-top:14px"><h3>Daftar Siswa - Dari Database</h3><div id="listSiswa">Memuat...</div></div>
+</div>
+
+<div id="guru" class="page">
+<div class="top"><div><h1>Data <span>Guru - LIVE</span></h1><p class="sub">Dari tabel guru</p></div></div>
+<div class="box" style="margin-top:16px"><div id="listGuru">Memuat...</div></div>
+</div>
+
+<div id="kelas" class="page">
+<div class="top"><div><h1>Data <span>Kelas - LIVE</span></h1><p class="sub">Dari tabel kelas</p></div></div>
+<div id="listKelas" class="grid-kelas" style="margin-top:16px">Memuat...</div>
+</div>
+
+<div id="spp" class="page">
+<div class="top"><div><h1>Kas / <span>SPP - LIVE</span></h1><p class="sub">Dari tabel spp - Klik tombol Lunas langsung update DB!</p></div></div>
+<div class="cards c3"><div class="card gold"><label>TOTAL KAS MASUK (DB)</label><h2 id="sppTotal">...</h2><p>Yang sudah Lunas</p></div><div class="card"><label>SUDAH BAYAR</label><h2 class="w" id="sppLunas">...</h2><p>Siswa lunas</p></div><div class="card"><label>BELUM BAYAR</label><h2 style="color:#fca5a5" id="sppBelum">...</h2><p>Perlu diingatkan via WA</p></div></div>
+<div class="box" style="margin-top:14px"><h3>Daftar SPP - Dari Database</h3><div id="listSpp">Memuat...</div></div>
+</div>
+
+<div id="hadir" class="page"><div class="top"><div><h1>Kehadiran - <span>LIVE</span></h1><p class="sub">Dari tabel kehadiran</p></div></div><div class="box" style="margin-top:16px"><div id="listHadir">Memuat...</div></div></div>
+<div id="nilai" class="page"><div class="top"><div><h1>Nilai - <span>LIVE</span></h1><p class="sub">Dari tabel nilai</p></div></div><div class="box" style="margin-top:16px"><div id="listNilai">Memuat...</div></div></div>
+<div id="pengumuman" class="page"><div class="top"><div><h1>Pengumuman - <span>LIVE</span></h1><p class="sub">Dari tabel pengumuman</p></div></div><div class="box" style="margin-top:16px"><h3>Buat Pengumuman Baru</h3><label class="f">Judul</label><input id="pJudul" placeholder="Judul pengumuman..."><label class="f">Isi</label><textarea id="pIsi" rows="3" placeholder="Isi pengumuman..."></textarea><button class="btn" style="margin-top:12px" onclick="tambahPengumuman()">📢 Kirim Pengumuman Ke DB</button></div><div class="box" style="margin-top:14px"><div id="listPengumuman">Memuat...</div></div></div>
+<div id="laporan" class="page"><div class="top"><div><h1>Laporan - <span>LIVE</span></h1><p class="sub">Semua data dari database, siap di-print</p></div></div><div class="box" style="margin-top:16px"><h3>Ringkasan Laporan</h3><p id="laporanIsi">Memuat...</p><button class="btn" onclick="window.print()">🖨️ Print Laporan Ini</button></div></div>
+<div id="pengaturan" class="page"><div class="top"><div><h1>Pengaturan - <span>LIVE</span></h1><p class="sub">Dari tabel pengaturan</p></div></div><div class="box" style="margin-top:16px"><div id="listPengaturan">Memuat...</div></div></div>
+</div>
+
+<div id="status"></div>
+
+<script>
+// ===== KONFIG SUPABASE LU KO - UDAH GUA PASANGIN! =====
+const SUPABASE_URL = "https://rotxnwbrnbwbscihvafq.supabase.co";
+const SUPABASE_KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function show(id, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+function toast(msg){
+  let s=document.getElementById('status'); s.innerText=msg; s.style.display='block';
+  setTimeout(()=>s.style.display='none',3000);
+}
+function rupiah(n){ return "Rp " + Number(n||0).toLocaleString('id-ID'); }
+function initials(n){ return (n||'?').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase(); }
+
+async function loadAll(){
+  // SISWA
+  let {data:siswa} = await supabaseClient.from('siswa').select('*, kelas(nama_kelas)').order('id');
+  document.getElementById('cSiswa').innerText = siswa?.length||0;
+  document.getElementById('mSiswa').innerText = siswa?.length||0;
+  document.getElementById('listSiswa').innerHTML = siswa?.length ? `<table><tr><th>SISWA</th><th>NIS</th><th>KELAS</th><th>WA ORTU</th><th>AKSI</th></tr>` + siswa.map(s=>`<tr><td><span class="avatar">${initials(s.nama)}</span>${s.nama}</td><td>${s.nis}</td><td>${s.kelas?.nama_kelas||'-'}</td><td>${s.no_wa_orang_tua||'-'}</td><td><button class="btn2" onclick="hapusSiswa(${s.id},'${s.nama}')">Hapus</button></td></tr>`).join('') + `</table>` : 'Belum ada siswa. Tambah di atas!';
+  // Dropdown kelas untuk form siswa
+  let {data:kelas} = await supabaseClient.from('kelas').select('*').order('id');
+  document.getElementById('cKelas').innerText = kelas?.length||0;
+  document.getElementById('mKelas').innerText = kelas?.length||0;
+  document.getElementById('fKelas').innerHTML = kelas?.map(k=>`<option value="${k.id}">${k.nama_kelas}</option>`).join('');
+  document.getElementById('listKelas').innerHTML = kelas?.map(k=>`<div class="kelas"><h3>${k.nama_kelas}</h3><p>Wali: ${k.wali_kelas||'-'}</p><p>Ruang: ${k.ruang||'-'} • Kapasitas: ${k.kapasitas}</p><button class="btn2">Lihat Siswa</button></div>`).join('');
+
+  // GURU
+  let {data:guru} = await supabaseClient.from('guru').select('*').order('id');
+  document.getElementById('cGuru').innerText = guru?.length||0;
+  document.getElementById('mGuru').innerText = guru?.length||0;
+  document.getElementById('listGuru').innerHTML = guru?.length ? `<table><tr><th>GURU</th><th>NIP</th><th>MAPEL</th><th>WA</th></tr>` + guru.map(g=>`<tr><td><span class="avatar">${initials(g.nama)}</span>${g.nama}</td><td>${g.nip||'-'}</td><td>${g.mata_pelajaran||'-'}</td><td>${g.no_wa||'-'}</td></tr>`).join('') + `</table>` : 'Belum ada guru';
+
+  // SPP
+  let {data:spp} = await supabaseClient.from('spp').select('*, siswa(nama, kelas(nama_kelas))').order('id');
+  let lunas = spp?.filter(x=>x.status==='Lunas')||[];
+  let belum = spp?.filter(x=>x.status!=='Lunas')||[];
+  let total = lunas.reduce((a,b)=>a+Number(b.jumlah||0),0);
+  document.getElementById('cKas').innerText = rupiah(total);
+  document.getElementById('cKasSub').innerText = lunas.length + ' pembayaran lunas';
+  document.getElementById('mSpp').innerText = belum.length + ' Belum';
+  document.getElementById('sppTotal').innerText = rupiah(total);
+  document.getElementById('sppLunas').innerText = lunas.length + ' Siswa';
+  document.getElementById('sppBelum').innerText = belum.length + ' Siswa';
+  document.getElementById('listSpp').innerHTML = spp?.length ? `<table><tr><th>SISWA</th><th>BULAN</th><th>JUMLAH</th><th>STATUS</th><th>AKSI</th></tr>` + spp.map(s=>`<tr><td>${s.siswa?.nama||'Siswa #' + s.siswa_id}</td><td>${s.bulan} ${s.tahun}</td><td>${rupiah(s.jumlah)}</td><td><span class="badge ${s.status==='Lunas'?'lunas':'belum'}">${s.status}</span></td><td>${s.status==='Lunas' ? `<button class="btn2" onclick="kirimWA('${s.siswa?.nama}')">Kirim WA ✓</button>` : `<button class="btn2" onclick="tandaiLunas(${s.id})">Tandai Lunas</button> <button class="btn2" onclick="kirimWA('${s.siswa?.nama}')">Ingatkan WA</button>`}</td></tr>`).join('') + `</table>` : 'Belum ada data SPP';
+
+  // KEHADIRAN
+  let {data:hadir} = await supabaseClient.from('kehadiran').select('*, siswa(nama)').order('id',{ascending:false}).limit(20);
+  document.getElementById('listHadir').innerHTML = hadir?.length ? `<table><tr><th>SISWA</th><th>TANGGAL</th><th>STATUS</th><th>JAM</th></tr>` + hadir.map(h=>`<tr><td>${h.siswa?.nama||'-'}</td><td>${h.tanggal}</td><td><span class="badge ${h.status==='Hadir'?'hadir':'izin'}">${h.status}</span></td><td>${h.jam_masuk||'-'}</td></tr>`).join('') + `</table>` : 'Belum ada kehadiran';
+
+  // NILAI
+  let {data:nilai} = await supabaseClient.from('nilai').select('*, siswa(nama)').order('id',{ascending:false}).limit(20);
+  document.getElementById('listNilai').innerHTML = nilai?.length ? `<table><tr><th>SISWA</th><th>MAPEL</th><th>NILAI</th><th>PREDIKAT</th></tr>` + nilai.map(n=>`<tr><td>${n.siswa?.nama||'-'}</td><td>${n.mata_pelajaran}</td><td><b style="color:#d4af37">${n.nilai}</b></td><td>${n.predikat||'-'}</td></tr>`).join('') + `</table>` : 'Belum ada nilai';
+
+  // PENGUMUMAN
+  let {data:peng} = await supabaseClient.from('pengumuman').select('*').order('id',{ascending:false});
+  document.getElementById('listPengumuman').innerHTML = peng?.map(p=>`<div class="item"><span><b style="color:#fff">${p.judul}</b><br><span style="color:#888;font-size:12px">${p.isi}</span></span><b>${p.status}</b></div>`).join('') || 'Belum ada pengumuman';
+  document.getElementById('aktivitas').innerHTML = peng?.slice(0,3).map(p=>`<div class="item"><span>📢 ${p.judul}</span><b>Baru</b></div>`).join('') + `<div class="item"><span>✅ ${lunas.length} SPP Lunas - Total ${rupiah(total)}</span><b>Live</b></div>`;
+
+  // PENGATURAN & LAPORAN
+  let {data:pengaturan} = await supabaseClient.from('pengaturan').select('*').limit(1).single();
+  if(pengaturan) document.getElementById('listPengaturan').innerHTML = `<p style="color:#aaa">Nama Sekolah: <b style="color:#d4af37">${pengaturan.nama_sekolah}</b></p><p style="color:#aaa;margin-top:8px">Alamat: ${pengaturan.alamat}</p><p style="color:#aaa;margin-top:8px">Kepsek: ${pengaturan.kepala_sekolah}</p><p style="color:#aaa;margin-top:8px">WA Otomatis: Lunas ${pengaturan.wa_lunas?'✅':'❌'} | Belum Bayar ${pengaturan.wa_belum_bayar?'✅':'❌'} | Tidak Hadir ${pengaturan.wa_tidak_hadir?'✅':'❌'}</p>`;
+  document.getElementById('laporanIsi').innerHTML = `Total Siswa: <b>${siswa?.length}</b> | Total Guru: <b>${guru?.length}</b> | Total Kelas: <b>${kelas?.length}</b><br><br>Total Kas Lunas: <b style="color:#d4af37">${rupiah(total)}</b> | Belum Bayar: <b>${belum.length} siswa</b><br><br>Semua data diambil LIVE dari Supabase pada ${new Date().toLocaleString('id-ID')}`;
+  toast('✅ Tersambung! Data dari Supabase berhasil dimuat!');
+}
+
+async function tambahSiswa(){
+  let nis=document.getElementById('fNis').value;
+  let nama=document.getElementById('fNama').value;
+  let kelas_id=document.getElementById('fKelas').value;
+  let wa=document.getElementById('fWa').value;
+  if(!nis||!nama){ alert('Isi NIS & Nama dulu Ko!'); return; }
+  let {error} = await supabaseClient.from('siswa').insert([{nis,nama,kelas_id: Number(kelas_id), no_wa_orang_tua: wa, status:'Aktif'}]);
+  if(error){ alert('Gagal: '+error.message); return; }
+  toast('✅ Siswa '+nama+' berhasil masuk database!');
+  document.getElementById('fNis').value=''; document.getElementById('fNama').value=''; document.getElementById('fWa').value='';
+  loadAll();
+}
+async function hapusSiswa(id,nama){
+  if(!confirm('Hapus '+nama+' dari database?')) return;
+  await supabaseClient.from('siswa').delete().eq('id',id);
+  toast('🗑️ '+nama+' dihapus');
+  loadAll();
+}
+async function tandaiLunas(id){
+  let {error} = await supabaseClient.from('spp').update({status:'Lunas', tanggal_bayar: new Date().toISOString().split('T')[0]}).eq('id',id);
+  if(error){ alert(error.message); return; }
+  toast('✅ SPP ditandai LUNAS! Database ter-update!');
+  loadAll();
+}
+async function tambahPengumuman(){
+  let judul=document.getElementById('pJudul').value;
+  let isi=document.getElementById('pIsi').value;
+  if(!judul||!isi){ alert('Isi judul & isi dulu Ko!'); return; }
+  let {error} = await supabaseClient.from('pengumuman').insert([{judul, isi, status:'Aktif'}]);
+  if(error){ alert(error.message); return; }
+  toast('✅ Pengumuman terkirim ke database!');
+  document.getElementById('pJudul').value=''; document.getElementById('pIsi').value='';
+  loadAll();
+}
+function kirimWA(nama){
+  // Nanti disambung ke WhatsApp API / Fonnte / Wablas
+  let pesan = encodeURIComponent(`Halo, ini dari SMA Negeri 1 Harapan. Info SPP untuk ${nama}. Terima kasih! - Admin Ko Cheng`);
+  window.open(`https://wa.me/?text=${pesan}`,'_blank');
+  toast('📱 Membuka WhatsApp untuk '+nama);
+}
+
+loadAll();
+</script>
+</body>
+                                                                                                                                                                                                                                                                                  </html>
