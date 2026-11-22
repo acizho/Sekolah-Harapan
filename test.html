@@ -1,0 +1,25 @@
+<!DOCTYPE html><html><body style="background:#000;color:#fff;font-family:sans-serif;padding:20px">
+<h2>TES KONEKSI</h2>
+<button onclick="tes()" style="padding:15px;font-size:18px">KLIK UNTUK TES</button>
+<pre id="hasil" style="white-space:pre-wrap;background:#111;padding:15px;margin-top:15px"></pre>
+<script>
+const URL = "https://rotxnwbrnbwbscihvafq.supabase.co/rest/v1";
+const KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
+async function tes(){
+  let out = document.getElementById('hasil');
+  out.innerText = "Lagi tes...";
+  try{
+    let r1 = await fetch(URL + "/murid?select=*", {headers:{"apikey":KEY,"Authorization":"Bearer "+KEY}});
+    let t1 = await r1.text();
+    out.innerText = "TES 1 - Ambil semua murid:\nStatus: " + r1.status + "\nIsi: " + t1 + "\n\n";
+
+    let r2 = await fetch(URL + "/murid?select=*&nis=eq.202401234", {headers:{"apikey":KEY,"Authorization":"Bearer "+KEY}});
+    let t2 = await r2.text();
+    out.innerText += "TES 2 - Cari NIS 202401234:\nStatus: " + r2.status + "\nIsi: " + t2 + "\n\n";
+
+    let r3 = await fetch(URL + "/murid?select=*&nis=eq.202401234&pin=eq.123456", {headers:{"apikey":KEY,"Authorization":"Bearer "+KEY}});
+    let t3 = await r3.text();
+    out.innerText += "TES 3 - Cari NIS + PIN 123456:\nStatus: " + r3.status + "\nIsi: " + t3;
+  }catch(e){ out.innerText = "ERROR KONEKSI: " + e.message; }
+}
+</script></body></html>
