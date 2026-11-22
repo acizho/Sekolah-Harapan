@@ -24,6 +24,7 @@ h1{font-size:26px}h1 span{color:#d4af37}.sub{color:#888;font-size:13px;margin-to
 .top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:nowrap}
 .btn{background:linear-gradient(90deg,#d4af37,#f5d67b);color:#000;border:none;padding:11px 16px;border-radius:10px;font-weight:700;cursor:pointer;white-space:nowrap}
 .btn2{background:#1a1a1a;border:1px solid #d4af37;color:#d4af37;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}
+.btn-danger{background:#1a1a1a;border:1px solid #fca5a5;color:#fca5a5;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}
 input,select,textarea{background:#1a1a1a;border:1px solid #333;color:#fff;padding:11px 14px;border-radius:10px;outline:none;width:100%}
 input:focus{border-color:#d4af37}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}.cards.c3{grid-template-columns:repeat(3,1fr)}
@@ -58,6 +59,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 <button onclick="show('pengumuman',this)">📢 Pengumuman</button>
 <button onclick="show('laporan',this)">📄 Laporan</button>
 <button onclick="show('pengaturan',this)">⚙️ Pengaturan</button>
+<button onclick="show('admin',this)">🔐 Daftar Admin <small id="mAdmin">...</small></button>
 <button onclick="keluarAdmin()" style="color:#fca5a5">🚪 Keluar</button>
 </div>
 <p style="margin-top:20px;color:#888;font-size:12px;padding:0 14px">🟢 Tersambung ke:<br>rotxnwbrnbwbscihvafq</p>
@@ -97,13 +99,26 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 <div id="pengumuman" class="page"><div class="top"><div><h1>Pengumuman - <span>LIVE</span></h1><p class="sub">Dari tabel pengumuman</p></div></div><div class="box" style="margin-top:16px"><h3>Buat Pengumuman Baru</h3><label class="f">Judul</label><input id="pJudul" placeholder="Judul pengumuman..."><label class="f">Isi</label><textarea id="pIsi" rows="3" placeholder="Isi pengumuman..."></textarea><button class="btn" style="margin-top:12px" onclick="tambahPengumuman()">📢 Kirim Pengumuman Ke DB</button></div><div class="box" style="margin-top:14px"><div id="listPengumuman">Memuat...</div></div></div>
 <div id="laporan" class="page"><div class="top"><div><h1>Laporan - <span>LIVE</span></h1><p class="sub">Semua data dari database, siap di-print</p></div></div><div class="box" style="margin-top:16px"><h3>Ringkasan Laporan</h3><p id="laporanIsi">Memuat...</p><button class="btn" onclick="window.print()">🖨️ Print Laporan Ini</button></div></div>
 <div id="pengaturan" class="page"><div class="top"><div><h1>Pengaturan - <span>LIVE</span></h1><p class="sub">Dari tabel pengaturan</p></div></div><div class="box" style="margin-top:16px"><div id="listPengaturan">Memuat...</div></div></div>
+
+<!-- ========== MENU ADMIN BARU ========== -->
+<div id="admin" class="page">
+<div class="top"><div><h1>Daftar <span>Admin - LIVE</span></h1><p class="sub">Dari tabel admin di Supabase • Code + PIN buat login admin</p></div></div>
+<div class="box" style="margin-top:16px">
+<h3 id="judulFormAdmin">Tambah Admin Baru</h3>
+<input type="hidden" id="aId" value="">
+<div class="row"><div><label class="f">Code Login (huruf kecil, tanpa spasi)</label><input id="aCode" placeholder="contoh: masphus"></div><div><label class="f">PIN 6 Digit</label><input id="aPin" placeholder="258000" maxlength="6" inputmode="numeric"></div></div>
+<div class="row"><div><label class="f">Nama Admin</label><input id="aNama" placeholder="Mas Phus"></div><div style="display:flex;align-items:flex-end;gap:8px"><button class="btn" style="flex:1" id="btnSimpanAdmin" onclick="simpanAdmin()">💾 Simpan Admin</button><button class="btn2" id="btnBatalAdmin" onclick="batalEditAdmin()" style="display:none;padding:11px 16px">Batal</button></div></div>
+<p style="font-size:12px;color:#888;margin-top:10px">Contoh: Code <b style="color:#d4af37">andi</b> | PIN <b style="color:#d4af37">999999</b> | Nama <b style="color:#d4af37">Admin Andi</b></p>
+</div>
+<div class="box" style="margin-top:14px"><h3>Daftar Admin - Dari Database</h3><div id="listAdmin">Memuat...</div></div>
+</div>
+
 </div>
 </div>
 
 <div id="status"></div>
 
 <script>
-// === AUTO FIT PAKE ZOOM - GAK GOYANG, GAK ADA ITEM KOSONG ===
 function autoFit(){
   var app=document.getElementById('app');
   var w=window.innerWidth;
@@ -115,7 +130,6 @@ window.addEventListener('resize',autoFit);
 window.addEventListener('orientationchange',function(){ setTimeout(autoFit,300); });
 setTimeout(autoFit,100);
 
-// ===== KONFIG SUPABASE LU KO - UDAH GUA PASANGIN! =====
 const SUPABASE_URL = "https://rotxnwbrnbwbscihvafq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -174,6 +188,17 @@ async function loadAll(){
   let {data:pengaturan} = await supabaseClient.from('pengaturan').select('*').limit(1).single();
   if(pengaturan) document.getElementById('listPengaturan').innerHTML = `<p style="color:#aaa">Nama Sekolah: <b style="color:#d4af37">${pengaturan.nama_sekolah}</b></p><p style="color:#aaa;margin-top:8px">Alamat: ${pengaturan.alamat}</p><p style="color:#aaa;margin-top:8px">Kepsek: ${pengaturan.kepala_sekolah}</p><p style="color:#aaa;margin-top:8px">WA Otomatis: Lunas ${pengaturan.wa_lunas?'✅':'❌'} | Belum Bayar ${pengaturan.wa_belum_bayar?'✅':'❌'} | Tidak Hadir ${pengaturan.wa_tidak_hadir?'✅':'❌'}</p>`;
   document.getElementById('laporanIsi').innerHTML = `Total Siswa: <b>${siswa?.length}</b> | Total Guru: <b>${guru?.length}</b> | Total Kelas: <b>${kelas?.length}</b><br><br>Total Kas Lunas: <b style="color:#d4af37">${rupiah(total)}</b> | Belum Bayar: <b>${belum.length} siswa</b><br><br>Semua data diambil LIVE dari Supabase pada ${new Date().toLocaleString('id-ID')}`;
+
+  // === LOAD ADMIN ===
+  let {data:adminList, error:adminErr} = await supabaseClient.from('admin').select('*').order('id');
+  if(adminErr){
+    document.getElementById('listAdmin').innerHTML = 'Gagal load admin: ' + adminErr.message + ' • Cek nama tabel & RLS di Supabase!';
+    document.getElementById('mAdmin').innerText = '0';
+  } else {
+    document.getElementById('mAdmin').innerText = adminList?.length||0;
+    document.getElementById('listAdmin').innerHTML = adminList?.length ? `<table><tr><th>ID</th><th>CODE</th><th>PIN</th><th>NAMA</th><th>AKSI</th></tr>` + adminList.map(a=>`<tr><td>${a.id}</td><td><b style="color:#d4af37">${a.code}</b></td><td>${a.pin}</td><td><span class="avatar">${initials(a.nama)}</span>${a.nama}</td><td><button class="btn2" onclick="editAdmin(${a.id},'${a.code}','${a.pin}','${a.nama}')">✏️ Edit</button> <button class="btn-danger" onclick="hapusAdmin(${a.id},'${a.nama}')">🗑️ Hapus</button></td></tr>`).join('') + `</table>` : 'Belum ada admin. Tambah di atas!';
+  }
+
   toast('✅ Tersambung! Data dari Supabase berhasil dimuat!');
   setTimeout(autoFit,100);
 }
@@ -215,6 +240,53 @@ function kirimWA(nama){
   let pesan = encodeURIComponent(`Halo, ini dari SMA Negeri 1 Harapan. Info SPP untuk ${nama}. Terima kasih! - Admin Ko Cheng`);
   window.open(`https://wa.me/?text=${pesan}`,'_blank');
   toast('📱 Membuka WhatsApp untuk '+nama);
+}
+
+// === CRUD ADMIN ===
+async function simpanAdmin(){
+  let id = document.getElementById('aId').value;
+  let code = document.getElementById('aCode').value.trim().toLowerCase();
+  let pin = document.getElementById('aPin').value.trim();
+  let nama = document.getElementById('aNama').value.trim();
+  if(!code || !pin || !nama){ alert('Isi Code, PIN & Nama dulu Ko!'); return; }
+  if(pin.length !== 6){ alert('PIN harus 6 digit!'); return; }
+  let res;
+  if(id){
+    res = await supabaseClient.from('admin').update({code, pin, nama}).eq('id', Number(id));
+  } else {
+    res = await supabaseClient.from('admin').insert([{code, pin, nama}]);
+  }
+  if(res.error){ alert('Gagal: ' + res.error.message); return; }
+  toast(id ? '✅ Admin berhasil di-update!' : '✅ Admin baru berhasil ditambah!');
+  batalEditAdmin();
+  loadAll();
+}
+function editAdmin(id, code, pin, nama){
+  document.getElementById('aId').value = id;
+  document.getElementById('aCode').value = code;
+  document.getElementById('aPin').value = pin;
+  document.getElementById('aNama').value = nama;
+  document.getElementById('judulFormAdmin').innerText = 'Edit Admin - ID ' + id;
+  document.getElementById('btnSimpanAdmin').innerText = '💾 Update Admin';
+  document.getElementById('btnBatalAdmin').style.display = 'inline-block';
+  show('admin', null);
+  window.scrollTo(0,0);
+}
+function batalEditAdmin(){
+  document.getElementById('aId').value = '';
+  document.getElementById('aCode').value = '';
+  document.getElementById('aPin').value = '';
+  document.getElementById('aNama').value = '';
+  document.getElementById('judulFormAdmin').innerText = 'Tambah Admin Baru';
+  document.getElementById('btnSimpanAdmin').innerText = '💾 Simpan Admin';
+  document.getElementById('btnBatalAdmin').style.display = 'none';
+}
+async function hapusAdmin(id, nama){
+  if(!confirm('Hapus admin ' + nama + ' dari database?')) return;
+  let {error} = await supabaseClient.from('admin').delete().eq('id', id);
+  if(error){ alert('Gagal hapus: ' + error.message); return; }
+  toast('🗑️ Admin ' + nama + ' dihapus');
+  loadAll();
 }
 loadAll();
 </script>
