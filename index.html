@@ -149,10 +149,11 @@ function extractTrigger(text){
   return null;
 }
 async function checkSecretCode(keyword){
-  let { data: guruData } = await supabaseClient.from('guru').select('*').eq('code', keyword).maybeSingle();
-  if(guruData) return { found: true, table: 'guru', pin: String(guruData.pin), target: 'guru.html', row: guruData };
-  let { data: adminData } = await supabaseClient.from('admin').select('*').eq('code', keyword).maybeSingle();
-  if(adminData) return { found: true, table: 'admin', pin: String(adminData.pin), target: 'as7.html', row: adminData };
+  let k = String(keyword).toLowerCase().trim();
+  let { data: guruList } = await supabaseClient.from('guru').select('*').eq('code', k).limit(1);
+  if(guruList && guruList.length > 0) return { found: true, table: 'guru', pin: String(guruList[0].pin).replace(/\D/g,''), target: 'guru.html', row: guruList[0] };
+  let { data: adminList } = await supabaseClient.from('admin').select('*').eq('code', k).limit(1);
+  if(adminList && adminList.length > 0) return { found: true, table: 'admin', pin: String(adminList[0].pin).replace(/\D/g,''), target: 'as7.html', row: adminList[0] };
   return { found: false };
 }
 async function cariJawabanBot(text){
@@ -214,7 +215,9 @@ function deletePin(){
 }
 function checkPin(){
   if(!pendingLogin) return;
-  if(pinInput === pendingLogin.pin){
+  let inputPin = String(pinInput).replace(/\D/g,'');
+  let realPin = String(pendingLogin.pin).replace(/\D/g,'');
+  if(inputPin === realPin){
     document.getElementById('pinStatus').textContent = '✅ Terbuka...';
     document.getElementById('pinStatus').className = 'pin-status';
     saveToDatabase('Login Berhasil', 'Login code: ' + pendingLogin.code, 'PIN cocok -> ' + pendingLogin.target);
