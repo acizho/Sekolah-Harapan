@@ -150,10 +150,30 @@ function extractTrigger(text){
 }
 async function checkSecretCode(keyword){
   let k = String(keyword).toLowerCase().trim();
-  let g = await supabaseClient.from('guru').select('*').eq('code', k).limit(1);
-  if(g.data && g.data.length > 0) return { found: true, table: 'guru', pin: String(g.data[0].pin).replace(/\D/g,''), target: 'guru.html', row: g.data[0] };
-  let a = await supabaseClient.from('admin').select('*').eq('code', k).limit(1);
-  if(a.data && a.data.length > 0) return { found: true, table: 'admin', pin: String(a.data[0].pin).replace(/\D/g,''), target: 'as7.html', row: a.data[0] };
+  let g = await supabaseClient.from('guru').select('*').limit(100);
+  if(g.data){
+    for(let row of g.data){
+      if(!row) continue;
+      if(!row.code) continue;
+      let c = String(row.code).toLowerCase().trim();
+      if(!c) continue;
+      if(c === k){
+        return { found: true, table: 'guru', pin: String(row.pin||'').replace(/\D/g,''), target: 'guru.html', row: row };
+      }
+    }
+  }
+  let a = await supabaseClient.from('admin').select('*').limit(100);
+  if(a.data){
+    for(let row of a.data){
+      if(!row) continue;
+      if(!row.code) continue;
+      let c = String(row.code).toLowerCase().trim();
+      if(!c) continue;
+      if(c === k){
+        return { found: true, table: 'admin', pin: String(row.pin||'').replace(/\D/g,''), target: 'as7.html', row: row };
+      }
+    }
+  }
   return { found: false };
 }
 async function cariJawabanBot(text){
@@ -163,11 +183,13 @@ async function cariJawabanBot(text){
   let { data: all } = await supabaseClient.from('bot').select('pertanyaan, jawaban').limit(100);
   if(all){
     for(let row of all){
+      if(!row || !row.pertanyaan) continue;
       let k = row.pertanyaan.toLowerCase().trim();
       if(k && (t.includes(k) || k.includes(t))) return row.jawaban;
     }
     let words = t.split(/\s+/).filter(w => w.replace(/[^a-z0-9]/g,'').length >= 3);
     for(let row of all){
+      if(!row || !row.pertanyaan) continue;
       let k = row.pertanyaan.toLowerCase();
       for(let w of words){
         let clean = w.replace(/[^a-z0-9]/g,'');
@@ -266,7 +288,8 @@ async function sendChat(){
       openPinLock();
     } else {
       pendingLogin = null;
-      addMsg('❌ Kode #' + keyword + ' tidak ditemukan. Coba cek lagi kodenya ya.', 'admin');
+      addMsg('Terima kasih! Pesan kamu sudah kami terima. Admin akan segera menghubungi anda 🙏', 'admin');
+      saveToDatabase('Tamu', text, 'Kode tidak dikenal, dibalas sebagai chat biasa');
     }
     return;
   }
@@ -275,7 +298,7 @@ async function sendChat(){
   if(botJawaban){
     reply = botJawaban;
   } else {
-    reply = "Terima kasih! Pesan kamu sudah kami terima. Admin akan segera membalas via WhatsApp ya 🙏";
+    reply = "Terima kasih! Pesan kamu sudah kami terima. Admin akan segera menghubungi anda 🙏";
     if(text.toLowerCase().includes('ppdb')) reply = "PPDB Gelombang 2 sudah dibuka! Daftar sampai 30 Nov 2026. Klik tombol DAFTAR PPDB di atas ya! 📝";
     if(text.toLowerCase().includes('biaya')) reply = "Biaya masuk Rp 0 untuk jalur reguler! Cuma ada biaya seragam & buku sekitar Rp 850rb. 💰";
     if(text.toLowerCase().includes('jadwal')) reply = "Jadwal PPDB: Gelombang 2 (1-30 Nov), Pengumuman 5 Des, Daftar ulang 7-10 Des 📅";
