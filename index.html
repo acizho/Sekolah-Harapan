@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMA Negeri 1 Harapan - Beranda</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{
+  color:#fff;
+  min-height:100vh;
+  /* === BACKGROUND YANG LU SUKA: ATAS KANAN EMAS -> KIRI BAWAH HITAM, MIRING HALUS === */
+  background: linear-gradient(to bottom left, #FFD700 0%, #F5D67B 12%, #D4AF37 28%, #8A6D1A 45%, #2A2105 62%, #111111 78%, #000000 100%);
+  background-attachment: fixed;
+  overflow-x:hidden;
+}
+/* Biar tulisan di atas emas tetep kebaca, kasih lapisan hitam tipis */
+.wrap{max-width:480px;margin:0 auto;padding:0 20px 30px;position:relative;z-index:2}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:44px;height:44px;background:#000;border:2px solid #FFD700;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
+.logo b{font-size:15px;line-height:1.2;color:#000}.logo span{font-size:10px;color:#222;letter-spacing:1px}
+.menu-btn{background:#000;color:#FFD700;border:1px solid #FFD700;padding:8px 14px;border-radius:20px;font-size:13px}
+.hero{margin-top:10px;background:rgba(0,0,0,0.75);border:1px solid rgba(255,215,0,0.6);border-radius:22px;padding:24px;backdrop-filter:blur(6px)}
+.hero small{background:#FFD700;color:#000;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:1px}
+.hero h1{font-size:30px;line-height:1.1;margin:14px 0 8px}.hero h1 span{color:#FFD700}
+.hero p{font-size:13px;color:#ccc;line-height:1.6}
+.btn-row{display:flex;gap:10px;margin-top:18px}
+.btn-gold{flex:1;background:linear-gradient(90deg,#FFD700,#D4AF37);color:#000;border:none;padding:13px;border-radius:12px;font-weight:800;font-size:14px}
+.btn-dark{flex:1;background:transparent;color:#FFD700;border:1px solid #FFD700;padding:13px;border-radius:12px;font-weight:700;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.stat{background:#0a0a0a;border:1px solid #333;border-radius:16px;padding:14px;text-align:center}
+.stat b{font-size:20px;color:#FFD700;display:block}.stat span{font-size:11px;color:#aaa}
+.section{margin-top:18px}
+.section h3{font-size:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}.section h3 a{font-size:12px;color:#FFD700;text-decoration:none}
+.card{background:#111;border:1px solid #2a2a2a;border-radius:16px;padding:16px;margin-bottom:10px;display:flex;gap:12px}
+.card-date{background:#FFD700;color:#000;border-radius:12px;width:52px;min-width:52px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800}
+.card-date span{font-size:10px;font-weight:400}
+.card b{font-size:14px}.card p{font-size:12px;color:#aaa;margin-top:4px;line-height:1.5}
+.program{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prog{background:#111;border:1px solid #2a2a2a;border-radius:16px;padding:16px}
+.prog span{font-size:24px}.prog b{display:block;margin:8px 0 4px;font-size:14px;color:#FFD700}.prog p{font-size:12px;color:#aaa;line-height:1.5}
+.kepsek{background:linear-gradient(135deg,#FFD700,#8A6D1A);color:#000;border-radius:18px;padding:18px;margin-top:18px;display:flex;gap:14px;align-items:center}
+.kepsek img{width:60px;height:60px;border-radius:50%;border:2px solid #000;object-fit:cover}
+.kepsek b{font-size:15px}.kepsek p{font-size:12px;margin-top:4px;opacity:0.8}
+.footer{text-align:center;color:#ccc;font-size:11px;margin-top:22px;line-height:1.6}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#000;border-top:1px solid #D4AF37;display:flex;justify-content:space-around;padding:12px 0 18px;z-index:99}
+.bottom-nav a{color:#888;text-decoration:none;font-size:11px;text-align:center}.bottom-nav a.active{color:#FFD700}.bottom-nav span{display:block;font-size:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="logo"><div class="logo-icon">🏫</div><div><b>SMA NEGERI 1<br>HARAPAN</b><br><span>MAJU • BERPRESTASI • BERKARAKTER</span></div></div>
+    <button class="menu-btn">☰ Menu</button>
+  </div>
+
+  <div class="hero">
+    <small>✦ PPDB 2026/2027 DIBUKA</small>
+    <h1>Selamat Datang di<br><span>SMA Negeri 1 Harapan</span></h1>
+    <p>Sekolah unggulan dengan kurikulum merdeka, pembinaan karakter, dan prestasi akademik & non-akademik tingkat nasional.</p>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="location.href='ppdb.html'">DAFTAR PPDB →</button>
+      <button class="btn-dark">Lihat Profil</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b>1.250+</b><span>Siswa Aktif</span></div>
+    <div class="stat"><b>78</b><span>Guru & Staff</span></div>
+    <div class="stat"><b>98%</b><span>Lulus PTN</span></div>
+  </div>
+
+  <div class="section">
+    <h3>📢 Pengumuman Terbaru <a href="#">Lihat Semua →</a></h3>
+    <div class="card"><div class="card-date">22<span>NOV</span></div><div><b>PPDB Gelombang 2 Dibuka!</b><p>Pendaftaran dibuka sampai 30 November 2026. Kuota terbatas!</p></div></div>
+    <div class="card"><div class="card-date">20<span>NOV</span></div><div><b>Juara 1 Olimpiade Matematika</b><p>Tim SMA N 1 Harapan berhasil meraih juara 1 tingkat provinsi.</p></div></div>
+    <div class="card"><div class="card-date">18<span>NOV</span></div><div><b>Jadwal Ujian Semester Ganjil</b><p>Ujian dimulai 1 Desember. Cek jadwal di menu akademik.</p></div></div>
+  </div>
+
+  <div class="section">
+    <h3>⭐ Program Unggulan</h3>
+    <div class="program">
+      <div class="prog"><span>📚</span><b>Kurikulum Merdeka</b><p>Belajar fleksibel, fokus bakat & minat siswa.</p></div>
+      <div class="prog"><span>🏆</span><b>Kelas Prestasi</b><p>Bimbingan olimpiade & masuk PTN favorit.</p></div>
+      <div class="prog"><span>💻</span><b>Lab Komputer</b><p>Lab modern & kelas digital interaktif.</p></div>
+      <div class="prog"><span>🎭</span><b>Ekstrakurikuler</b><p>25+ ekskul: Paskibra, Pramuka, Futsal, dll.</p></div>
+    </div>
+  </div>
+
+  <div class="kepsek">
+    <img src="https://i.pravatar.cc/100?img=12" alt="Kepsek">
+    <div><b>"Anak Hebat, Berkarakter, Siap Bersaing Global"</b><p>- Drs. H. Ahmad Harapan, M.Pd - Kepala Sekolah</p></div>
+  </div>
+
+  <div class="footer">
+    SMA Negeri 1 Harapan<br>
+    Jl. Pendidikan No. 1, Bandung, Jawa Barat<br>
+    Telp: (022) 123-4567 | WA: 0812-3456-7890<br>
+    © 2026 SMA Negeri 1 Harapan
+  </div>
+  <div style="height:70px"></div>
+</div>
+
+<div class="bottom-nav">
+  <a href="#" class="active"><span>🏠</span>Beranda</a>
+  <a href="#"><span>👤</span>Profil</a>
+  <a href="#"><span>📝</span>PPDB</a>
+  <a href="#"><span>📢</span>Info</a>
+  <a href="#"><span>📞</span>Kontak</a>
+</div>
+</body>
+</html>
