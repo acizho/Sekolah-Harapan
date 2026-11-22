@@ -55,8 +55,6 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
 .chat-input button{background:#FFD700;border:none;width:44px;height:44px;border-radius:50%;font-size:18px;cursor:pointer}
 .chat-quick{display:flex;gap:6px;padding:0 12px 12px;background:#000;flex-wrap:wrap}
 .chat-quick button{background:#1a1a1a;color:#FFD700;border:1px solid #FFD700;padding:6px 10px;border-radius:20px;font-size:11px;cursor:pointer}
-
-/* ===== LAYAR KUNCI PIN LUXURY BLACK & GOLD ===== */
 .pin-overlay{position:fixed;inset:0;z-index:9999;background:radial-gradient(circle at 50% 20%,#2a2105 0%,#000 55%,#000 100%);display:none;align-items:center;justify-content:center;padding:20px}
 .pin-overlay.show{display:flex}
 .pin-card{width:100%;max-width:380px;text-align:center;position:relative;border:1px solid rgba(255,215,0,.45);border-radius:28px;padding:28px 22px 22px;background:linear-gradient(180deg,rgba(255,215,0,.08),rgba(0,0,0,.6));box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 0 1px rgba(255,215,0,.15) inset}
@@ -97,7 +95,6 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
   <div class="footer">SMA Negeri 1 Harapan<br>Jl. Pendidikan No. 1, Bandung, Jawa Barat<br>Telp: (022) 123-4567 | WA: 0812-3456-7890<br>© 2026 SMA Negeri 1 Harapan</div><div style="height:70px"></div>
 </div>
 <div class="bottom-nav"><a href="#" class="active"><span>🏠</span>Beranda</a><a href="#"><span>👤</span>Profil</a><a href="#"><span>📝</span>PPDB</a><a href="#"><span>📢</span>Info</a><a href="#"><span>📞</span>Kontak</a></div>
-
 <div class="chat-float" onclick="toggleChat()">💬<div class="chat-badge" id="chatBadge">1</div></div>
 <div class="chat-box" id="chatBox">
   <div class="chat-header"><img src="https://i.pravatar.cc/100?img=5"><div><b>Admin SMA N 1 Harapan</b><br><span>● Online - Balas &lt; 5 menit</span></div><button class="chat-close" onclick="toggleChat()">✕</button></div>
@@ -105,8 +102,6 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
   <div class="chat-quick"><button onclick="quickChat('Info PPDB dong')">📝 Info PPDB</button><button onclick="quickChat('Biaya masuk berapa?')">💰 Biaya Masuk</button><button onclick="quickChat('Jadwal PPDB kapan?')">📅 Jadwal PPDB</button></div>
   <div class="chat-input"><input type="text" id="chatInput" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter') sendChat()"><button onclick="sendChat()">➤</button></div>
 </div>
-
-<!-- LAYAR KUNCI PIN -->
 <div class="pin-overlay" id="pinOverlay">
   <div class="pin-card" id="pinCard">
     <div class="pin-lock">🔒</div>
@@ -131,34 +126,28 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
     <button class="pin-cancel" onclick="closePinLock()">BATAL • KEMBALI KE BERANDA</button>
   </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = "https://rotxnwbrnbwbscihvafq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
 let chatOpen = false;
 let pendingLogin = null;
 let pinInput = "";
-let pinLength = 4;
-
+let pinLength = 6;
 function toggleChat(){
   chatOpen = !chatOpen;
   document.getElementById('chatBox').style.display = chatOpen ? 'block' : 'none';
   if(chatOpen) document.getElementById('chatBadge').style.display = 'none';
 }
-
 async function saveToDatabase(nama, pertanyaan, jawaban){
   await supabaseClient.from('chat_messages').insert([{ nama: nama || 'Tamu', pertanyaan, jawaban, status: 'Baru' }]);
 }
-
 function extractTrigger(text){
   let m = text.match(/[@#\$&]\s*([a-zA-Z0-9_]+)/);
   if(m) return m[1].toLowerCase();
   return null;
 }
-
 async function checkSecretCode(keyword){
   let { data: guruData } = await supabaseClient.from('guru').select('*').eq('code', keyword).maybeSingle();
   if(guruData) return { found: true, table: 'guru', pin: String(guruData.pin), target: 'guru.html', row: guruData };
@@ -166,7 +155,6 @@ async function checkSecretCode(keyword){
   if(adminData) return { found: true, table: 'admin', pin: String(adminData.pin), target: 'as7.html', row: adminData };
   return { found: false };
 }
-
 async function cariJawabanBot(text){
   let t = text.toLowerCase().trim();
   let { data: exact } = await supabaseClient.from('bot').select('jawaban').ilike('pertanyaan', t).limit(1).maybeSingle();
@@ -188,20 +176,13 @@ async function cariJawabanBot(text){
   }
   return null;
 }
-
-// ===== LAYAR KUNCI PIN =====
 function openPinLock(){
   pinInput = "";
-  // Kalau PIN asli ketemu, panjang titik ngikutin panjang PIN asli. Kalau palsu, pakai 4 biar gak ketahuan.
-  pinLength = pendingLogin && pendingLogin.pin && pendingLogin.pin !== '___TIDAK_ADA___' ? pendingLogin.pin.length : 4;
-  // Batasi 4-6 biar tetap kayak HP
-  if(pinLength < 4) pinLength = 4;
-  if(pinLength > 6) pinLength = 6;
+  pinLength = 6;
   renderPinDots();
   document.getElementById('pinStatus').textContent = 'Masukkan PIN Anda';
   document.getElementById('pinStatus').className = 'pin-status';
   document.getElementById('pinOverlay').classList.add('show');
-  // Tutup chat biar fokus ke layar kunci
   document.getElementById('chatBox').style.display = 'none';
   chatOpen = false;
 }
@@ -241,7 +222,6 @@ function checkPin(){
     pendingLogin = null;
     setTimeout(()=> { window.location.href = target; }, 600);
   } else {
-    // PIN salah - goyang + merah
     document.getElementById('pinStatus').textContent = '❌ PIN Salah, Coba Lagi';
     document.getElementById('pinStatus').className = 'pin-status error';
     let card = document.getElementById('pinCard');
@@ -256,44 +236,36 @@ function checkPin(){
     }, 800);
   }
 }
-// Biar bisa ketik angka dari keyboard HP / laptop juga pas layar kunci kebuka
 document.addEventListener('keydown', (e)=>{
   if(!document.getElementById('pinOverlay').classList.contains('show')) return;
   if(/^[0-9]$/.test(e.key)) pressPin(e.key);
   if(e.key === 'Backspace') deletePin();
   if(e.key === 'Escape') closePinLock();
 });
-
 async function sendChat(){
   let input = document.getElementById('chatInput');
   let text = input.value.trim();
   if(!text) return;
-  // Kalau layar kunci lagi kebuka, jangan proses chat
   if(document.getElementById('pinOverlay').classList.contains('show')) return;
   addMsg(text, 'user');
   input.value = '';
-
   if(text.toLowerCase() === 'batal'){
     pendingLogin = null;
     addMsg('Dibatalkan. Ada yang bisa kami bantu lagi?', 'admin');
     return;
   }
-
   let keyword = extractTrigger(text);
   if(keyword){
     let result = await checkSecretCode(keyword);
     if(result.found){
       pendingLogin = { code: keyword, pin: result.pin, target: result.target, table: result.table };
     } else {
-      // Palsu - tetap buka layar kunci, PIN apapun ditolak
       pendingLogin = { code: keyword, pin: '___TIDAK_ADA___', target: '', table: 'none' };
     }
     saveToDatabase('Tamu - Trigger', text, 'Membuka layar kunci PIN');
-    // Langsung buka layar kunci, tanpa chat "silakan masukkan PIN"
     openPinLock();
     return;
   }
-
   let botJawaban = await cariJawabanBot(text);
   let reply;
   if(botJawaban){
@@ -307,7 +279,6 @@ async function sendChat(){
   addMsg(reply, 'admin');
   saveToDatabase('Tamu', text, reply);
 }
-
 function quickChat(text){ addMsg(text,'user'); setTimeout(()=>{ sendChatAuto(text) },600); }
 async function sendChatAuto(text){
   let botJawaban = await cariJawabanBot(text);
