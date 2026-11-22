@@ -55,6 +55,31 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
 .chat-input button{background:#FFD700;border:none;width:44px;height:44px;border-radius:50%;font-size:18px;cursor:pointer}
 .chat-quick{display:flex;gap:6px;padding:0 12px 12px;background:#000;flex-wrap:wrap}
 .chat-quick button{background:#1a1a1a;color:#FFD700;border:1px solid #FFD700;padding:6px 10px;border-radius:20px;font-size:11px;cursor:pointer}
+
+/* ===== LAYAR KUNCI PIN LUXURY BLACK & GOLD ===== */
+.pin-overlay{position:fixed;inset:0;z-index:9999;background:radial-gradient(circle at 50% 20%,#2a2105 0%,#000 55%,#000 100%);display:none;align-items:center;justify-content:center;padding:20px}
+.pin-overlay.show{display:flex}
+.pin-card{width:100%;max-width:380px;text-align:center;position:relative;border:1px solid rgba(255,215,0,.45);border-radius:28px;padding:28px 22px 22px;background:linear-gradient(180deg,rgba(255,215,0,.08),rgba(0,0,0,.6));box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 0 1px rgba(255,215,0,.15) inset}
+.pin-card:before{content:"";position:absolute;inset:8px;border:1px solid rgba(255,215,0,.18);border-radius:22px;pointer-events:none}
+.pin-lock{width:72px;height:72px;margin:0 auto 10px;border-radius:50%;background:linear-gradient(135deg,#FFD700,#8A6D1A);display:flex;align-items:center;justify-content:center;font-size:34px;color:#000;box-shadow:0 0 30px rgba(255,215,0,.6);border:2px solid #000}
+.pin-card h2{font-size:20px;letter-spacing:2px;color:#FFD700;margin:8px 0 4px}
+.pin-card p{font-size:12px;color:#aaa;letter-spacing:.5px}
+.pin-dots{display:flex;gap:14px;justify-content:center;margin:22px 0 6px;min-height:18px}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid #FFD700;background:transparent;transition:.15s}
+.pin-dot.filled{background:#FFD700;box-shadow:0 0 12px #FFD700}
+.pin-dot.error{border-color:#ff4444;background:#ff4444}
+.pin-status{font-size:12px;min-height:18px;color:#FFD700;margin-bottom:14px}
+.pin-status.error{color:#ff5555}
+.pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:260px;margin:0 auto}
+.pin-key{aspect-ratio:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,215,0,.55);color:#fff;border-radius:50%;font-size:22px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.1s}
+.pin-key:active{transform:scale(.92);background:#FFD700;color:#000}
+.pin-key small{display:block;font-size:9px;font-weight:400;color:#aaa;letter-spacing:2px}
+.pin-key:active small{color:#000}
+.pin-key.empty{border:none;background:transparent;cursor:default}
+.pin-key.action{font-size:16px;color:#FFD700}
+.pin-cancel{margin-top:16px;background:transparent;border:1px solid rgba(255,215,0,.4);color:#FFD700;padding:10px 22px;border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:1px}
+.pin-shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-5px)}}
 </style>
 </head>
 <body>
@@ -81,6 +106,32 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
   <div class="chat-input"><input type="text" id="chatInput" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter') sendChat()"><button onclick="sendChat()">➤</button></div>
 </div>
 
+<!-- LAYAR KUNCI PIN -->
+<div class="pin-overlay" id="pinOverlay">
+  <div class="pin-card" id="pinCard">
+    <div class="pin-lock">🔒</div>
+    <h2>ENTER PIN</h2>
+    <p>SMA NEGERI 1 HARAPAN • AKSES TERBATAS</p>
+    <div class="pin-dots" id="pinDots"></div>
+    <div class="pin-status" id="pinStatus">Masukkan PIN Anda</div>
+    <div class="pin-keypad">
+      <button class="pin-key" onclick="pressPin('1')">1<small>•</small></button>
+      <button class="pin-key" onclick="pressPin('2')">2<small>ABC</small></button>
+      <button class="pin-key" onclick="pressPin('3')">3<small>DEF</small></button>
+      <button class="pin-key" onclick="pressPin('4')">4<small>GHI</small></button>
+      <button class="pin-key" onclick="pressPin('5')">5<small>JKL</small></button>
+      <button class="pin-key" onclick="pressPin('6')">6<small>MNO</small></button>
+      <button class="pin-key" onclick="pressPin('7')">7<small>PQRS</small></button>
+      <button class="pin-key" onclick="pressPin('8')">8<small>TUV</small></button>
+      <button class="pin-key" onclick="pressPin('9')">9<small>WXYZ</small></button>
+      <button class="pin-key action" onclick="closePinLock()">✕</button>
+      <button class="pin-key" onclick="pressPin('0')">0<small>+</small></button>
+      <button class="pin-key action" onclick="deletePin()">⌫</button>
+    </div>
+    <button class="pin-cancel" onclick="closePinLock()">BATAL • KEMBALI KE BERANDA</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = "https://rotxnwbrnbwbscihvafq.supabase.co";
@@ -88,7 +139,9 @@ const SUPABASE_KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let chatOpen = false;
-let pendingLogin = null; // { code, table, pin, targetPage } - disimpan sementara nunggu PIN
+let pendingLogin = null;
+let pinInput = "";
+let pinLength = 4;
 
 function toggleChat(){
   chatOpen = !chatOpen;
@@ -96,12 +149,10 @@ function toggleChat(){
   if(chatOpen) document.getElementById('chatBadge').style.display = 'none';
 }
 
-// ===== SIMPAN CHAT BIASA KE SUPABASE =====
 async function saveToDatabase(nama, pertanyaan, jawaban){
   await supabaseClient.from('chat_messages').insert([{ nama: nama || 'Tamu', pertanyaan, jawaban, status: 'Baru' }]);
 }
 
-// ===== BOT PINTAR - CEK PEMICU @ # $ & =====
 function extractTrigger(text){
   let m = text.match(/[@#\$&]\s*([a-zA-Z0-9_]+)/);
   if(m) return m[1].toLowerCase();
@@ -110,31 +161,22 @@ function extractTrigger(text){
 
 async function checkSecretCode(keyword){
   let { data: guruData } = await supabaseClient.from('guru').select('*').eq('code', keyword).maybeSingle();
-  if(guruData){
-    return { found: true, table: 'guru', pin: guruData.pin, target: 'guru.html', row: guruData };
-  }
+  if(guruData) return { found: true, table: 'guru', pin: String(guruData.pin), target: 'guru.html', row: guruData };
   let { data: adminData } = await supabaseClient.from('admin').select('*').eq('code', keyword).maybeSingle();
-  if(adminData){
-    return { found: true, table: 'admin', pin: adminData.pin, target: 'as7.html', row: adminData };
-  }
+  if(adminData) return { found: true, table: 'admin', pin: String(adminData.pin), target: 'as7.html', row: adminData };
   return { found: false };
 }
 
-// ===== BARU: CARI JAWABAN DARI TABEL bot =====
 async function cariJawabanBot(text){
   let t = text.toLowerCase().trim();
-  // 1. Coba cari persis dulu
   let { data: exact } = await supabaseClient.from('bot').select('jawaban').ilike('pertanyaan', t).limit(1).maybeSingle();
   if(exact) return exact.jawaban;
-  // 2. Coba cari per kata kunci - ambil semua, cari yang nyangkut
   let { data: all } = await supabaseClient.from('bot').select('pertanyaan, jawaban').limit(100);
   if(all){
-    // Cari yang pertanyaan-nya ada di dalam chat user, atau sebaliknya
     for(let row of all){
       let k = row.pertanyaan.toLowerCase().trim();
       if(k && (t.includes(k) || k.includes(t))) return row.jawaban;
     }
-    // Cari per kata (minimal 3 huruf biar gak ngaco)
     let words = t.split(/\s+/).filter(w => w.replace(/[^a-z0-9]/g,'').length >= 3);
     for(let row of all){
       let k = row.pertanyaan.toLowerCase();
@@ -147,26 +189,89 @@ async function cariJawabanBot(text){
   return null;
 }
 
+// ===== LAYAR KUNCI PIN =====
+function openPinLock(){
+  pinInput = "";
+  // Kalau PIN asli ketemu, panjang titik ngikutin panjang PIN asli. Kalau palsu, pakai 4 biar gak ketahuan.
+  pinLength = pendingLogin && pendingLogin.pin && pendingLogin.pin !== '___TIDAK_ADA___' ? pendingLogin.pin.length : 4;
+  // Batasi 4-6 biar tetap kayak HP
+  if(pinLength < 4) pinLength = 4;
+  if(pinLength > 6) pinLength = 6;
+  renderPinDots();
+  document.getElementById('pinStatus').textContent = 'Masukkan PIN Anda';
+  document.getElementById('pinStatus').className = 'pin-status';
+  document.getElementById('pinOverlay').classList.add('show');
+  // Tutup chat biar fokus ke layar kunci
+  document.getElementById('chatBox').style.display = 'none';
+  chatOpen = false;
+}
+function closePinLock(){
+  document.getElementById('pinOverlay').classList.remove('show');
+  pinInput = "";
+  pendingLogin = null;
+}
+function renderPinDots(){
+  let wrap = document.getElementById('pinDots');
+  wrap.innerHTML = "";
+  for(let i=0;i<pinLength;i++){
+    let d = document.createElement('div');
+    d.className = 'pin-dot' + (i < pinInput.length ? ' filled' : '');
+    wrap.appendChild(d);
+  }
+}
+function pressPin(num){
+  if(pinInput.length >= pinLength) return;
+  pinInput += num;
+  renderPinDots();
+  if(pinInput.length === pinLength){
+    setTimeout(checkPin, 250);
+  }
+}
+function deletePin(){
+  pinInput = pinInput.slice(0,-1);
+  renderPinDots();
+}
+function checkPin(){
+  if(!pendingLogin) return;
+  if(pinInput === pendingLogin.pin){
+    document.getElementById('pinStatus').textContent = '✅ Terbuka...';
+    document.getElementById('pinStatus').className = 'pin-status';
+    saveToDatabase('Login Berhasil', 'Login code: ' + pendingLogin.code, 'PIN cocok -> ' + pendingLogin.target);
+    let target = pendingLogin.target;
+    pendingLogin = null;
+    setTimeout(()=> { window.location.href = target; }, 600);
+  } else {
+    // PIN salah - goyang + merah
+    document.getElementById('pinStatus').textContent = '❌ PIN Salah, Coba Lagi';
+    document.getElementById('pinStatus').className = 'pin-status error';
+    let card = document.getElementById('pinCard');
+    card.classList.remove('pin-shake'); void card.offsetWidth; card.classList.add('pin-shake');
+    let dots = document.querySelectorAll('.pin-dot');
+    dots.forEach(d => d.classList.add('error'));
+    setTimeout(()=> {
+      pinInput = "";
+      renderPinDots();
+      document.getElementById('pinStatus').textContent = 'Masukkan PIN Anda';
+      document.getElementById('pinStatus').className = 'pin-status';
+    }, 800);
+  }
+}
+// Biar bisa ketik angka dari keyboard HP / laptop juga pas layar kunci kebuka
+document.addEventListener('keydown', (e)=>{
+  if(!document.getElementById('pinOverlay').classList.contains('show')) return;
+  if(/^[0-9]$/.test(e.key)) pressPin(e.key);
+  if(e.key === 'Backspace') deletePin();
+  if(e.key === 'Escape') closePinLock();
+});
+
 async function sendChat(){
   let input = document.getElementById('chatInput');
   let text = input.value.trim();
   if(!text) return;
+  // Kalau layar kunci lagi kebuka, jangan proses chat
+  if(document.getElementById('pinOverlay').classList.contains('show')) return;
   addMsg(text, 'user');
   input.value = '';
-
-  if(pendingLogin){
-    let pinInput = text.trim();
-    if(pinInput === pendingLogin.pin){
-      addMsg('✅ PIN cocok! Membuka halaman tujuan...', 'admin');
-      saveToDatabase('Login Berhasil', 'Login code: ' + pendingLogin.code, 'PIN cocok -> ' + pendingLogin.target);
-      let target = pendingLogin.target;
-      pendingLogin = null;
-      setTimeout(()=> { window.location.href = target; }, 900);
-    } else {
-      addMsg('❌ PIN salah. Coba lagi atau ketik BATAL untuk keluar.', 'admin');
-    }
-    return;
-  }
 
   if(text.toLowerCase() === 'batal'){
     pendingLogin = null;
@@ -174,34 +279,27 @@ async function sendChat(){
     return;
   }
 
-  // === CEK APAKAH ADA PEMICU @ # $ & ===
   let keyword = extractTrigger(text);
   if(keyword){
     let result = await checkSecretCode(keyword);
     if(result.found){
       pendingLogin = { code: keyword, pin: result.pin, target: result.target, table: result.table };
-      setTimeout(()=> {
-        addMsg('🔐 Silakan masukkan PIN Anda:', 'admin');
-      }, 500);
     } else {
-      setTimeout(()=> {
-        addMsg('🔐 Silakan masukkan PIN Anda:', 'admin');
-        pendingLogin = { code: keyword, pin: '___TIDAK_ADA___', target: '', table: 'none' };
-      }, 500);
+      // Palsu - tetap buka layar kunci, PIN apapun ditolak
+      pendingLogin = { code: keyword, pin: '___TIDAK_ADA___', target: '', table: 'none' };
     }
-    saveToDatabase('Tamu - Trigger', text, 'Meminta PIN (trigger)');
+    saveToDatabase('Tamu - Trigger', text, 'Membuka layar kunci PIN');
+    // Langsung buka layar kunci, tanpa chat "silakan masukkan PIN"
+    openPinLock();
     return;
   }
 
-  // === CHAT BIASA - CARI DULU DI TABEL bot ===
   let botJawaban = await cariJawabanBot(text);
   let reply;
   if(botJawaban){
     reply = botJawaban;
   } else {
-    // Fallback kalau di tabel bot gak ada
     reply = "Terima kasih! Pesan kamu sudah kami terima. Admin akan segera membalas via WhatsApp ya 🙏";
-    // Fallback lama tetap dipertahankan biar gak kosong
     if(text.toLowerCase().includes('ppdb')) reply = "PPDB Gelombang 2 sudah dibuka! Daftar sampai 30 Nov 2026. Klik tombol DAFTAR PPDB di atas ya! 📝";
     if(text.toLowerCase().includes('biaya')) reply = "Biaya masuk Rp 0 untuk jalur reguler! Cuma ada biaya seragam & buku sekitar Rp 850rb. 💰";
     if(text.toLowerCase().includes('jadwal')) reply = "Jadwal PPDB: Gelombang 2 (1-30 Nov), Pengumuman 5 Des, Daftar ulang 7-10 Des 📅";
