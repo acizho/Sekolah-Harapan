@@ -11,10 +11,8 @@ body{background:#000;color:#fff;min-height:100vh;padding:22px 16px 40px;backgrou
 .header h1{color:#e8c97a;font-size:22px;letter-spacing:5px;font-weight:400}
 .garis{width:180px;height:1px;background:linear-gradient(90deg,transparent,#d4af37,transparent);margin:12px auto;position:relative}
 .garis::after{content:"◆";position:absolute;left:50%;top:-8px;transform:translateX(-50%);color:#d4af37;font-size:10px;background:#000;padding:0 6px}
-.foto{width:170px;height:170px;margin:22px auto 20px;border-radius:50%;border:4px solid #e8c97a;box-shadow:0 0 0 3px #7a5f1a,0 0 30px rgba(212,175,55,.6),inset 0 0 20px rgba(0,0,0,.7);background:radial-gradient(circle at 50% 35%, #2a2415, #000);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.foto span{font-size:52px}
-.foto b{font-size:13px;margin-top:2px;color:#fff}
-.foto small{font-size:12px;color:#e8c97a;max-width:130px;text-align:center}
+.foto{width:170px;height:170px;margin:22px auto 20px;border-radius:50%;border:4px solid #e8c97a;box-shadow:0 0 0 3px #7a5f1a,0 0 30px rgba(212,175,55,.6),inset 0 0 20px rgba(0,0,0,.7);background:radial-gradient(circle at 50% 35%, #2a2415, #000);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.foto span{font-size:70px}
 .row{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.7);border-radius:14px;padding:13px 15px;margin-bottom:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
 .row .icon{font-size:28px;width:38px;text-align:center}
 .row .txt{flex:1}
@@ -50,15 +48,18 @@ input.login-input{width:100%;background:#111;border:1px solid #d4af37;color:#fff
 <div id="err"></div>
 </div>
 
-<!-- ========== 2. PROFIL SISWA - CUMA NAMPILIN, GAK BISA DIKLIK / DIEDIT ========== -->
+<!-- ========== 2. PROFIL SISWA - CUMA NAMPILIN ========== -->
 <div id="profilBox" style="display:none;max-width:420px;margin:0 auto">
 <div class="header"><h1>PROFIL SISWA</h1><div class="garis"></div></div>
 
+<!-- FOTO DOANG, TANPA TULISAN -->
 <div class="foto">
-<span>🎓</span><b>Nama:</b><small id="namaDiFoto">[Nama Placeholder]</small>
+<span id="emojiFoto">🎓</span>
 <img id="imgFoto" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
 </div>
 
+<!-- KOLOM NAMA BARU DI ATAS NIP / NIS -->
+<div class="row"><div class="icon">👤</div><div class="txt"><label>Nama:</label><div id="fNama">[Nama Placeholder]</div></div></div>
 <div class="row"><div class="icon">🪪</div><div class="txt"><label>NIP / NIS:</label><div id="fNip">[NIS Placeholder]</div></div></div>
 <div class="row"><div class="icon">🎓</div><div class="txt"><label>Kelas:</label><div id="fKelas">[Kelas Placeholder]</div></div></div>
 <div class="row"><div class="icon">📖</div><div class="txt"><label>Mata Pelajaran:</label><div id="fMapel">[Mata Pelajaran Placeholder]</div></div></div>
@@ -68,7 +69,6 @@ input.login-input{width:100%;background:#111;border:1px solid #d4af37;color:#fff
 
 <button class="btn" onclick="location.href='index.html'">🏫 LIHAT GEDUNG ➜</button>
 <button class="back" onclick="logout()">⬅ Logout</button>
-<button class="back" onclick="location.href='as7.html'">⬅ Kembali ke Admin</button>
 </div>
 
 <script>
@@ -121,7 +121,7 @@ async function ambilDariSupabase(){
     let data = await r.json();
     let m = data[0];
     if(!m){ alert("Data tidak ditemukan"); logout(); return; }
-    document.getElementById('namaDiFoto').innerText = m.nama || "[Nama Placeholder]";
+    document.getElementById('fNama').innerText = m.nama || "-";
     document.getElementById('fNip').innerText = m.nis || "-";
     document.getElementById('fKelas').innerText = m.kelas || "-";
     document.getElementById('fMapel').innerText = m.mapel_favorit || "-";
@@ -130,6 +130,7 @@ async function ambilDariSupabase(){
     document.getElementById('fStatus').innerText = m.status || "-";
     if(m.foto){
       let im=document.getElementById('imgFoto'); im.src=m.foto; im.style.display='block';
+      document.getElementById('emojiFoto').style.display='none';
     }
   }catch(e){ console.log(e); }
 }
