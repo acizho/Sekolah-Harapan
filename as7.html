@@ -9,7 +9,10 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
 html,body{background:#0a0a0a;color:#fff;overflow-x:hidden}
 #app{width:1200px;margin:0 auto;background:#0a0a0a;display:flex;min-height:100vh}
-.sidebar{width:260px;min-width:260px;background:#111;border-right:1px solid #d4af37;padding:22px 16px;flex-shrink:0;position:sticky;top:0;height:100vh;overflow:auto}
+.sidebar{width:260px;min-width:260px;background:#111;border-right:1px solid #d4af37;padding:22px 16px;flex-shrink:0;position:fixed;left:0;top:0;height:100vh;overflow:auto;z-index:50}
+.main{margin-left:260px}
+.hamburger{display:none;position:fixed;top:14px;left:14px;z-index:99;background:#d4af37;color:#000;border:none;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer}
+@media(max-width:900px){.sidebar{transform:translateX(-100%);transition:.25s}.sidebar.open{transform:none}.main{margin-left:0;padding-top:64px}.hamburger{display:block}}
 .logo{font-size:19px;font-weight:800;color:#d4af37;line-height:1.2}.logo span{color:#fff;font-size:11px;font-weight:400}
 .menu{margin-top:26px;display:flex;flex-direction:column;gap:4px}
 .menu button{text-align:left;background:none;border:none;color:#aaa;padding:12px 14px;border-radius:10px;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;width:100%}
@@ -40,6 +43,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 </style>
 </head>
 <body>
+<button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰ Menu</button>
 <div id="app">
 <div class="sidebar">
 <div class="logo">SMA NEGERI 1<br>HARAPAN <span><br>ADMIN PANEL • LIVE SUPABASE 🟢</span></div>
@@ -125,6 +129,7 @@ function show(id, btn){
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
+  document.querySelector('.sidebar')?.classList.remove('open');
   window.scrollTo(0,0);
   setTimeout(autoFit,50);
 }
