@@ -54,6 +54,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 <button onclick="show('pengumuman',this)">📢 Pengumuman</button>
 <button onclick="show('laporan',this)">📄 Laporan</button>
 <button onclick="show('pengaturan',this)">⚙️ Pengaturan</button>
+<button onclick="keluarAdmin()" style="color:#fca5a5">🚪 Keluar</button>
 </div>
 <p style="margin-top:20px;color:#888;font-size:12px;padding:0 14px">🟢 Tersambung ke:<br>rotxnwbrnbwbscihvafq</p>
 </div>
@@ -114,6 +115,11 @@ setTimeout(autoFit,100);
 const SUPABASE_URL = "https://rotxnwbrnbwbscihvafq.supabase.co";
 const SUPABASE_KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+function keluarAdmin(){
+  if(confirm("Yakin mau keluar dari Admin?")){
+    window.location.href = "index.html";
+  }
+}
 function show(id, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
