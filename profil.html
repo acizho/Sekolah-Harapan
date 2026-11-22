@@ -3,105 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profil - Luxury</title>
+<title>Profil Luxury</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-body{background:#0a0a0a;color:#fff;min-height:100vh;padding:20px 16px 40px;background-image:radial-gradient(circle at 50% 0%, #2a2110 0%, #0a0a0a 55%)}
-.top{text-align:center;margin-top:10px}
-.top small{color:#d4af37;letter-spacing:3px;font-size:11px}
-.top h2{font-size:22px;margin-top:6px}
+body{
+  background:#0a0a0a;color:#fff;min-height:100vh;
+  padding:28px 16px 40px;
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(212,175,55,.25) 0%, transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(212,175,55,.18) 0%, transparent 45%),
+    linear-gradient(180deg,#1a1405 0%, #0a0a0a 35%, #0a0a0a 100%);
+}
+.top{text-align:center}
+.top small{color:#d4af37;letter-spacing:3px;font-size:11px;font-weight:700}
+.top h2{font-size:26px;margin-top:8px;letter-spacing:1px}
 .top h2 span{color:#d4af37}
-.foto-wrap{width:130px;height:130px;margin:22px auto 10px;position:relative}
-.foto-wrap img{width:130px;height:130px;object-fit:cover;border-radius:50%;border:3px solid #d4af37;box-shadow:0 0 30px rgba(212,175,55,.5);background:#222}
-.ganti{position:absolute;bottom:4px;right:4px;background:#d4af37;color:#000;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;border:2px solid #0a0a0a}
+.top p{color:#aaa;font-size:12px;margin-top:6px}
+.foto-wrap{width:140px;height:140px;margin:24px auto 12px;position:relative}
+.foto-wrap img{width:140px;height:140px;object-fit:cover;border-radius:50%;border:4px solid #d4af37;box-shadow:0 0 0 4px #0a0a0a, 0 0 35px rgba(212,175,55,.7);background:#222}
+.ganti{position:absolute;bottom:6px;right:2px;background:#d4af37;color:#000;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;cursor:pointer;border:3px solid #0a0a0a;box-shadow:0 0 12px rgba(212,175,55,.8)}
 #inputFoto{display:none}
-.nama-besar{font-size:20px;font-weight:800}
+.nama-besar{font-size:22px;font-weight:800;text-align:center}
 .nama-besar span{color:#d4af37}
-.role{color:#aaa;font-size:13px;margin-top:4px}
-.card{background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.4);border-radius:18px;padding:16px;margin-top:16px;backdrop-filter:blur(8px)}
-.card h3{color:#d4af37;font-size:14px;letter-spacing:1px;margin-bottom:12px}
-label{font-size:11px;color:#aaa;letter-spacing:1px;display:block;margin:12px 0 6px}
+.role{color:#ccc;font-size:13px;text-align:center;margin-top:5px}
+.card{background:rgba(255,255,255,.08);border:1px solid rgba(212,175,55,.55);border-radius:22px;padding:18px;margin-top:18px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.card h3{color:#d4af37;font-size:15px;letter-spacing:1px;margin-bottom:14px}
+label{font-size:11px;color:#ddd;letter-spacing:1px;display:block;margin:14px 0 7px}
 label:first-child{margin-top:0}
-input,select{background:#111;border:1px solid #333;color:#fff;padding:12px 14px;border-radius:12px;width:100%;outline:none;font-size:14px}
-input:focus{border-color:#d4af37}
+input,select{background:#0f0f0f;border:1px solid #444;color:#fff;padding:13px 14px;border-radius:13px;width:100%;outline:none;font-size:14px}
+input:focus{border-color:#d4af37;box-shadow:0 0 0 2px rgba(212,175,55,.2)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.btn-simpan{width:100%;margin-top:20px;background:linear-gradient(90deg,#d4af37,#f5d67b);color:#000;border:none;padding:15px;border-radius:14px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 25px rgba(212,175,55,.35)}
-.btn-keluar{width:100%;margin-top:10px;background:transparent;border:1px solid #fca5a5;color:#fca5a5;padding:13px;border-radius:14px;font-weight:700;cursor:pointer}
-#status{position:fixed;bottom:16px;left:16px;right:16px;background:#14532d;color:#fff;padding:12px;text-align:center;border-radius:12px;display:none;font-size:13px}
+.btn-simpan{width:100%;margin-top:22px;background:linear-gradient(90deg,#b8962e,#d4af37,#f5d67b);color:#000;border:none;padding:16px;border-radius:15px;font-weight:900;font-size:15px;cursor:pointer;box-shadow:0 10px 30px rgba(212,175,55,.45)}
+.btn-keluar{width:100%;margin-top:12px;background:transparent;border:1px solid #fca5a5;color:#fca5a5;padding:13px;border-radius:14px;font-weight:700;cursor:pointer}
+#status{position:fixed;bottom:16px;left:16px;right:16px;background:#14532d;color:#fff;padding:12px;text-align:center;border-radius:12px;display:none}
 </style>
 </head>
 <body>
-
-<div class="top">
-<small>✦ SMA NEGERI 1 HARAPAN ✦</small>
-<h2>Profil <span>Luxury</span></h2>
-</div>
-
-<div class="foto-wrap">
-<img id="fotoProfil" src="https://via.placeholder.com/130x130/222/d4af37?text=Foto">
-<label class="ganti" for="inputFoto">📷</label>
-<input type="file" id="inputFoto" accept="image/*" onchange="gantiFoto(event)">
-</div>
-
-<div style="text-align:center">
-<div class="nama-besar" id="tampilNama">Nama <span>Pengguna</span></div>
-<div class="role" id="tampilRole">Guru / Siswa • SMA Negeri 1 Harapan</div>
-</div>
-
-<div class="card">
-<h3>👤 DATA DIRI</h3>
-<label>NAMA LENGKAP</label>
-<input id="fNama" placeholder="Nama lengkap..." oninput="updateTampil()">
-<label>NIP / NIS</label>
-<input id="fNip" placeholder="NIP / NIS...">
-<div class="row">
-<div><label>KELAS</label><input id="fKelas" placeholder="Contoh: XII IPA 1"></div>
-<div><label>STATUS</label><select id="fStatus"><option>Aktif</option><option>Guru</option><option>Siswa</option><option>Admin</option></select></div>
-</div>
-</div>
-
-<div class="card">
-<h3>📚 AKADEMIK & KONTAK</h3>
-<label>MATA PELAJARAN / JURUSAN</label>
-<input id="fMapel" placeholder="Contoh: Matematika">
-<label>NO WA</label>
-<input id="fWa" placeholder="62812...">
-<label>ALAMAT</label>
-<input id="fAlamat" placeholder="Alamat lengkap...">
-</div>
-
+<div class="top"><small>✦ SMA NEGERI 1 HARAPAN ✦</small><h2>Profil <span>Luxury</span></h2><p>Profil Pengguna Terverifikasi</p></div>
+<div class="foto-wrap"><img id="fotoProfil" src="https://via.placeholder.com/140x140/222/d4af37?text=Foto"><label class="ganti" for="inputFoto">📷</label><input type="file" id="inputFoto" accept="image/*" onchange="gantiFoto(event)"></div>
+<div class="nama-besar" id="tampilNama">Nama <span>Pengguna</span></div><div class="role">Guru / Siswa • SMA Negeri 1 Harapan</div>
+<div class="card"><h3>👤 DATA DIRI</h3><label>NAMA LENGKAP</label><input id="fNama" placeholder="Nama lengkap..." oninput="updateTampil()"><label>NIP / NIS</label><input id="fNip" placeholder="NIP / NIS..."><div class="row"><div><label>KELAS</label><input id="fKelas" placeholder="XII IPA 1"></div><div><label>STATUS</label><select id="fStatus"><option>Aktif</option><option>Guru</option><option>Siswa</option><option>Admin</option></select></div></div></div>
+<div class="card"><h3>📚 AKADEMIK & KONTAK</h3><label>MATA PELAJARAN / JURUSAN</label><input id="fMapel" placeholder="Matematika"><label>NO WA</label><input id="fWa" placeholder="62812..."><label>ALAMAT</label><input id="fAlamat" placeholder="Alamat lengkap..."></div>
 <button class="btn-simpan" onclick="simpan()">💾 SIMPAN PROFIL</button>
 <button class="btn-keluar" onclick="location.href='as7.html'">⬅ Kembali ke Admin</button>
-
 <div id="status"></div>
-
 <script>
-function gantiFoto(e){
-  let file=e.target.files[0];
-  if(!file) return;
-  let r=new FileReader();
-  r.onload=function(){ document.getElementById('fotoProfil').src=r.result; localStorage.setItem('fotoProfil', r.result); };
-  r.readAsDataURL(file);
-}
-function updateTampil(){
-  let n=document.getElementById('fNama').value;
-  if(n) document.getElementById('tampilNama').innerHTML=n;
-}
-function simpan(){
-  let data={nama:document.getElementById('fNama').value, nip:document.getElementById('fNip').value, kelas:document.getElementById('fKelas').value, status:document.getElementById('fStatus').value, mapel:document.getElementById('fMapel').value, wa:document.getElementById('fWa').value, alamat:document.getElementById('fAlamat').value};
-  localStorage.setItem('profilLuxury', JSON.stringify(data));
-  let s=document.getElementById('status'); s.innerText='✅ Profil Luxury tersimpan!'; s.style.display='block';
-  setTimeout(()=>s.style.display='none',3000);
-}
-let saved=JSON.parse(localStorage.getItem('profilLuxury')||'{}');
-if(saved.nama){ document.getElementById('fNama').value=saved.nama; updateTampil(); }
-if(saved.nip) document.getElementById('fNip').value=saved.nip;
-if(saved.kelas) document.getElementById('fKelas').value=saved.kelas;
-if(saved.mapel) document.getElementById('fMapel').value=saved.mapel;
-if(saved.wa) document.getElementById('fWa').value=saved.wa;
-if(saved.alamat) document.getElementById('fAlamat').value=saved.alamat;
-let foto=localStorage.getItem('fotoProfil');
-if(foto) document.getElementById('fotoProfil').src=foto;
+function gantiFoto(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=function(){document.getElementById('fotoProfil').src=r.result;localStorage.setItem('fotoProfil',r.result)};r.readAsDataURL(f)}
+function updateTampil(){let n=document.getElementById('fNama').value;if(n)document.getElementById('tampilNama').innerHTML=n}
+function simpan(){let d={nama:document.getElementById('fNama').value,nip:document.getElementById('fNip').value,kelas:document.getElementById('fKelas').value,status:document.getElementById('fStatus').value,mapel:document.getElementById('fMapel').value,wa:document.getElementById('fWa').value,alamat:document.getElementById('fAlamat').value};localStorage.setItem('profilLuxury',JSON.stringify(d));let s=document.getElementById('status');s.innerText='✅ Profil Luxury tersimpan!';s.style.display='block';setTimeout(()=>s.style.display='none',3000)}
+let saved=JSON.parse(localStorage.getItem('profilLuxury')||'{}');if(saved.nama){document.getElementById('fNama').value=saved.nama;updateTampil()}if(saved.nip)document.getElementById('fNip').value=saved.nip;if(saved.kelas)document.getElementById('fKelas').value=saved.kelas;if(saved.mapel)document.getElementById('fMapel').value=saved.mapel;if(saved.wa)document.getElementById('fWa').value=saved.wa;if(saved.alamat)document.getElementById('fAlamat').value=saved.alamat;let foto=localStorage.getItem('fotoProfil');if(foto)document.getElementById('fotoProfil').src=foto;
 </script>
 </body>
 </html>
