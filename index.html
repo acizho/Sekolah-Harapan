@@ -83,9 +83,9 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
 <body>
 <div class="wrap">
   <div class="topbar"><div class="logo"><div class="logo-icon">🏫</div><div><b>SMA NEGERI 1<br>HARAPAN</b><br><span>MAJU • BERPRESTASI • BERKARAKTER</span></div></div><button class="menu-btn">☰ Menu</button></div>
-  <div class="hero"><small>✦ PPDB 2026/2027 DIBUKA</small><h1>Selamat Datang di<br><span>SMA Negeri 1 Harapan</span></h1><p>Sekolah unggulan dengan kurikulum merdeka, pembinaan karakter, dan prestasi akademik & non-akademik tingkat nasional.</p><div class="btn-row"><button class="btn-gold" onclick="location.href='ppdb.html'">DAFTAR PPDB →</button><button class="btn-dark">Lihat Profil</button></div></div>
+  <div class="hero"><small>✦ PPDB 2026/2027 DIBUKA</small><h1>Selamat Datang di<br><span>SMA Negeri 1 Harapan</span></h1><p>Sekolah unggulan dengan kurikulum merdeka, pembinaan karakter, dan prestasi akademik & non-akademik tingkat nasional.</p><div class="btn-row"><button class="btn-gold" onclick="location.href='ppdb.html'">DAFTAR PPDB →</button><button class="btn-dark" onclick="location.href='profil.html'">Lihat Profil</button></div></div>
   <div class="stats"><div class="stat"><b>1.250+</b><span>Siswa Aktif</span></div><div class="stat"><b>78</b><span>Guru & Staff</span></div><div class="stat"><b>98%</b><span>Lulus PTN</span></div></div>
-  <div class="section"><h3>📢 Pengumuman Terbaru <a href="#">Lihat Semua →</a></h3>
+  <div class="section" id="pengumuman"><h3>📢 Pengumuman Terbaru <a href="#pengumuman">Lihat Semua →</a></h3>
     <div class="card"><div class="card-date">22<span>NOV</span></div><div><b>PPDB Gelombang 2 Dibuka!</b><p>Pendaftaran dibuka sampai 30 November 2026. Kuota terbatas!</p></div></div>
     <div class="card"><div class="card-date">20<span>NOV</span></div><div><b>Juara 1 Olimpiade Matematika</b><p>Tim SMA N 1 Harapan berhasil meraih juara 1 tingkat provinsi.</p></div></div>
     <div class="card"><div class="card-date">18<span>NOV</span></div><div><b>Jadwal Ujian Semester Ganjil</b><p>Ujian dimulai 1 Desember. Cek jadwal di menu akademik.</p></div></div>
@@ -94,7 +94,7 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
   <div class="kepsek"><img src="https://i.pravatar.cc/100?img=12"><div><b>"Anak Hebat, Berkarakter, Siap Bersaing Global"</b><p>- Drs. H. Ahmad Harapan, M.Pd - Kepala Sekolah</p></div></div>
   <div class="footer">SMA Negeri 1 Harapan<br>Jl. Pendidikan No. 1, Bandung, Jawa Barat<br>Telp: (022) 123-4567 | WA: 0812-3456-7890<br>© 2026 SMA Negeri 1 Harapan</div><div style="height:70px"></div>
 </div>
-<div class="bottom-nav"><a href="index.html" class="active"><span>🏠</span>Beranda</a><a href="#"><span>👤</span>Profil</a><a href="ppdb.html"><span>📝</span>PPDB</a><a href="#"><span>📢</span>Info</a><a href="#"><span>📞</span>Kontak</a></div>
+<div class="bottom-nav"><a href="index.html" class="active"><span>🏠</span>Beranda</a><a href="profil.html"><span>👤</span>Profil</a><a href="ppdb.html"><span>📝</span>PPDB</a><a href="#pengumuman"><span>📢</span>Info</a><a href="javascript:void(0)" onclick="toggleChat()"><span>📞</span>Kontak</a></div>
 <div class="chat-float" onclick="toggleChat()">💬<div class="chat-badge" id="chatBadge">1</div></div>
 <div class="chat-box" id="chatBox">
   <div class="chat-header"><img src="https://i.pravatar.cc/100?img=5"><div><b>Admin SMA N 1 Harapan</b><br><span>● Online - Balas &lt; 5 menit</span></div><button class="chat-close" onclick="toggleChat()">✕</button></div>
