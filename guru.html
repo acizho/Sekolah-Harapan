@@ -99,43 +99,47 @@ function hapusKarcis(){
   localStorage.removeItem('guru_nama_login');
 }
 function keluarKeIndex(){ hapusKarcis(); window.location.href='index.html'; }
+function usirKeIndex(){
+  // SATU-SATUNYA JALAN KELUAR KALO GAGAL: BALIK KE BOT INDEX! GAK ADA FORM! GAK ADA BACKDOOR!
+  hapusKarcis();
+  window.location.href = 'index.html';
+}
 
-// ===== PENJAGA - DIPERBAIKI! CUMA CEK CODE + PIN! GAK PAKE ID! =====
-// Karcis dari Index: guru_code_login + guru_pin_login
-// Contoh: @budi di Index -> karcis CODE=budi + PIN -> Guru cek CODE=budi + PIN di tabel guru!
+// ===== PENJAGA - DIKUNCI! WAJIB DARI BOT INDEX! GAK ADA BACKDOOR! =====
+// Karcis cuma bisa dikasih Bot Index, waktu lu ketik @budi + PIN bener di sana!
+// Di halaman ini GAK ADA form CODE, GAK ADA form PIN, GAK ADA cara masuk lain!
 (async function jagaHalamanGuru(){
-  let code = sessionStorage.getItem('guru_code_login') || localStorage.getItem('guru_code_login') || '';
-  let pin = sessionStorage.getItem('guru_pin_login') || localStorage.getItem('guru_pin_login') || '';
-  // 1. Gak bawa karcis? Tendang balik ke Index! Lewat Bot dulu!
+  // 1. Ambil karcis dari Bot Index doang! sessionStorage ATAU localStorage! Bukan dari URL, bukan dari input!
+  let code = (sessionStorage.getItem('guru_code_login') || localStorage.getItem('guru_code_login') || '').trim();
+  let pin = (sessionStorage.getItem('guru_pin_login') || localStorage.getItem('guru_pin_login') || '').replace(/\D/g,'');
+  // Gak bawa karcis? Berarti gak lewat Bot! USIR KE INDEX!
   if(!code || !pin){
-    alert('Lewat Bot di Index dulu, Ko! Ketik @budi / @timun / @kodok di sana!');
-    window.location.href = 'index.html';
+    alert('Lewat Bot di Index dulu, Ko! Ketik @budi di Chat Index!');
+    usirKeIndex();
     return;
   }
-  // 2. Cari di database pake CODE doang! CODE itu unik! Gak perlu ID!
-  // Dibandingin pake huruf kecil, biar @BUDI sama @budi sama aja!
+  // 2. Cek karcis ke database! CODE harus ada di tabel guru, PIN harus cocok!
+  let codeCari = code.toLowerCase();
   let { data: semua, error } = await supabaseClient.from('guru').select('*').limit(100);
   if(error || !semua){
-    alert('Gagal baca tabel guru, Ko!');
-    window.location.href = 'index.html';
+    alert('Gagal baca tabel guru! Balik ke Index!');
+    usirKeIndex();
     return;
   }
-  let codeCari = String(code).toLowerCase().trim();
   let data = (semua||[]).find(r => r && r.code && String(r.code).toLowerCase().trim() === codeCari);
+  // CODE gak ada? Karcis palsu! USIR!
   if(!data){
-    alert('CODE ' + code + ' gak ketemu di tabel guru!');
-    hapusKarcis();
-    window.location.href = 'index.html';
+    alert('Karcis palsu! Balik ke Index!');
+    usirKeIndex();
     return;
   }
-  // 3. Cek PIN-nya! CODE cocok + PIN cocok = LOLOS!
-  if(String(data.pin||'').replace(/\D/g,'') !== String(pin).replace(/\D/g,'')){
-    alert('PIN salah! Karcis palsu! Balik ke Index lagi, Ko!');
-    hapusKarcis();
-    window.location.href = 'index.html';
+  // PIN salah? Karcis palsu! USIR!
+  if(String(data.pin||'').replace(/\D/g,'') !== pin){
+    alert('Karcis palsu! Balik ke Index!');
+    usirKeIndex();
     return;
   }
-  // 4. LOLOS! Ini guru-nya! Dikunci pake CODE + PIN!
+  // 3. LOLOS! CODE cocok + PIN cocok + karcis dari Bot Index!
   guruLogin = data;
   document.getElementById('namaSaya').value = guruLogin.nama;
   loadSemua();
