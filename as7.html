@@ -18,6 +18,7 @@ html,body{background:#0a0a0a;color:#fff;overflow-x:hidden}
 .menu button{text-align:left;background:none;border:none;color:#aaa;padding:12px 14px;border-radius:10px;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;width:100%}
 .menu button.active{background:linear-gradient(90deg,#d4af37,#f5d67b);color:#000;font-weight:700}
 .menu button small{background:#222;color:#d4af37;padding:2px 8px;border-radius:20px;font-size:11px}
+.menu button small.red{background:#7f1d1d;color:#fff}
 .main{flex:1;padding:26px 28px;overflow-x:auto;width:940px;min-width:940px}
 .page{display:none}.page.active{display:block}
 h1{font-size:26px}h1 span{color:#d4af37}.sub{color:#888;font-size:13px;margin-top:4px}
@@ -25,6 +26,7 @@ h1{font-size:26px}h1 span{color:#d4af37}.sub{color:#888;font-size:13px;margin-to
 .btn{background:linear-gradient(90deg,#d4af37,#f5d67b);color:#000;border:none;padding:11px 16px;border-radius:10px;font-weight:700;cursor:pointer;white-space:nowrap}
 .btn2{background:#1a1a1a;border:1px solid #d4af37;color:#d4af37;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}
 .btn-danger{background:#1a1a1a;border:1px solid #fca5a5;color:#fca5a5;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}
+.btn-green{background:#14532d;border:1px solid #4ade80;color:#4ade80;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}
 input,select,textarea{background:#1a1a1a;border:1px solid #333;color:#fff;padding:11px 14px;border-radius:10px;outline:none;width:100%}
 input:focus{border-color:#d4af37}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:20px}.cards.c3{grid-template-columns:repeat(3,1fr)}
@@ -34,13 +36,16 @@ input:focus{border-color:#d4af37}
 .box{background:#161616;border:1px solid #2a2a2a;border-radius:16px;padding:18px}.box h3{font-size:16px}.box p{font-size:12px;color:#888;margin:4px 0 14px}
 table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;color:#888;padding:10px 8px;border-bottom:1px solid #2a2a2a}td{padding:11px 8px;border-bottom:1px solid #222;vertical-align:middle}
 .avatar{width:32px;height:32px;border-radius:50%;background:#d4af37;color:#000;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;margin-right:8px}
-.badge{padding:5px 10px;border-radius:20px;font-size:11px;font-weight:700}.lunas{background:#14532d;color:#4ade80}.belum{background:#7f1d1d;color:#fca5a5}.hadir{background:#14532d;color:#4ade80}.izin{background:#422006;color:#fbbf24}.aktif{background:#14532d;color:#4ade80}
+.badge{padding:5px 10px;border-radius:20px;font-size:11px;font-weight:700}.lunas{background:#14532d;color:#4ade80}.belum{background:#7f1d1d;color:#fca5a5}.hadir{background:#14532d;color:#4ade80}.izin{background:#422006;color:#fbbf24}.aktif{background:#14532d;color:#4ade80}.menunggu{background:#422006;color:#fbbf24}.ditolak{background:#7f1d1d;color:#fca5a5}
 .bars{display:flex;align-items:flex-end;gap:10px;height:160px}.bar{flex:1;background:linear-gradient(to top,#8a6d1a,#d4af37);border-radius:8px 8px 0 0}
 .months{display:flex;gap:10px;margin-top:8px}.months span{flex:1;text-align:center;font-size:11px;color:#888}
 .item{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #222;font-size:13px}.item b{color:#d4af37}
 .grid-kelas{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}.kelas{background:#161616;border:1px solid #2a2a2a;border-radius:16px;padding:18px}.kelas h3{color:#d4af37}.kelas p{color:#888;font-size:12px;margin:6px 0}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}label.f{font-size:12px;color:#aaa;display:block;margin:12px 0 6px}
 #status{position:fixed;bottom:16px;right:16px;background:#14532d;color:#fff;padding:12px 16px;border-radius:12px;font-size:13px;display:none;z-index:99}
+.ppdb-card{background:#161616;border:1px solid #2a2a2a;border-radius:16px;padding:16px;margin-bottom:12px}
+.ppdb-card b{color:#d4af37}
+.filter-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}.filter-row select{flex:1;min-width:140px}
 </style>
 </head>
 <body>
@@ -50,6 +55,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 <div class="logo">SMA NEGERI 1<br>HARAPAN <span><br>ADMIN PANEL • LIVE SUPABASE 🟢</span></div>
 <div class="menu">
 <button onclick="show('dashboard',this)" class="active">🏠 Dashboard</button>
+<button onclick="show('ppdb',this)">📝 PPDB <small id="mPPDB" class="red">...</small></button>
 <button onclick="show('siswa',this)">👥 Data Siswa <small id="mSiswa">...</small></button>
 <button onclick="show('guru',this)">👨‍🏫 Data Guru <small id="mGuru">...</small></button>
 <button onclick="show('kelas',this)">🏫 Data Kelas <small id="mKelas">...</small></button>
@@ -69,7 +75,19 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 <div id="dashboard" class="page active">
 <div class="top"><div><h1>Selamat Datang, <span>Admin Ko Cheng!</span></h1><p class="sub">Data LIVE dari Supabase • Bukan data bohong lagi!</p></div><button class="btn" onclick="show('siswa',null)">+ Tambah Siswa Baru</button></div>
 <div class="cards"><div class="card"><label>TOTAL SISWA (DB)</label><h2 id="cSiswa">...</h2><p>Data dari tabel siswa</p></div><div class="card"><label>TOTAL GURU (DB)</label><h2 id="cGuru">...</h2><p>Data dari tabel guru</p></div><div class="card"><label>KELAS AKTIF (DB)</label><h2 id="cKelas">...</h2><p>Data dari tabel kelas</p></div><div class="card"><label>TOTAL KAS SPP (DB)</label><h2 id="cKas">...</h2><p id="cKasSub">Menghitung...</p></div></div>
+<div class="cards c3" style="margin-top:14px"><div class="card gold" style="cursor:pointer" onclick="show('ppdb',null)"><label>📝 ANTRIAN PPDB</label><h2 id="cPPDB">...</h2><p id="cPPDBSub">Klik untuk cek pendaftar baru</p></div><div class="card"><label>PPDB DITERIMA</label><h2 class="w" id="cPPDBTerima">...</h2><p>Sudah jadi siswa aktif</p></div><div class="card"><label>PPDB DITOLAK</label><h2 style="color:#fca5a5" id="cPPDBTolak">...</h2><p>Tidak lolos verifikasi</p></div></div>
 <div class="content"><div class="box"><h3>Aktivitas Terbaru - Dari Database</h3><p id="aktivitas">Memuat...</p></div><div class="box"><h3>Kas Per Bulan</h3><p>Dari tabel spp</p><div class="bars"><div class="bar" style="height:85%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:78%"></div><div class="bar" style="height:92%"></div><div class="bar" style="height:88%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:95%"></div></div><div class="months"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div></div></div>
+</div>
+
+<!-- ========== PPDB BARU ========== -->
+<div id="ppdb" class="page">
+<div class="top"><div><h1>PPDB - <span>Pendaftaran Baru</span></h1><p class="sub">Dari form ppdb.html • Status Menunggu = belum diproses</p></div><button class="btn" onclick="loadPPDB()">🔄 Refresh</button></div>
+<div class="filter-row">
+<select id="fPPDBStatus" onchange="loadPPDB()"><option value="Menunggu">Menunggu (Baru)</option><option value="Semua">Semua Status</option><option value="Aktif">Diterima / Aktif</option><option value="Ditolak">Ditolak</option></select>
+<select id="fPPDBGelombang" onchange="loadPPDB()"><option value="Semua">Semua Gelombang</option><option value="Gelombang 1">Gelombang 1</option><option value="Gelombang 2">Gelombang 2</option><option value="Gelombang 3">Gelombang 3</option></select>
+<input id="fPPDBCari" placeholder="Cari nama / akta / ijazah..." oninput="loadPPDB()" style="flex:2">
+</div>
+<div class="box" style="margin-top:14px"><h3>Daftar Pendaftar</h3><p>Terima = status jadi Aktif & masuk Data Siswa. Tolak = status jadi Ditolak.</p><div id="listPPDB">Memuat...</div></div>
 </div>
 
 <div id="siswa" class="page">
@@ -100,7 +118,6 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 <div id="laporan" class="page"><div class="top"><div><h1>Laporan - <span>LIVE</span></h1><p class="sub">Semua data dari database, siap di-print</p></div></div><div class="box" style="margin-top:16px"><h3>Ringkasan Laporan</h3><p id="laporanIsi">Memuat...</p><button class="btn" onclick="window.print()">🖨️ Print Laporan Ini</button></div></div>
 <div id="pengaturan" class="page"><div class="top"><div><h1>Pengaturan - <span>LIVE</span></h1><p class="sub">Dari tabel pengaturan</p></div></div><div class="box" style="margin-top:16px"><div id="listPengaturan">Memuat...</div></div></div>
 
-<!-- ========== MENU ADMIN BARU ========== -->
 <div id="admin" class="page">
 <div class="top"><div><h1>Daftar <span>Admin - LIVE</span></h1><p class="sub">Dari tabel admin di Supabase • Code + PIN buat login admin</p></div></div>
 <div class="box" style="margin-top:16px">
@@ -145,6 +162,7 @@ function show(id, btn){
   if(btn) btn.classList.add('active');
   document.querySelector('.sidebar')?.classList.remove('open');
   window.scrollTo(0,0);
+  if(id==='ppdb') loadPPDB();
   setTimeout(autoFit,50);
 }
 function toast(msg){
@@ -153,6 +171,68 @@ function toast(msg){
 }
 function rupiah(n){ return "Rp " + Number(n||0).toLocaleString('id-ID'); }
 function initials(n){ return (n||'?').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase(); }
+
+// ===== PPDB =====
+let ppdbCache = [];
+async function loadPPDB(){
+  let {data, error} = await supabaseClient.from('siswa').select('*').order('id',{ascending:false});
+  if(error){ document.getElementById('listPPDB').innerHTML = 'Gagal: '+error.message; return; }
+  ppdbCache = data || [];
+  let menunggu = ppdbCache.filter(s=>s.status==='Menunggu');
+  let diterima = ppdbCache.filter(s=>s.status==='Aktif');
+  let ditolak = ppdbCache.filter(s=>s.status==='Ditolak');
+  document.getElementById('mPPDB').innerText = menunggu.length + ' Baru';
+  document.getElementById('cPPDB').innerText = menunggu.length;
+  document.getElementById('cPPDBSub').innerText = menunggu.length ? 'Ada ' + menunggu.length + ' pendaftar baru!' : 'Tidak ada antrian baru';
+  document.getElementById('cPPDBTerima').innerText = diterima.length;
+  document.getElementById('cPPDBTolak').innerText = ditolak.length;
+
+  let fStatus = document.getElementById('fPPDBStatus').value;
+  let fGel = document.getElementById('fPPDBGelombang').value;
+  let fCari = (document.getElementById('fPPDBCari').value||'').toLowerCase();
+  let list = ppdbCache.filter(s=>{
+    if(fStatus!=='Semua' && s.status!==fStatus) return false;
+    if(fGel!=='Semua' && s.gelombang!==fGel) return false;
+    if(fCari && !((s.nama||'').toLowerCase().includes(fCari) || (s.no_akta||'').toLowerCase().includes(fCari) || (s.no_ijazah||'').toLowerCase().includes(fCari))) return false;
+    return true;
+  });
+  // Kalau filter Menunggu tapi kosong, kasih info
+  if(!list.length){ document.getElementById('listPPDB').innerHTML = '<p style="color:#888">Tidak ada pendaftar untuk filter ini.</p>'; return; }
+  document.getElementById('listPPDB').innerHTML = list.map(s=>`
+    <div class="ppdb-card">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b style="font-size:15px">${s.nama} (${s.jenis_kelamin||'-'})</b><span class="badge ${s.status==='Menunggu'?'menunggu':s.status==='Aktif'?'aktif':'ditolak'}">${s.status||'-'}</span></div>
+      <p style="color:#aaa;font-size:12px;margin-top:6px;line-height:1.7">
+      ${s.gelombang||'-'} • Tgl Lahir: ${s.tanggal_lahir||'-'} • Nilai Rapor: <b style="color:#d4af37">${s.nilai_rapor ?? '-'}</b><br>
+      No Akta: ${s.no_akta||'-'} • No Ijazah: ${s.no_ijazah||'-'} • NIS: ${s.nis||'-'}<br>
+      Ortu: ${s.nama_orang_tua||'-'} • WA: ${s.no_wa_orang_tua||'-'}<br>
+      Alamat: ${s.alamat||'-'}</p>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        ${s.status==='Menunggu' ? `<button class="btn-green" onclick="ppdbUbah(${s.id},'Aktif')">✅ Terima</button><button class="btn-danger" onclick="ppdbUbah(${s.id},'Ditolak')">❌ Tolak</button>` : ''}
+        ${s.no_wa_orang_tua ? `<button class="btn2" onclick="kirimWAPPDB('${s.nama}','${s.no_wa_orang_tua}','${s.status}')">💬 WA Ortu</button>` : ''}
+        <button class="btn-danger" onclick="ppdbHapus(${s.id},'${(s.nama||'').replace(/'/g,"")}')">🗑️ Hapus</button>
+      </div>
+    </div>`).join('');
+}
+async function ppdbUbah(id, status){
+  if(!confirm('Ubah status jadi ' + status + ' ?')) return;
+  let {error} = await supabaseClient.from('siswa').update({status}).eq('id', id);
+  if(error){ alert(error.message); return; }
+  toast(status==='Aktif' ? '✅ Diterima! Masuk Data Siswa.' : '❌ Ditolak.');
+  loadAll();
+}
+async function ppdbHapus(id, nama){
+  if(!confirm('Hapus pendaftar ' + nama + ' ?')) return;
+  await supabaseClient.from('siswa').delete().eq('id', id);
+  toast('🗑️ Dihapus');
+  loadAll();
+}
+function kirimWAPPDB(nama, wa, status){
+  let pesan = status==='Aktif' ? `Halo, selamat! ${nama} DITERIMA di SMA Negeri 1 Harapan. Silakan daftar ulang. - Admin` : status==='Ditolak' ? `Halo, mohon maaf ${nama} belum diterima di PPDB SMA Negeri 1 Harapan. - Admin` : `Halo, pendaftaran PPDB ${nama} sedang kami verifikasi. Mohon tunggu. - Admin`;
+  let no = String(wa).replace(/\D/g,'');
+  if(no.startsWith('0')) no = '62' + no.slice(1);
+  window.open('https://wa.me/' + no + '?text=' + encodeURIComponent(pesan), '_blank');
+}
+
 async function loadAll(){
   let {data:siswa} = await supabaseClient.from('siswa').select('*, kelas(nama_kelas)').order('id');
   document.getElementById('cSiswa').innerText = siswa?.length||0;
@@ -189,7 +269,6 @@ async function loadAll(){
   if(pengaturan) document.getElementById('listPengaturan').innerHTML = `<p style="color:#aaa">Nama Sekolah: <b style="color:#d4af37">${pengaturan.nama_sekolah}</b></p><p style="color:#aaa;margin-top:8px">Alamat: ${pengaturan.alamat}</p><p style="color:#aaa;margin-top:8px">Kepsek: ${pengaturan.kepala_sekolah}</p><p style="color:#aaa;margin-top:8px">WA Otomatis: Lunas ${pengaturan.wa_lunas?'✅':'❌'} | Belum Bayar ${pengaturan.wa_belum_bayar?'✅':'❌'} | Tidak Hadir ${pengaturan.wa_tidak_hadir?'✅':'❌'}</p>`;
   document.getElementById('laporanIsi').innerHTML = `Total Siswa: <b>${siswa?.length}</b> | Total Guru: <b>${guru?.length}</b> | Total Kelas: <b>${kelas?.length}</b><br><br>Total Kas Lunas: <b style="color:#d4af37">${rupiah(total)}</b> | Belum Bayar: <b>${belum.length} siswa</b><br><br>Semua data diambil LIVE dari Supabase pada ${new Date().toLocaleString('id-ID')}`;
 
-  // === LOAD ADMIN ===
   let {data:adminList, error:adminErr} = await supabaseClient.from('admin').select('*').order('id');
   if(adminErr){
     document.getElementById('listAdmin').innerHTML = 'Gagal load admin: ' + adminErr.message + ' • Cek nama tabel & RLS di Supabase!';
@@ -198,7 +277,7 @@ async function loadAll(){
     document.getElementById('mAdmin').innerText = adminList?.length||0;
     document.getElementById('listAdmin').innerHTML = adminList?.length ? `<table><tr><th>ID</th><th>CODE</th><th>PIN</th><th>NAMA</th><th>AKSI</th></tr>` + adminList.map(a=>`<tr><td>${a.id}</td><td><b style="color:#d4af37">${a.code}</b></td><td>${a.pin}</td><td><span class="avatar">${initials(a.nama)}</span>${a.nama}</td><td><button class="btn2" onclick="editAdmin(${a.id},'${a.code}','${a.pin}','${a.nama}')">✏️ Edit</button> <button class="btn-danger" onclick="hapusAdmin(${a.id},'${a.nama}')">🗑️ Hapus</button></td></tr>`).join('') + `</table>` : 'Belum ada admin. Tambah di atas!';
   }
-
+  await loadPPDB();
   toast('✅ Tersambung! Data dari Supabase berhasil dimuat!');
   setTimeout(autoFit,100);
 }
@@ -241,8 +320,6 @@ function kirimWA(nama){
   window.open(`https://wa.me/?text=${pesan}`,'_blank');
   toast('📱 Membuka WhatsApp untuk '+nama);
 }
-
-// === CRUD ADMIN ===
 async function simpanAdmin(){
   let id = document.getElementById('aId').value;
   let code = document.getElementById('aCode').value.trim().toLowerCase();
