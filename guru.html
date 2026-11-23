@@ -90,27 +90,52 @@ let pintuTerbuka = null;
 let pesanBot = [];
 let dataSiswaKelas = [];
 function normalisasi(t){ return String(t||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
-function keluarKeIndex(){ sessionStorage.clear(); window.location.href='index.html'; }
+function hapusKarcis(){
+  sessionStorage.removeItem('guru_code_login');
+  sessionStorage.removeItem('guru_pin_login');
+  sessionStorage.removeItem('guru_nama_login');
+  localStorage.removeItem('guru_code_login');
+  localStorage.removeItem('guru_pin_login');
+  localStorage.removeItem('guru_nama_login');
+}
+function keluarKeIndex(){ hapusKarcis(); window.location.href='index.html'; }
 
-// ===== PENJAGA - CUMA NGECEK KUNCI DARI BOT INDEX! GAK ADA PINTU DI SINI! =====
+// ===== PENJAGA - DIPERBAIKI! CUMA CEK CODE + PIN! GAK PAKE ID! =====
+// Karcis dari Index: guru_code_login + guru_pin_login
+// Contoh: @budi di Index -> karcis CODE=budi + PIN -> Guru cek CODE=budi + PIN di tabel guru!
 (async function jagaHalamanGuru(){
-  let id = sessionStorage.getItem('guru_id_login');
-  let pin = sessionStorage.getItem('guru_pin_login');
-  // 1. Gak lewat Bot Index? Tendang balik!
-  if(!id || !pin){
-    alert('Lewat Bot di Index dulu, Ko! Ketik @guru di sana!');
+  let code = sessionStorage.getItem('guru_code_login') || localStorage.getItem('guru_code_login') || '';
+  let pin = sessionStorage.getItem('guru_pin_login') || localStorage.getItem('guru_pin_login') || '';
+  // 1. Gak bawa karcis? Tendang balik ke Index! Lewat Bot dulu!
+  if(!code || !pin){
+    alert('Lewat Bot di Index dulu, Ko! Ketik @budi / @timun / @kodok di sana!');
     window.location.href = 'index.html';
     return;
   }
-  // 2. Cek lagi ke database, kuncinya bener gak? Biar gak bisa dipalsuin!
-  let { data } = await supabaseClient.from('guru').select('*').eq('id', id).single();
-  if(!data || String(data.pin||'').trim() !== String(pin).trim()){
-    alert('Kuncinya salah / palsu! Balik ke Index lagi, Ko!');
-    sessionStorage.clear();
+  // 2. Cari di database pake CODE doang! CODE itu unik! Gak perlu ID!
+  // Dibandingin pake huruf kecil, biar @BUDI sama @budi sama aja!
+  let { data: semua, error } = await supabaseClient.from('guru').select('*').limit(100);
+  if(error || !semua){
+    alert('Gagal baca tabel guru, Ko!');
     window.location.href = 'index.html';
     return;
   }
-  // 3. Lolos! Ini guru-nya, dikunci! Gak bisa ganti-ganti!
+  let codeCari = String(code).toLowerCase().trim();
+  let data = (semua||[]).find(r => r && r.code && String(r.code).toLowerCase().trim() === codeCari);
+  if(!data){
+    alert('CODE ' + code + ' gak ketemu di tabel guru!');
+    hapusKarcis();
+    window.location.href = 'index.html';
+    return;
+  }
+  // 3. Cek PIN-nya! CODE cocok + PIN cocok = LOLOS!
+  if(String(data.pin||'').replace(/\D/g,'') !== String(pin).replace(/\D/g,'')){
+    alert('PIN salah! Karcis palsu! Balik ke Index lagi, Ko!');
+    hapusKarcis();
+    window.location.href = 'index.html';
+    return;
+  }
+  // 4. LOLOS! Ini guru-nya! Dikunci pake CODE + PIN!
   guruLogin = data;
   document.getElementById('namaSaya').value = guruLogin.nama;
   loadSemua();
@@ -158,7 +183,7 @@ async function tambahMateri(){ let judul = document.getElementById('judulMateriB
 async function renderKelas(){ let box = document.getElementById('isiFungsi'); if(!dataSiswaKelas.length){ box.innerHTML='<p class="text-[13px]">Belum ada siswa.</p>'; return; } box.innerHTML = dataSiswaKelas.map(s=>`<div class="card p-3 flex justify-between items-center"><div><b class="text-[13px]">${s.nama}</b><br><span class="text-[11px] text-[#aaa]">NIS ${s.nis} • ${s.kelas?.nama_kelas||''}</span></div><button onclick="kirimCepat('#${s.nama}'); tutupFungsi(); openChat();" class="gold text-black px-3 py-1.5 rounded-full text-[11px] font-bold">Chat 💬</button></div>`).join(''); }
 async function renderJadwal(){ let box = document.getElementById('isiFungsi'); let { data } = await supabaseClient.from('jadwal').select('*'); if(!data||!data.length){ box.innerHTML = `<p class="text-[13px]">Belum ada tabel jadwal.</p><div class="card p-3 mt-2"><b>${guruLogin.kelas||'-'} • ${guruLogin.mapel||guruLogin.mata_pelajaran||'-'}</b><br><span class="text-[11px] text-[#aaa]">07.30 - 09.00</span></div>`; return; } box.innerHTML = data.map(j=>`<div class="card p-3"><b class="text-[13px]">${j.kelas} • ${j.mapel}</b><br><span class="text-[11px] text-[#aaa]">${j.hari||''} • ${j.jam||''} • Guru: ${j.guru||''}</span></div>`).join(''); }
 async function renderLaporan(){ let box = document.getElementById('isiFungsi'); let { data: nilai } = await supabaseClient.from('nilai').select('*'); let { data: hadir } = await supabaseClient.from('kehadiran').select('*'); let totalNilai = (nilai||[]).length; let rata = totalNilai ? Math.round((nilai||[]).reduce((a,b)=>a+(b.nilai||0),0)/totalNilai) : 0; let totalHadir = (hadir||[]).length; let hadirCount = (hadir||[]).filter(h=> String(h.status||'').toLowerCase().includes('hadir')).length; box.innerHTML = `<div class="card p-4 text-center"><p class="text-[11px] text-[#aaa]">RATA-RATA NILAI</p><p class="text-[32px] font-black gold-text">${rata}</p></div><div class="grid grid-cols-2 gap-2"><div class="card p-3 text-center"><b>${totalNilai}</b><br><span class="text-[11px] text-[#aaa]">Nilai Masuk</span></div><div class="card p-3 text-center"><b>${totalHadir ? Math.round(hadirCount/totalHadir*100)+'%' : '-'}</b><br><span class="text-[11px] text-[#aaa]">Kehadiran</span></div></div>`; }
-function renderProfil(){ let box = document.getElementById('isiFungsi'); box.innerHTML = `<div class="card p-4"><p class="text-[11px] text-[#d4af37] font-bold">PROFIL GURU • DIANTAR BOT DARI INDEX ✅</p><h2 class="font-black text-[18px] mt-1">${guruLogin.nama}</h2><p class="text-[13px] mt-2">Mapel: ${guruLogin.mapel||guruLogin.mata_pelajaran||'-'}</p><p class="text-[13px]">Kelas: ${guruLogin.kelas||guruLogin.mengajar_kelas||'-'}</p><p class="text-[13px]">ID: ${guruLogin.id}</p><p class="text-[11px] text-[#aaa] mt-3">Lu masuk lewat Bot @guru di Index. Data ini diisi dari Admin.</p></div><button onclick="keluarKeIndex()" class="w-full py-3 rounded-full border border-red-500 text-red-400 font-bold mt-2">⬅ Keluar ke Index</button>`; }
+function renderProfil(){ let box = document.getElementById('isiFungsi'); box.innerHTML = `<div class="card p-4"><p class="text-[11px] text-[#d4af37] font-bold">PROFIL GURU • DIANTAR BOT DARI INDEX ✅</p><h2 class="font-black text-[18px] mt-1">${guruLogin.nama}</h2><p class="text-[13px] mt-2">Mapel: ${guruLogin.mapel||guruLogin.mata_pelajaran||'-'}</p><p class="text-[13px]">Kelas: ${guruLogin.kelas||guruLogin.mengajar_kelas||'-'}</p><p class="text-[13px]">CODE: ${guruLogin.code||'-'}</p><p class="text-[11px] text-[#aaa] mt-3">Lu masuk lewat Bot @${guruLogin.code} di Index. Data ini diisi dari Admin.</p></div><button onclick="keluarKeIndex()" class="w-full py-3 rounded-full border border-red-500 text-red-400 font-bold mt-2">⬅ Keluar ke Index</button>`; }
 function updatePintu(){ let el=document.getElementById('pintuInfo'); if(!pintuTerbuka){ el.textContent='Belum kebuka - ketik #nama'; return; } el.textContent='Siswa '+pintuTerbuka.nama; document.getElementById('tujuan').value='#'+pintuTerbuka.nama; }
 function tutupPintu(){ pintuTerbuka=null; document.getElementById('tujuan').value='#siswa'; updatePintu(); tampilBot('Pintu ditutup.'); }
 function kirimCepat(teks){ document.getElementById('isiChat').value=teks; kirimChat(); }
