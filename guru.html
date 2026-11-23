@@ -2,148 +2,90 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Dashboard Guru - Wajib Landscape</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Guru - Landscape Bisa Scroll</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  *{margin:0; padding:0; box-sizing:border-box;}
-  body{font-family:'Plus Jakarta Sans',sans-serif; background:#000; overflow:hidden; height:100vh; width:100vw; display:flex; align-items:center; justify-content:center;}
-
-  /* WARNA 90% SAMA KAYAK GAMBAR - JANGAN DIUBAH */
-  .gold-text{background:linear-gradient(135deg,#f6d365,#d4af37 45%,#fff3b0 70%,#b8860b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;}
+  body{font-family:'Plus Jakarta Sans',sans-serif; background:#0a0a0a; color:white;}
+  .gold-text{background:linear-gradient(135deg,#f6d365,#d4af37 45%,#fff3b0 70%,#b8860b); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
   .card-gold{background:linear-gradient(145deg,#1a1a1a,#0d0d0d); border:1px solid rgba(212,175,55,.5); border-radius:22px;}
-  .card-white{background:#ffffff; color:#000; border-radius:22px;}
+  .card-white{background:#fff; color:#000; border-radius:22px;}
   .btn-gold-big{background:linear-gradient(135deg,#d4af37,#f6e27a); color:#000;}
-  .icon-box{width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:20px; flex-shrink:0;}
 
-  /* FRAME LANDSCAPE - DIKUNCI BIAR TATA LETAK 100% SAMA */
-  #landscapeFrame{
-    width:960px; height:540px;
-    background:#0a0a0a; color:white;
-    position:relative; overflow:hidden;
-    flex-shrink:0;
-    display:flex; flex-direction:column;
-    border-radius:0;
-  }
-
-  /* KUNCI HP WAJIB TIDUR */
-  #putarHP{
-    display:none; position:fixed; inset:0; z-index:9999;
-    background:#000; color:white;
-    flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; padding:30px;
-  }
+  /* KUNCI WAJIB TIDUR - TAPI BOLEH SCROLL */
+  #putarHP{display:none; position:fixed; inset:0; z-index:9999; background:#000; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px;}
   @media (orientation: portrait){
-    #putarHP{ display:flex !important; }
-    #landscapeFrame{ display:none !important; }
+    #putarHP{display:flex !important;}
+    #isiUtama{display:none !important;}
+  }
+  /* DI LANDSCAPE, TATA LETAK JADI 2 KOLOM BIAR MUAT TAPI BISA SCROLL */
+  @media (orientation: landscape){
+    .wrap-landscape{max-width:900px !important; margin:0 auto;}
+    .grid-landscape{grid-template-columns: 1.3fr 1fr !important; gap:16px;}
   }
 </style>
 </head>
 <body>
 
-<!-- LAYAR KUNCI - MUNCUL KALAU HP MASIH TEGAK -->
+<!-- KUNCI PUTAR HP -->
 <div id="putarHP">
   <div style="font-size:70px;">📱↻</div>
-  <h2 style="font-size:22px; font-weight:900; margin-top:15px; line-height:1.3;">PUTAR HP KAMU<br>JADI TIDUR (LANDSCAPE)</h2>
-  <p style="color:#d4af37; margin-top:10px; font-size:14px; line-height:1.5;">Dashboard Guru hanya bisa dibuka<br>dalam mode Landscape</p>
-  <div style="margin-top:20px; background:#1a1a1a; border:1px solid #d4af37; padding:10px 20px; border-radius:999px; font-size:13px;">Black & Gold • Panel Guru</div>
+  <h2 style="font-size:22px; font-weight:900; margin-top:15px;">PUTAR HP KAMU<br>JADI TIDUR</h2>
+  <p style="color:#d4af37; margin-top:10px;">Dashboard Guru hanya di mode Landscape</p>
 </div>
 
-<!-- FRAME LANDSCAPE - TATA LETAK 100% SAMA KAYAK GAMBAR -->
-<div id="landscapeFrame">
+<!-- ISI UTAMA - BISA DI SCROLL, PANEL GAK HILANG -->
+<div id="isiUtama" class="wrap-landscape max-w-[430px] mx-auto min-h-screen pb-28 px-5 pt-5">
 
-  <!-- HEADER - SAMA PERSIS KAYAK GAMBAR -->
-  <div style="display:flex; justify-content:space-between; align-items:flex-start; padding:18px 28px 0 28px;">
+  <!-- HEADER - SAMA KAYAK GAMBAR -->
+  <div class="flex justify-between items-start">
     <div>
-      <p style="font-size:10px; letter-spacing:3px; font-weight:800; color:#d4af37;">SEKOLAH • PANEL GURU</p>
-      <h1 style="font-size:26px; line-height:1.1; font-weight:900; margin-top:4px;">Selamat Datang, <span class="gold-text">Pak Budi</span></h1>
-      <p style="color:#a1a1aa; font-size:12px; margin-top:2px;">Guru Matematika • Hari Ini: Senin • 3 Kelas Diajar</p>
+      <p class="text-[11px] tracking-[3px] font-extrabold text-[#d4af37]">SEKOLAH • PANEL GURU</p>
+      <h1 class="text-[26px] leading-[1.1] font-black mt-1">Selamat Datang,<br><span class="gold-text">Pak Budi</span></h1>
+      <p class="text-[#a1a1aa] text-[12px] mt-1">Guru Matematika • Hari Ini: Senin • 3 Kelas Diajar</p>
     </div>
-    <div style="display:flex; align-items:center; gap:10px;">
-      <span style="background:#1a1a1a; border:1px solid rgba(212,175,55,.6); padding:7px 14px; border-radius:999px; font-size:12px;">🔔 2 Notif</span>
-      <div style="width:44px; height:44px; border-radius:999px; background:linear-gradient(135deg,#d4af37,#f6e27a); color:#000; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:17px;">B</div>
-    </div>
-  </div>
-
-  <!-- ISI UTAMA - 100% TATA LETAK GAMBAR, DIBAGI KIRI-KANAN BIAR MUAT LANDSCAPE -->
-  <div style="display:flex; gap:16px; padding:14px 28px 0 28px; flex:1;">
-
-    <!-- KIRI: 4 TOMBOL GEDE 2x2 - SAMA PERSIS KAYAK GAMBAR -->
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; width:58%;">
-      <div class="card-gold" style="padding:14px; cursor:pointer;" onclick="alert('Buka Absensi')">
-        <div class="icon-box btn-gold-big">✓</div>
-        <h3 style="font-weight:800; font-size:15px; margin-top:8px;">ABSENSI</h3>
-        <p style="color:#a1a1aa; font-size:11px; line-height:1.3; margin-top:2px;">Centang hadir / alfa murid<br>dengan 1 klik</p>
-        <p style="color:#d4af37; font-weight:800; font-size:11px; margin-top:8px;">12 Belum Diabsen →</p>
-      </div>
-      <div class="card-white" style="padding:14px; cursor:pointer;" onclick="alert('Buka Nilai')">
-        <div class="icon-box" style="background:#000; color:#fff;">100</div>
-        <h3 style="font-weight:800; font-size:15px; margin-top:8px;">NILAI</h3>
-        <p style="color:#666; font-size:11px; line-height:1.3; margin-top:2px;">Input nilai tugas<br>& ulangan murid</p>
-        <p style="color:#000; font-weight:800; font-size:11px; margin-top:8px;">X-1 Belum Dinilai →</p>
-      </div>
-      <div class="card-white" style="padding:14px; cursor:pointer;" onclick="alert('Buka Materi')">
-        <div class="icon-box" style="background:#000; color:#fff; font-size:22px;">📚</div>
-        <h3 style="font-weight:800; font-size:15px; margin-top:8px;">MATERI</h3>
-        <p style="color:#666; font-size:11px; line-height:1.3; margin-top:2px;">Upload PDF / Video<br>ke halaman murid</p>
-        <p style="color:#000; font-weight:800; font-size:11px; margin-top:8px;">5 Materi Terkirim →</p>
-      </div>
-      <div class="card-white" style="padding:14px; cursor:pointer;" onclick="alert('Buka Kelas')">
-        <div class="icon-box" style="background:#000; color:#fff; font-size:22px;">👥</div>
-        <h3 style="font-weight:800; font-size:15px; margin-top:8px;">KELAS SAYA</h3>
-        <p style="color:#666; font-size:11px; line-height:1.3; margin-top:2px;">Lihat daftar murid<br>per kelas</p>
-        <p style="color:#000; font-weight:800; font-size:11px; margin-top:8px;">68 Murid Total →</p>
-      </div>
-    </div>
-
-    <!-- KANAN: JADWAL + KEHADIRAN - SAMA PERSIS KAYAK GAMBAR, CUMA DIPINDAH KE KANAN BIAR MUAT TIDUR -->
-    <div style="width:42%; display:flex; flex-direction:column; gap:12px;">
-      <div class="card-gold" style="padding:16px; flex:1;">
-        <h3 style="font-weight:800; font-size:15px;">Jadwal Hari Ini</h3>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,.1);">
-          <div><p style="font-weight:700; font-size:13px;">X-1 • Matematika</p><p style="color:#888; font-size:11px;">07.30 - 09.00</p></div>
-          <span class="btn-gold-big" style="padding:6px 14px; border-radius:999px; font-weight:800; font-size:11px;">Absen</span>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
-          <div><p style="font-weight:700; font-size:13px;">XI IPA 1 • Matematika</p><p style="color:#888; font-size:11px;">10.00 - 11.30</p></div>
-          <span style="background:#222; padding:6px 14px; border-radius:999px; font-size:11px;">Belum Mulai</span>
-        </div>
-      </div>
-      <div class="card-gold" style="padding:16px;">
-        <h3 style="font-weight:800; font-size:15px;">Ringkasan Kehadiran</h3>
-        <p style="font-size:28px; font-weight:900; margin-top:4px;"><span class="gold-text">94% Hadir</span></p>
-        <p style="color:#888; font-size:11px;">Minggu ini • 68 Murid • 4 Alfa</p>
-      </div>
+    <div class="flex items-center gap-2">
+      <span class="bg-[#1a1a1a] border border-[#d4af37]/60 px-3 py-2 rounded-full text-[12px]">🔔 2 Notif</span>
+      <div class="w-[44px] h-[44px] rounded-full bg-gradient-to-br from-[#d4af37] to-[#f6e27a] text-black flex items-center justify-center font-black">B</div>
     </div>
   </div>
 
-  <!-- BOTTOM NAV - SAMA KAYAK GAMBAR -->
-  <div style="background:#111; border-top:1px solid rgba(212,175,55,.3); padding:10px 40px; display:flex; justify-content:space-between; align-items:center;">
-    <div style="display:flex; flex-direction:column; align-items:center; color:#d4af37;"><span style="font-size:18px;">🏠</span><span style="font-size:10px; font-weight:700;">Beranda</span></div>
-    <div style="display:flex; flex-direction:column; align-items:center; color:#888;"><span style="font-size:18px;">👥</span><span style="font-size:10px;">Kelas</span></div>
-    <div style="width:48px; height:48px; margin-top:-28px; border-radius:999px; background:linear-gradient(135deg,#d4af37,#f6e27a); color:#000; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:900; border:4px solid #0a0a0a; box-shadow:0 0 18px rgba(212,175,55,.6);">+</div>
-    <div style="display:flex; flex-direction:column; align-items:center; color:#888;"><span style="font-size:18px;">📝</span><span style="font-size:10px;">Nilai</span></div>
-    <div style="display:flex; flex-direction:column; align-items:center; color:#888;"><span style="font-size:18px;">👤</span><span style="font-size:10px;">Profil</span></div>
-  </div>
+  <!-- GRID LANDSCAPE: KIRI 4 TOMBOL, KANAN JADWAL -->
+  <div class="grid-landscape grid grid-cols-1 gap-4 mt-5">
 
+    <!-- KIRI: 4 TOMBOL 2x2 - TATA LETAK 100% GAMBAR -->
+    <div class="grid grid-cols-2 gap-3">
+      <div class="card-gold p-4" onclick="alert('Absensi')"><div class="w-[52px] h-[52px] rounded-[14px] btn-gold-big flex items-center justify-center font-black text-[20px]">✓</div><h3 class="font-extrabold mt-3">ABSENSI</h3><p class="text-[#a1a1aa] text-[12px]">Centang hadir / alfa<br>dengan 1 klik</p><p class="text-[#d4af37] font-extrabold text-[12px] mt-3">12 Belum Diabsen →</p></div>
+      <div class="card-white p-4" onclick="alert('Nilai')"><div class="w-[52px] h-[52px] rounded-[14px] bg-black text-white flex items-center justify-center font-black">100</div><h3 class="font-extrabold mt-3">NILAI</h3><p class="text-gray-500 text-[12px]">Input nilai tugas<br>& ulangan</p><p class="font-extrabold text-[12px] mt-3">X-1 Belum Dinilai →</p></div>
+      <div class="card-white p-4" onclick="alert('Materi')"><div class="w-[52px] h-[52px] rounded-[14px] bg-black text-white flex items-center justify-center text-[22px]">📚</div><h3 class="font-extrabold mt-3">MATERI</h3><p class="text-gray-500 text-[12px]">Upload PDF / Video<br>ke murid</p><p class="font-extrabold text-[12px] mt-3">5 Materi Terkirim →</p></div>
+      <div class="card-white p-4" onclick="alert('Kelas')"><div class="w-[52px] h-[52px] rounded-[14px] bg-black text-white flex items-center justify-center text-[22px]">👥</div><h3 class="font-extrabold mt-3">KELAS SAYA</h3><p class="text-gray-500 text-[12px]">Lihat daftar murid<br>per kelas</p><p class="font-extrabold text-[12px] mt-3">68 Murid Total →</p></div>
+    </div>
+
+    <!-- KANAN: JADWAL + KEHADIRAN -->
+    <div class="space-y-3">
+      <div class="card-gold p-4">
+        <h3 class="font-extrabold">Jadwal Hari Ini</h3>
+        <div class="flex justify-between items-center mt-3 pb-3 border-b border-white/10"><div><p class="font-bold text-[14px]">X-1 • Matematika</p><p class="text-[#888] text-[12px]">07.30 - 09.00</p></div><span class="btn-gold-big px-4 py-1.5 rounded-full font-extrabold text-[12px]">Absen</span></div>
+        <div class="flex justify-between items-center mt-3"><div><p class="font-bold text-[14px]">XI IPA 1 • Matematika</p><p class="text-[#888] text-[12px]">10.00 - 11.30</p></div><span class="bg-[#222] px-4 py-1.5 rounded-full text-[12px]">Belum Mulai</span></div>
+      </div>
+      <div class="card-gold p-4">
+        <h3 class="font-extrabold">Ringkasan Kehadiran</h3>
+        <p class="text-[28px] font-black mt-1"><span class="gold-text">94% Hadir</span></p>
+        <p class="text-[#888] text-[12px]">Minggu ini • 68 Murid • 4 Alfa</p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script>
-function sesuaikanLayar(){
-  const el = document.getElementById('landscapeFrame');
-  if(!el) return;
-  // Kunci ukuran 960x540, terus kecilin pas biar muat di HP tidur tanpa ngerusak tata letak
-  const s = Math.min(window.innerWidth / 960, window.innerHeight / 540);
-  el.style.transform = `scale(${s})`;
-  el.style.marginTop = ((window.innerHeight - 540 * s) / 2 - (window.innerHeight - 540 * s)/2) + 'px';
-  if(screen.orientation && screen.orientation.lock){
-    screen.orientation.lock('landscape').catch(()=>{});
-  }
-}
-window.addEventListener('resize', sesuaikanLayar);
-window.addEventListener('orientationchange', ()=> setTimeout(sesuaikanLayar, 300));
-sesuaikanLayar();
-</script>
+<!-- MENU BAWAH - DIPAKSA MUNCUL TERUS, GAK HILANG -->
+<div class="fixed bottom-0 left-0 right-0 z-[999] bg-[#111] border-t border-[#d4af37]/30 px-8 py-2 flex justify-between items-center max-w-[900px] mx-auto">
+  <div class="flex flex-col items-center text-[#d4af37]"><span class="text-[20px]">🏠</span><span class="text-[10px] font-bold">Beranda</span></div>
+  <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">👥</span><span class="text-[10px]">Kelas</span></div>
+  <div class="w-[52px] h-[52px] -mt-6 rounded-full bg-gradient-to-br from-[#d4af37] to-[#f6e27a] text-black flex items-center justify-center text-[26px] font-black border-4 border-[#0a0a0a] shadow-[0_0_18px_rgba(212,175,55,.6)]">+</div>
+  <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">📝</span><span class="text-[10px]">Nilai</span></div>
+  <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">👤</span><span class="text-[10px]">Profil</span></div>
+</div>
+
 </body>
 </html>
