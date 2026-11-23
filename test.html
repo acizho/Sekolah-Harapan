@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TEST - Cek Salahnya Dimana</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>TEST - Cek Salahnya</title>
 <style>
 *{box-sizing:border-box;font-family:sans-serif}
 body{background:#000;color:#fff;padding:16px}
@@ -19,36 +18,66 @@ button{width:100%;padding:14px;border:none;border-radius:12px;background:#d4af37
 </style>
 </head>
 <body>
-<h1>🔍 TEST - Kenapa Andi Nyangkut ke Linear?</h1>
-<p style="font-size:12px;color:#aaa;">File ini cuma buat ngetes. Gak ngerubah data apa-apa.</p>
+<h1>🔍 TEST - Andi Nyangkut ke Linear?</h1>
+<p style="font-size:12px;color:#aaa;">Versi GitHub - Tanpa Supabase-JS, pake Fetch doang</p>
 
-<label style="font-size:12px;color:#d4af37;">Masukin NIS Andi:</label>
-<input id="nisInput" placeholder="NIS Andi, contoh 20260101" inputmode="numeric">
-<button onclick="jalaninTest()">CEK SEKARANG ➜</button>
-
+<label style="font-size:12px;color:#d4af37;">NIS Andi:</label>
+<input id="nisInput" placeholder="NIS Andi" inputmode="numeric">
+<button id="btnCek" type="button">CEK SEKARANG ➜</button>
+<p id="statusKlik" style="font-size:11px;color:#888;text-align:center;margin-top:8px;">Belum di klik</p>
 <div id="hasil"></div>
 
 <script>
-const supabaseClient = window.supabase.createClient("https://rotxnwbrnbwbscihvafq.supabase.co", "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81");
+const URL_DB = "https://rotxnwbrnbwbscihvafq.supabase.co/rest/v1";
+const KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
+
+document.getElementById('btnCek').addEventListener('click', function(){
+  document.getElementById('statusKlik').innerText = '✅ KE-KLIK! Lagi ngecek...';
+  document.getElementById('statusKlik').style.color = '#4ade80';
+  jalaninTest();
+});
+
+async function ambil(tabel, query){
+  let r = await fetch(URL_DB + "/" + tabel + query, {headers:{"apikey":KEY,"Authorization":"Bearer "+KEY}});
+  return await r.json();
+}
 
 async function jalaninTest(){
   let nis = document.getElementById('nisInput').value.trim();
   if(!nis){ alert('Isi NIS dulu, Ko!'); return; }
   let box = document.getElementById('hasil');
   box.innerHTML = '<p>⏳ Lagi ngecek...</p>';
+  try{
+    let s = await ambil("siswa", "?select=*,kelas(nama_kelas)&nis=eq."+nis);
+    let g = await ambil("guru", "?select=*");
+    let m = await ambil("materi", "?select=*");
 
-  // 1. AMBIL SISWA
-  let s = await supabaseClient.from('siswa').select('*,kelas(nama_kelas)').eq('nis', nis).single();
-  // 2. AMBIL SEMUA GURU
-  let g = await supabaseClient.from('guru').select('*');
-  // 3. AMBIL SEMUA MATERI
-  let m = await supabaseClient.from('materi').select('*');
-
-  if(!s.data){ box.innerHTML = `<div class="card">❌ NIS ${nis} gak ketemu di tabel siswa!</div>`; return; }
-
-  let kelasAndi = s.data.kelas?.nama_kelas || s.data.kelas_id || 'KOSONG';
-  let html = '';
-
-  // === SISWA ===
-  html += `<div class="card"><h3>1. SISWA</h3>Nama: <b>${s.data.nama}</b><br>NIS: ${s.data.nis}<br>Kelas di DB: <b style="color:yellow;font-size:16px;">${kelasAndi}</b><br>kelas_id: ${s.data.kelas_id}<br>`;
-  if(kelasAndi==='
+    if(!s || s.length===0){ box.innerHTML = `<div class="card">❌ NIS ${nis} gak ketemu!</div>`; return; }
+    let dataS = s[0];
+    let kelasAndi = dataS.kelas?.nama_kelas || dataS.kelas_id || 'KOSONG';
+    let html = '';
+    html += `<div class="card"><h3>1. SISWA</h3>Nama: <b>${dataS.nama}</b><br>NIS: ${dataS.nis}<br>Kelas di DB: <b style="color:yellow;font-size:16px;">${kelasAndi}</b><br>kelas_id: ${dataS.kelas_id}</div>`;
+    html += `<div class="card"><h3>2. GURU</h3>`;
+    (g||[]).forEach(x=>{
+      let k = x.kelas || x.mengajar_kelas || '';
+      let status = !k ? `<span class="badge kosong">KOSONG! INI BIANGNYA!</span>` : `<span class="badge ok">${k}</span>`;
+      if(String(x.mapel||'').toLowerCase().includes('linear')) status += ` <span class="badge salah">INI LINEAR!</span>`;
+      html += `• <b>@${x.nama}</b> | mapel: ${x.mapel} | kelas: ${status}<br>`;
+    });
+    html += `</div>`;
+    html += `<div class="card"><h3>3. MATERI</h3>`;
+    (m||[]).forEach(x=>{
+      let k = x.kelas || x.kelas_nama || x.kelas_id || '';
+      let status = !k ? `<span class="badge kosong">KOSONG! INI BIANGNYA!</span>` : `<span class="badge ok">${k}</span>`;
+      if(String(x.judul||'').toLowerCase().includes('linear') || String(x.mapel||'').toLowerCase().includes('linear')) status += ` <span class="badge salah">INI LINEAR!</span>`;
+      html += `• <b>${x.judul}</b> | mapel: ${x.mapel} | guru: ${x.guru} | kelas: ${status}<br>`;
+    });
+    html += `</div>`;
+    box.innerHTML = html;
+  }catch(e){
+    box.innerHTML = `<div class="card">❌ Error: ${e.message}</div>`;
+  }
+}
+</script>
+</body>
+</html>
