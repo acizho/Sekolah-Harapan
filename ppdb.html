@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PPDB - Luxury</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:#000;color:#fff;min-height:100vh;padding:22px 16px 40px;background-image:radial-gradient(circle at 15% 10%, rgba(212,175,55,.22) 0%, transparent 40%),radial-gradient(circle at 90% 60%, rgba(212,175,55,.18) 0%, transparent 45%),linear-gradient(180deg,#14100a,#000 45%,#000)}
+.header{text-align:center}
+.header h1{color:#e8c97a;font-size:22px;letter-spacing:5px;font-weight:400}
+.garis{width:180px;height:1px;background:linear-gradient(90deg,transparent,#d4af37,transparent);margin:12px auto}
+label{display:block;color:#e8c97a;font-size:13px;font-weight:700;margin:14px 0 6px;text-align:left}
+input,select,textarea{width:100%;background:#111;border:1px solid rgba(212,175,55,.7);color:#fff;padding:14px;border-radius:14px;font-size:15px;outline:none}
+textarea{resize:vertical;min-height:70px}
+.btn{width:100%;margin-top:20px;background:linear-gradient(180deg,#f5d67b,#d4af37,#a8831d);color:#000;border:none;padding:15px;border-radius:999px;font-weight:900;font-size:18px;letter-spacing:2px;cursor:pointer}
+.back{width:100%;margin-top:12px;background:transparent;border:1px solid #555;color:#aaa;padding:12px;border-radius:999px;cursor:pointer}
+#msg{font-size:14px;margin-top:12px;text-align:center;display:none}
+.box{max-width:420px;margin:0 auto}
+</style>
+</head>
+<body>
+<div class="box">
+<div class="header"><h1>FORM PPDB</h1><div class="garis"></div></div>
+<p style="color:#aaa;font-size:13px;text-align:center">Penerimaan Peserta Didik Baru</p>
+
+<label>Nama Lengkap *</label>
+<input id="nama" placeholder="Nama lengkap">
+
+<label>Jenis Kelamin *</label>
+<select id="jk"><option value="">-- Pilih --</option><option value="L">Laki-laki</option><option value="P">Perempuan</option></select>
+
+<label>Tanggal Lahir</label>
+<input id="tgl" type="date">
+
+<label>Alamat</label>
+<textarea id="alamat" placeholder="Alamat lengkap"></textarea>
+
+<label>Nama Orang Tua</label>
+<input id="ortu" placeholder="Nama ayah / ibu">
+
+<label>No WA Orang Tua</label>
+<input id="wa" placeholder="62812..." inputmode="numeric">
+
+<label>Gelombang *</label>
+<select id="gelombang"><option value="">-- Pilih Gelombang --</option><option value="Gelombang 1">Gelombang 1</option><option value="Gelombang 2">Gelombang 2</option><option value="Gelombang 3">Gelombang 3</option></select>
+
+<label>Nilai Rapor</label>
+<input id="nilai" type="number" step="0.01" placeholder="Contoh: 85.50" inputmode="decimal">
+
+<label>No Akta Kelahiran</label>
+<input id="akta" placeholder="Nomor akta saja">
+
+<label>No Ijazah SMP</label>
+<input id="ijazah" placeholder="Nomor ijazah saja">
+
+<button class="btn" onclick="kirim()">KIRIM PENDAFTARAN ➜</button>
+<button class="back" onclick="location.href='index.html'">⬅ Kembali</button>
+<div id="msg"></div>
+</div>
+
+<script>
+const SUPABASE_URL = "https://rotxnwbrnbwbscihvafq.supabase.co/rest/v1";
+const SUPABASE_KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
+
+async function kirim(){
+  let nama = document.getElementById('nama').value.trim();
+  let jk = document.getElementById('jk').value;
+  let gelombang = document.getElementById('gelombang').value;
+  if(!nama || !jk || !gelombang){ alert("Nama, Jenis Kelamin, dan Gelombang wajib diisi!"); return; }
+
+  let body = {
+    nama: nama,
+    jenis_kelamin: jk,
+    tanggal_lahir: document.getElementById('tgl').value || null,
+    alamat: document.getElementById('alamat').value.trim() || null,
+    nama_orang_tua: document.getElementById('ortu').value.trim() || null,
+    no_wa_orang_tua: document.getElementById('wa').value.trim() || null,
+    gelombang: gelombang,
+    nilai_rapor: document.getElementById('nilai').value ? parseFloat(document.getElementById('nilai').value) : null,
+    no_akta: document.getElementById('akta').value.trim() || null,
+    no_ijazah: document.getElementById('ijazah').value.trim() || null,
+    nis: null,
+    kelas_id: null,
+    status: 'Menunggu'
+  };
+
+  let r = await fetch(SUPABASE_URL + "/siswa", {
+    method: "POST",
+    headers: {"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json","Prefer":"return=representation"},
+    body: JSON.stringify(body)
+  });
+
+  let msg = document.getElementById('msg');
+  if(r.ok){
+    msg.style.display='block'; msg.style.color='#7CFC00';
+    msg.innerText = "✅ Berhasil daftar! Kamu masuk antrian PPDB.";
+    document.querySelectorAll('input,textarea').forEach(e=>e.value='');
+    document.getElementById('jk').value=''; document.getElementById('gelombang').value='';
+  } else {
+    let err = await r.text();
+    msg.style.display='block'; msg.style.color='#ff6b6b';
+    msg.innerText = "❌ Gagal: " + err;
+  }
+}
+</script>
+</body>
+</html>
