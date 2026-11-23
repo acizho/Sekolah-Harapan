@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Guru - Landscape Bisa Scroll</title>
+<title>Dashboard Guru - Black Gold</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -12,33 +12,20 @@
   .card-gold{background:linear-gradient(145deg,#1a1a1a,#0d0d0d); border:1px solid rgba(212,175,55,.5); border-radius:22px;}
   .card-white{background:#fff; color:#000; border-radius:22px;}
   .btn-gold-big{background:linear-gradient(135deg,#d4af37,#f6e27a); color:#000;}
-
-  /* KUNCI WAJIB TIDUR - TAPI BOLEH SCROLL */
   #putarHP{display:none; position:fixed; inset:0; z-index:9999; background:#000; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px;}
-  @media (orientation: portrait){
-    #putarHP{display:flex !important;}
-    #isiUtama{display:none !important;}
-  }
-  /* DI LANDSCAPE, TATA LETAK JADI 2 KOLOM BIAR MUAT TAPI BISA SCROLL */
-  @media (orientation: landscape){
-    .wrap-landscape{max-width:900px !important; margin:0 auto;}
-    .grid-landscape{grid-template-columns: 1.3fr 1fr !important; gap:16px;}
-  }
+  @media (orientation: portrait){ #putarHP{display:flex !important;} #isiUtama{display:none !important;} #menuBawah{display:none !important;} }
+  @media (orientation: landscape){ .wrap-landscape{max-width:900px !important;} .grid-landscape{grid-template-columns:1.3fr 1fr !important; gap:16px;} }
 </style>
 </head>
 <body>
 
-<!-- KUNCI PUTAR HP -->
 <div id="putarHP">
   <div style="font-size:70px;">📱↻</div>
   <h2 style="font-size:22px; font-weight:900; margin-top:15px;">PUTAR HP KAMU<br>JADI TIDUR</h2>
   <p style="color:#d4af37; margin-top:10px;">Dashboard Guru hanya di mode Landscape</p>
 </div>
 
-<!-- ISI UTAMA - BISA DI SCROLL, PANEL GAK HILANG -->
-<div id="isiUtama" class="wrap-landscape max-w-[430px] mx-auto min-h-screen pb-28 px-5 pt-5">
-
-  <!-- HEADER - SAMA KAYAK GAMBAR -->
+<div id="isiUtama" class="wrap-landscape max-w-[430px] mx-auto min-h-screen px-5 pt-5" style="padding-bottom:120px;">
   <div class="flex justify-between items-start">
     <div>
       <p class="text-[11px] tracking-[3px] font-extrabold text-[#d4af37]">SEKOLAH • PANEL GURU</p>
@@ -51,40 +38,30 @@
     </div>
   </div>
 
-  <!-- GRID LANDSCAPE: KIRI 4 TOMBOL, KANAN JADWAL -->
   <div class="grid-landscape grid grid-cols-1 gap-4 mt-5">
-
-    <!-- KIRI: 4 TOMBOL 2x2 - TATA LETAK 100% GAMBAR -->
     <div class="grid grid-cols-2 gap-3">
-      <div class="card-gold p-4" onclick="alert('Absensi')"><div class="w-[52px] h-[52px] rounded-[14px] btn-gold-big flex items-center justify-center font-black text-[20px]">✓</div><h3 class="font-extrabold mt-3">ABSENSI</h3><p class="text-[#a1a1aa] text-[12px]">Centang hadir / alfa<br>dengan 1 klik</p><p class="text-[#d4af37] font-extrabold text-[12px] mt-3">12 Belum Diabsen →</p></div>
-      <div class="card-white p-4" onclick="alert('Nilai')"><div class="w-[52px] h-[52px] rounded-[14px] bg-black text-white flex items-center justify-center font-black">100</div><h3 class="font-extrabold mt-3">NILAI</h3><p class="text-gray-500 text-[12px]">Input nilai tugas<br>& ulangan</p><p class="font-extrabold text-[12px] mt-3">X-1 Belum Dinilai →</p></div>
-      <div class="card-white p-4" onclick="alert('Materi')"><div class="w-[52px] h-[52px] rounded-[14px] bg-black text-white flex items-center justify-center text-[22px]">📚</div><h3 class="font-extrabold mt-3">MATERI</h3><p class="text-gray-500 text-[12px]">Upload PDF / Video<br>ke murid</p><p class="font-extrabold text-[12px] mt-3">5 Materi Terkirim →</p></div>
-      <div class="card-white p-4" onclick="alert('Kelas')"><div class="w-[52px] h-[52px] rounded-[14px] bg-black text-white flex items-center justify-center text-[22px]">👥</div><h3 class="font-extrabold mt-3">KELAS SAYA</h3><p class="text-gray-500 text-[12px]">Lihat daftar murid<br>per kelas</p><p class="font-extrabold text-[12px] mt-3">68 Murid Total →</p></div>
+      <div class="card-gold p-4"><div class="w-[52px] h-[52px] rounded-[14px] btn-gold-big flex items-center justify-center font-black text-[20px]">✓</div><h3 class="font-extrabold mt-3">ABSENSI</h3><p class="text-[#a1a1aa] text-[12px]">Centang hadir / alfa<br>dengan 1 klik</p><p class="text-[#d4af37] font-extrabold text-[12px] mt-3">12 Belum Diabsen →</p></div>
+      <div class="card-white p-4"><div class="w-[52px] h-[52px] rounded-[14px] bg-black text-white flex items-center justify-center font-black">100</div><h3 class="font-extrabold mt-3">NILAI</h3><p class="text-gray-500 text-[12px]">Input nilai tugas<br>& ulangan</p><p class="font-extrabold text-[12px] mt-3">X-1 Belum Dinilai →</p></div>
+      <div class="card-white p-4"><div class="w-[52px] h-[52px] rounded-[14px] bg-black text-white flex items-center justify-center text-[22px]">📚</div><h3 class="font-extrabold mt-3">MATERI</h3><p class="text-gray-500 text-[12px]">Upload PDF / Video<br>ke murid</p><p class="font-extrabold text-[12px] mt-3">5 Materi Terkirim →</p></div>
+      <div class="card-white p-4"><div class="w-[52px] h-[52px] rounded-[14px] bg-black text-white flex items-center justify-center text-[22px]">👥</div><h3 class="font-extrabold mt-3">KELAS SAYA</h3><p class="text-gray-500 text-[12px]">Lihat daftar murid<br>per kelas</p><p class="font-extrabold text-[12px] mt-3">68 Murid Total →</p></div>
     </div>
-
-    <!-- KANAN: JADWAL + KEHADIRAN -->
     <div class="space-y-3">
       <div class="card-gold p-4">
         <h3 class="font-extrabold">Jadwal Hari Ini</h3>
         <div class="flex justify-between items-center mt-3 pb-3 border-b border-white/10"><div><p class="font-bold text-[14px]">X-1 • Matematika</p><p class="text-[#888] text-[12px]">07.30 - 09.00</p></div><span class="btn-gold-big px-4 py-1.5 rounded-full font-extrabold text-[12px]">Absen</span></div>
         <div class="flex justify-between items-center mt-3"><div><p class="font-bold text-[14px]">XI IPA 1 • Matematika</p><p class="text-[#888] text-[12px]">10.00 - 11.30</p></div><span class="bg-[#222] px-4 py-1.5 rounded-full text-[12px]">Belum Mulai</span></div>
       </div>
-      <div class="card-gold p-4">
-        <h3 class="font-extrabold">Ringkasan Kehadiran</h3>
-        <p class="text-[28px] font-black mt-1"><span class="gold-text">94% Hadir</span></p>
-        <p class="text-[#888] text-[12px]">Minggu ini • 68 Murid • 4 Alfa</p>
-      </div>
+      <div class="card-gold p-4"><h3 class="font-extrabold">Ringkasan Kehadiran</h3><p class="text-[28px] font-black mt-1"><span class="gold-text">94% Hadir</span></p><p class="text-[#888] text-[12px]">Minggu ini • 68 Murid • 4 Alfa</p></div>
     </div>
   </div>
 </div>
 
-<!-- MENU BAWAH - DIPAKSA MUNCUL TERUS, GAK HILANG -->
-<div class="fixed bottom-0 left-0 right-0 z-[999] bg-[#111] border-t border-[#d4af37]/30 px-8 py-2 flex justify-between items-center max-w-[900px] mx-auto">
-  <div class="flex flex-col items-center text-[#d4af37]"><span class="text-[20px]">🏠</span><span class="text-[10px] font-bold">Beranda</span></div>
-  <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">👥</span><span class="text-[10px]">Kelas</span></div>
-  <div class="w-[52px] h-[52px] -mt-6 rounded-full bg-gradient-to-br from-[#d4af37] to-[#f6e27a] text-black flex items-center justify-center text-[26px] font-black border-4 border-[#0a0a0a] shadow-[0_0_18px_rgba(212,175,55,.6)]">+</div>
-  <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">📝</span><span class="text-[10px]">Nilai</span></div>
-  <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">👤</span><span class="text-[10px]">Profil</span></div>
+<div id="menuBawah" style="position:fixed; bottom:0; left:0; right:0; z-index:100; background:#111; border-top:1px solid rgba(212,175,55,.5); padding:10px 20px 18px 20px; display:flex; justify-content:space-between; align-items:center;">
+  <div style="display:flex; flex-direction:column; align-items:center; color:#d4af37;"><span style="font-size:20px;">🏠</span><span style="font-size:10px; font-weight:700;">Beranda</span></div>
+  <div style="display:flex; flex-direction:column; align-items:center; color:#888;"><span style="font-size:20px;">👥</span><span style="font-size:10px;">Kelas</span></div>
+  <div style="width:54px; height:54px; margin-top:-30px; border-radius:999px; background:linear-gradient(135deg,#d4af37,#f6e27a); color:#000; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:900; border:4px solid #0a0a0a; box-shadow:0 0 18px rgba(212,175,55,.7);">+</div>
+  <div style="display:flex; flex-direction:column; align-items:center; color:#888;"><span style="font-size:20px;">📝</span><span style="font-size:10px;">Nilai</span></div>
+  <div style="display:flex; flex-direction:column; align-items:center; color:#888;"><span style="font-size:20px;">👤</span><span style="font-size:10px;">Profil</span></div>
 </div>
 
 </body>
