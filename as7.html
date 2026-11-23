@@ -93,14 +93,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 <div class="box" style="margin-top:14px"><h3>Daftar Pendaftar</h3><p>Terima = status jadi Aktif & masuk Data Siswa. Tolak = status jadi Ditolak.</p><div id="listPPDB">Memuat...</div></div>
 </div>
 
-<!-- ===== DATA SISWA + PIN ===== -->
 <div id="siswa" class="page">
 <div class="top"><div><h1>Data <span>Siswa - LIVE</span></h1><p class="sub">Dari tabel siswa di Supabase - Hanya status Aktif</p></div></div>
 <div class="box" style="margin-top:16px"><h3 id="judulFormSiswa">Tambah Siswa Baru (Langsung Masuk DB!)</h3>
 <input type="hidden" id="sId" value="">
 <div class="row"><div><label class="f">NIS</label><input id="fNis" placeholder="20260106"></div><div><label class="f">Nama Lengkap</label><input id="fNama" placeholder="Nama siswa..."></div></div>
 <div class="row"><div><label class="f">Kelas</label><select id="fKelas"></select></div><div><label class="f">No WA Orang Tua</label><input id="fWa" placeholder="62812..."></div></div>
-<!-- PIN SISWA BARU -->
 <div class="row"><div><label class="f">🔒 PIN Siswa (6 Digit) - Buat Login di Profil</label><div style="display:flex;gap:8px"><input id="fPin" placeholder="123456" maxlength="6" inputmode="numeric" style="flex:1"><button type="button" class="btn2" onclick="generatePinSiswa()" style="white-space:nowrap">🎲 Acak</button><button type="button" class="btn2" onclick="salinPinSiswa()" style="white-space:nowrap">📋 Salin</button></div><p style="font-size:11px;color:#888;margin-top:6px">PIN acak lebih aman. Jangan pake tanggal lahir / no HP. Kirim PIN ini ke siswa / ortu via WA pribadi.</p></div><div><label class="f">Status PIN</label><div id="pinPreview" style="background:#1a1a1a;border:1px dashed #d4af37;border-radius:10px;padding:11px 14px;font-size:13px;color:#aaa">Belum diisi - klik 🎲 Acak</div></div></div>
 <div style="display:flex;gap:8px;margin-top:14px"><button class="btn" id="btnSimpanSiswa" style="flex:1" onclick="tambahSiswa()">💾 Simpan Ke Database</button><button class="btn2" id="btnBatalSiswa" onclick="batalEditSiswa()" style="display:none;padding:11px 16px">Batal</button></div></div>
 <div class="box" style="margin-top:14px"><h3>Daftar Siswa - Dari Database</h3><div id="listSiswa">Memuat...</div></div>
@@ -118,11 +116,31 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 <div class="box" style="margin-top:14px"><h3>📝 Masih Antri PPDB - Belum Diproses</h3><p>Belum diterima, jadi belum masuk Data Siswa.</p><div id="listMenunggu">Memuat...</div></div>
 </div>
 
-<div id="guru" class="page"><div class="top"><div><h1>Data <span>Guru - LIVE</span></h1><p class="sub">Dari tabel guru</p></div></div><div class="box" style="margin-top:16px"><div id="listGuru">Memuat...</div></div></div>
-<div id="kelas" class="page"><div class="top"><div><h1>Data <span>Kelas - LIVE</span></h1><p class="sub">Dari tabel kelas</p></div></div><div id="listKelas" class="grid-kelas" style="margin-top:16px">Memuat...</div></div>
+<!-- ===== GURU - SUDAH ADA PIN ===== -->
+<div id="guru" class="page">
+<div class="top"><div><h1>Data <span>Guru - LIVE</span></h1><p class="sub">Dari tabel guru - Bisa Tambah / Edit / Hapus + PIN Login</p></div></div>
+<div class="box" style="margin-top:16px"><h3 id="judulFormGuru">Tambah Guru Baru (Langsung Masuk DB!)</h3>
+<input type="hidden" id="gId" value="">
+<div class="row"><div><label class="f">Nama Guru</label><input id="gNama" placeholder="Nama guru..."></div><div><label class="f">NIP</label><input id="gNip" placeholder="198..."></div></div>
+<div class="row"><div><label class="f">Mata Pelajaran</label><input id="gMapel" placeholder="Matematika, Bahasa Indonesia..."></div><div><label class="f">No WA</label><input id="gWa" placeholder="62812..."></div></div>
+<div class="row"><div><label class="f">🔒 PIN Guru (6 Digit) - Buat Login Halaman Guru</label><div style="display:flex;gap:8px"><input id="gPin" placeholder="123456" maxlength="6" inputmode="numeric" style="flex:1"><button type="button" class="btn2" onclick="generatePinGuru()" style="white-space:nowrap">🎲 Acak</button><button type="button" class="btn2" onclick="salinPinGuru()" style="white-space:nowrap">📋 Salin</button></div><p style="font-size:11px;color:#888;margin-top:6px">Login guru pake NIP + PIN ini. Kirim ke guru via WA pribadi.</p></div><div><label class="f">Status PIN</label><div id="pinGuruPreview" style="background:#1a1a1a;border:1px dashed #d4af37;border-radius:10px;padding:11px 14px;font-size:13px;color:#aaa">Belum diisi - klik 🎲 Acak</div></div></div>
+<div style="display:flex;gap:8px;margin-top:14px"><button class="btn" id="btnSimpanGuru" style="flex:1" onclick="simpanGuru()">💾 Simpan Guru</button><button class="btn2" id="btnBatalGuru" onclick="batalEditGuru()" style="display:none;padding:11px 16px">Batal</button></div></div>
+<div class="box" style="margin-top:14px"><h3>Daftar Guru - Dari Database</h3><div id="listGuru">Memuat...</div></div>
+</div>
+
+<div id="kelas" class="page">
+<div class="top"><div><h1>Data <span>Kelas - LIVE</span></h1><p class="sub">Dari tabel kelas - Bisa Tambah / Edit / Hapus</p></div></div>
+<div class="box" style="margin-top:16px"><h3 id="judulFormKelas">Tambah Kelas Baru (Langsung Masuk DB!)</h3>
+<input type="hidden" id="kId" value="">
+<div class="row"><div><label class="f">Nama Kelas</label><input id="kNama" placeholder="X IPA 1, XI IPS 2..."></div><div><label class="f">Wali Kelas</label><input id="kWali" placeholder="Nama wali kelas..."></div></div>
+<div class="row"><div><label class="f">Ruang</label><input id="kRuang" placeholder="Ruang 1, Lab Komputer..."></div><div><label class="f">Kapasitas</label><input id="kKapasitas" type="number" placeholder="36" value="36"></div></div>
+<div style="display:flex;gap:8px;margin-top:14px"><button class="btn" id="btnSimpanKelas" style="flex:1" onclick="simpanKelas()">💾 Simpan Kelas</button><button class="btn2" id="btnBatalKelas" onclick="batalEditKelas()" style="display:none;padding:11px 16px">Batal</button></div></div>
+<div id="listKelas" class="grid-kelas" style="margin-top:16px">Memuat...</div>
+</div>
+
 <div id="spp" class="page"><div class="top"><div><h1>Kas / <span>SPP - LIVE</span></h1><p class="sub">Dari tabel spp - Klik tombol Lunas langsung update DB!</p></div></div><div class="cards c3"><div class="card gold"><label>TOTAL KAS MASUK (DB)</label><h2 id="sppTotal">...</h2><p>Yang sudah Lunas</p></div><div class="card"><label>SUDAH BAYAR</label><h2 class="w" id="sppLunas">...</h2><p>Siswa lunas</p></div><div class="card"><label>BELUM BAYAR</label><h2 style="color:#fca5a5" id="sppBelum">...</h2><p>Perlu diingatkan via WA</p></div></div><div class="box" style="margin-top:14px"><h3>Daftar SPP - Dari Database</h3><div id="listSpp">Memuat...</div></div></div>
-<div id="hadir" class="page"><div class="top"><div><h1>Kehadiran - <span>LIVE</span></h1><p class="sub">Dari tabel kehadiran</p></div></div><div class="box" style="margin-top:16px"><div id="listHadir">Memuat...</div></div></div>
-<div id="nilai" class="page"><div class="top"><div><h1>Nilai - <span>LIVE</span></h1><p class="sub">Dari tabel nilai</p></div></div><div class="box" style="margin-top:16px"><div id="listNilai">Memuat...</div></div></div>
+<div id="hadir" class="page"><div class="top"><div><h1>Kehadiran - <span>LIVE (Lihat Saja)</span></h1><p class="sub">Dari tabel kehadiran - Inputnya nanti di halaman guru</p></div></div><div class="box" style="margin-top:16px"><div id="listHadir">Memuat...</div></div></div>
+<div id="nilai" class="page"><div class="top"><div><h1>Nilai - <span>LIVE (Lihat Saja)</span></h1><p class="sub">Dari tabel nilai - Inputnya nanti di halaman guru</p></div></div><div class="box" style="margin-top:16px"><div id="listNilai">Memuat...</div></div></div>
 <div id="pengumuman" class="page"><div class="top"><div><h1>Pengumuman - <span>LIVE</span></h1><p class="sub">Dari tabel pengumuman</p></div></div><div class="box" style="margin-top:16px"><h3>Buat Pengumuman Baru</h3><label class="f">Judul</label><input id="pJudul" placeholder="Judul pengumuman..."><label class="f">Isi</label><textarea id="pIsi" rows="3" placeholder="Isi pengumuman..."></textarea><button class="btn" style="margin-top:12px" onclick="tambahPengumuman()">📢 Kirim Pengumuman Ke DB</button></div><div class="box" style="margin-top:14px"><div id="listPengumuman">Memuat...</div></div></div>
 <div id="laporan" class="page"><div class="top"><div><h1>Laporan - <span>LIVE</span></h1><p class="sub">Semua data dari database, siap di-print</p></div></div><div class="box" style="margin-top:16px"><h3>Ringkasan Laporan</h3><p id="laporanIsi">Memuat...</p><button class="btn" onclick="window.print()">🖨️ Print Laporan Ini</button></div></div>
 <div id="pengaturan" class="page"><div class="top"><div><h1>Pengaturan - <span>LIVE</span></h1><p class="sub">Dari tabel pengaturan</p></div></div><div class="box" style="margin-top:16px"><div id="listPengaturan">Memuat...</div></div></div>
@@ -208,8 +226,9 @@ function escNama(n){ return (n||'').replace(/'/g,"").replace(/"/g,''); }
 let ppdbCache = [];
 let siswaCache = [];
 let allSiswaCache = [];
+let guruCache = [];
+let kelasCache = [];
 
-// ===== PIN SISWA - FUNGSI BARU =====
 function generatePinSiswa(){
   let pin = String(Math.floor(100000 + Math.random()*900000));
   document.getElementById('fPin').value = pin;
@@ -226,6 +245,8 @@ function updatePinPreview(){
 document.addEventListener('DOMContentLoaded', ()=>{
   let fPin = document.getElementById('fPin');
   if(fPin) fPin.addEventListener('input', updatePinPreview);
+  let gPin = document.getElementById('gPin');
+  if(gPin) gPin.addEventListener('input', updatePinGuruPreview);
 });
 function salinPinSiswa(){
   let pin = document.getElementById('fPin').value;
@@ -241,6 +262,38 @@ async function resetPinSiswa(id, nama){
   let {error} = await supabaseClient.from('siswa').update({pin: pinBaru}).eq('id', id);
   if(error){ alert(error.message); return; }
   toast('✅ PIN baru ' + nama + ': ' + pinBaru + ' - Salin & kirim ke ortu!');
+  loadAll();
+}
+
+// ===== PIN GURU - BARU =====
+function generatePinGuru(){
+  let pin = String(Math.floor(100000 + Math.random()*900000));
+  document.getElementById('gPin').value = pin;
+  updatePinGuruPreview();
+  toast('🎲 PIN Guru dibuat: ' + pin + ' - Jangan lupa salin!');
+}
+function updatePinGuruPreview(){
+  let pin = document.getElementById('gPin').value || '';
+  let el = document.getElementById('pinGuruPreview');
+  if(!el) return;
+  if(!pin) el.innerHTML = 'Belum diisi - klik 🎲 Acak';
+  else if(pin.length !== 6) el.innerHTML = '⚠️ PIN harus 6 digit! Sekarang: ' + pin.length + ' digit';
+  else el.innerHTML = '🔒 PIN Guru: <b style="color:#d4af37;font-size:16px;letter-spacing:2px">' + pin + '</b> • Login pake NIP + PIN ini';
+}
+function salinPinGuru(){
+  let pin = document.getElementById('gPin').value;
+  let nama = document.getElementById('gNama').value || 'Guru';
+  let nip = document.getElementById('gNip').value || '-';
+  if(!pin){ alert('PIN masih kosong! Klik 🎲 Acak dulu!'); return; }
+  let teks = `Halo ${nama}, ini PIN login Halaman Guru SMA Negeri 1 Harapan.\nNIP: ${nip}\nPIN: ${pin}\nJangan bagikan PIN ini ke orang lain ya!`;
+  navigator.clipboard.writeText(teks).then(()=> toast('📋 PIN Guru tersalin! Tinggal paste ke WA guru'));
+}
+async function resetPinGuru(id, nama){
+  if(!confirm('Buat PIN acak baru buat ' + nama + ' ? PIN lama akan diganti!')) return;
+  let pinBaru = String(Math.floor(100000 + Math.random()*900000));
+  let {error} = await supabaseClient.from('guru').update({pin: pinBaru}).eq('id', id);
+  if(error){ alert(error.message); return; }
+  toast('✅ PIN baru ' + nama + ': ' + pinBaru + ' - Salin & kirim ke guru!');
   loadAll();
 }
 
@@ -331,17 +384,21 @@ async function loadAll(){
   siswaCache = siswa || [];
   document.getElementById('cSiswa').innerText = siswa?.length||0;
   document.getElementById('mSiswa').innerText = siswa?.length||0;
-  // TABEL SISWA + KOLOM PIN
   document.getElementById('listSiswa').innerHTML = siswa?.length ? `<table><tr><th>SISWA</th><th>NIS</th><th>KELAS</th><th>🔒 PIN</th><th>WA ORTU</th><th>AKSI</th></tr>` + siswa.map(s=>`<tr><td><span class="avatar">${initials(s.nama)}</span>${s.nama}</td><td>${s.nis||'-'}</td><td>${s.kelas?.nama_kelas||'-'}</td><td><span class="pin-badge">${s.pin||'Belum Ada'}</span></td><td>${s.no_wa_orang_tua||'-'}</td><td style="white-space:nowrap"><button class="btn2" onclick="editSiswa(${s.id})">✏️ Edit</button> <button class="btn-orange" onclick="resetPinSiswa(${s.id},'${escNama(s.nama)}')">🎲 PIN Baru</button> <button class="btn-danger" onclick="hapusSiswa(${s.id})">🗑️ Hapus</button></td></tr>`).join('') + `</table>` : 'Belum ada siswa. Tambah di atas!';
   let {data:kelas} = await supabaseClient.from('kelas').select('*').order('id');
+  kelasCache = kelas || [];
   document.getElementById('cKelas').innerText = kelas?.length||0;
   document.getElementById('mKelas').innerText = kelas?.length||0;
   document.getElementById('fKelas').innerHTML = kelas?.map(k=>`<option value="${k.id}">${k.nama_kelas}</option>`).join('');
-  document.getElementById('listKelas').innerHTML = kelas?.map(k=>`<div class="kelas"><h3>${k.nama_kelas}</h3><p>Wali: ${k.wali_kelas||'-'}</p><p>Ruang: ${k.ruang||'-'} • Kapasitas: ${k.kapasitas}</p><button class="btn2">Lihat Siswa</button></div>`).join('');
+  document.getElementById('listKelas').innerHTML = kelas?.length ? kelas.map(k=>{
+    let jumlahSiswa = (siswa||[]).filter(s=>s.kelas_id===k.id).length;
+    return `<div class="kelas"><h3>${k.nama_kelas}</h3><p>Wali: ${k.wali_kelas||'-'}</p><p>Ruang: ${k.ruang||'-'} • Kapasitas: ${k.kapasitas||'-'} • Isi: ${jumlahSiswa} siswa</p><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn2" onclick="editKelas(${k.id})">✏️ Edit</button><button class="btn-danger" onclick="hapusKelas(${k.id})">🗑️ Hapus</button></div></div>`;
+  }).join('') : 'Belum ada kelas. Tambah di atas!';
   let {data:guru} = await supabaseClient.from('guru').select('*').order('id');
+  guruCache = guru || [];
   document.getElementById('cGuru').innerText = guru?.length||0;
   document.getElementById('mGuru').innerText = guru?.length||0;
-  document.getElementById('listGuru').innerHTML = guru?.length ? `<table><tr><th>GURU</th><th>NIP</th><th>MAPEL</th><th>WA</th></tr>` + guru.map(g=>`<tr><td><span class="avatar">${initials(g.nama)}</span>${g.nama}</td><td>${g.nip||'-'}</td><td>${g.mata_pelajaran||'-'}</td><td>${g.no_wa||'-'}</td></tr>`).join('') + `</table>` : 'Belum ada guru';
+  document.getElementById('listGuru').innerHTML = guru?.length ? `<table><tr><th>GURU</th><th>NIP</th><th>MAPEL</th><th>🔒 PIN</th><th>WA</th><th>AKSI</th></tr>` + guru.map(g=>`<tr><td><span class="avatar">${initials(g.nama)}</span>${g.nama}</td><td>${g.nip||'-'}</td><td>${g.mata_pelajaran||'-'}</td><td><span class="pin-badge">${g.pin||'Belum Ada'}</span></td><td>${g.no_wa||'-'}</td><td style="white-space:nowrap"><button class="btn2" onclick="editGuru(${g.id})">✏️ Edit</button> <button class="btn-orange" onclick="resetPinGuru(${g.id},'${escNama(g.nama)}')">🎲 PIN Baru</button> <button class="btn-danger" onclick="hapusGuru(${g.id})">🗑️ Hapus</button></td></tr>`).join('') + `</table>` : 'Belum ada guru. Tambah di atas!';
   let {data:spp, error:sppErr} = await supabaseClient.from('spp').select('*, siswa(nama, kelas:kelas_id(nama_kelas))').order('id');
   if(sppErr){
     let retrySpp = await supabaseClient.from('spp').select('*, siswa(nama)').order('id');
@@ -435,6 +492,120 @@ async function hapusSiswa(id){
   let {error} = await supabaseClient.from('siswa').delete().eq('id',id);
   if(error){ alert('Gagal hapus: '+error.message); return; }
   toast('🗑️ '+nama+' dihapus');
+  loadAll();
+}
+// ===== GURU + PIN =====
+async function simpanGuru(){
+  let id = document.getElementById('gId').value;
+  let nama = document.getElementById('gNama').value.trim();
+  let nip = document.getElementById('gNip').value.trim();
+  let mapel = document.getElementById('gMapel').value.trim();
+  let wa = document.getElementById('gWa').value.trim();
+  let pin = document.getElementById('gPin').value.trim();
+  if(!nama){ alert('Isi Nama Guru dulu Ko!'); return; }
+  if(!pin){ pin = String(Math.floor(100000 + Math.random()*900000)); toast('🎲 PIN kosong, dibuat acak: ' + pin); }
+  if(pin.length !== 6 || /\D/.test(pin)){ alert('PIN harus 6 digit angka! Contoh: 847291'); return; }
+  let payload = {nama, nip, mata_pelajaran: mapel, no_wa: wa, pin: pin};
+  let res;
+  if(id){
+    res = await supabaseClient.from('guru').update(payload).eq('id', Number(id));
+    if(res.error){ alert('Gagal update: '+res.error.message); return; }
+    toast('✅ Guru '+nama+' berhasil di-update! PIN: ' + pin);
+  } else {
+    res = await supabaseClient.from('guru').insert([payload]);
+    if(res.error){ alert('Gagal: '+res.error.message + ' - Kalo error column pin, jalanin dulu SQL ALTER TABLE guru ADD COLUMN pin TEXT'); return; }
+    toast('✅ Guru '+nama+' berhasil ditambah! PIN: ' + pin);
+  }
+  batalEditGuru();
+  loadAll();
+}
+function editGuru(id){
+  let g = guruCache.find(x=>x.id===id);
+  if(!g){ alert('Guru tidak ketemu, refresh dulu!'); return; }
+  document.getElementById('gId').value = g.id;
+  document.getElementById('gNama').value = g.nama||'';
+  document.getElementById('gNip').value = g.nip||'';
+  document.getElementById('gMapel').value = g.mata_pelajaran||'';
+  document.getElementById('gWa').value = g.no_wa||'';
+  document.getElementById('gPin').value = g.pin||'';
+  updatePinGuruPreview();
+  document.getElementById('judulFormGuru').innerText = 'Edit Guru - ' + g.nama;
+  document.getElementById('btnSimpanGuru').innerText = '💾 Update Guru';
+  document.getElementById('btnBatalGuru').style.display = 'inline-block';
+  show('guru', null);
+  window.scrollTo(0,0);
+  toast('✏️ Lagi ngedit ' + g.nama + ' • PIN: ' + (g.pin||'Belum ada'));
+}
+function batalEditGuru(){
+  document.getElementById('gId').value='';
+  document.getElementById('gNama').value=''; document.getElementById('gNip').value=''; document.getElementById('gMapel').value=''; document.getElementById('gWa').value=''; document.getElementById('gPin').value='';
+  updatePinGuruPreview();
+  document.getElementById('judulFormGuru').innerText = 'Tambah Guru Baru (Langsung Masuk DB!)';
+  document.getElementById('btnSimpanGuru').innerText = '💾 Simpan Guru';
+  document.getElementById('btnBatalGuru').style.display = 'none';
+}
+async function hapusGuru(id){
+  let g = guruCache.find(x=>x.id===id);
+  if(!confirm('Hapus guru '+(g?g.nama:'')+' ?')) return;
+  let {error} = await supabaseClient.from('guru').delete().eq('id', id);
+  if(error){ alert('Gagal hapus: '+error.message); return; }
+  toast('🗑️ Guru dihapus');
+  loadAll();
+}
+async function simpanKelas(){
+  let id = document.getElementById('kId').value;
+  let nama_kelas = document.getElementById('kNama').value.trim();
+  let wali_kelas = document.getElementById('kWali').value.trim();
+  let ruang = document.getElementById('kRuang').value.trim();
+  let kapasitas = document.getElementById('kKapasitas').value;
+  if(!nama_kelas){ alert('Isi Nama Kelas dulu Ko! Contoh: X IPA 1'); return; }
+  let payload = {nama_kelas, wali_kelas, ruang, kapasitas: kapasitas ? Number(kapasitas) : 36};
+  let res;
+  if(id){
+    res = await supabaseClient.from('kelas').update(payload).eq('id', Number(id));
+    if(res.error){ alert('Gagal update: '+res.error.message); return; }
+    toast('✅ Kelas '+nama_kelas+' berhasil di-update!');
+  } else {
+    res = await supabaseClient.from('kelas').insert([payload]);
+    if(res.error){ alert('Gagal: '+res.error.message); return; }
+    toast('✅ Kelas '+nama_kelas+' berhasil ditambah!');
+  }
+  batalEditKelas();
+  loadAll();
+}
+function editKelas(id){
+  let k = kelasCache.find(x=>x.id===id);
+  if(!k){ alert('Kelas tidak ketemu, refresh dulu!'); return; }
+  document.getElementById('kId').value = k.id;
+  document.getElementById('kNama').value = k.nama_kelas||'';
+  document.getElementById('kWali').value = k.wali_kelas||'';
+  document.getElementById('kRuang').value = k.ruang||'';
+  document.getElementById('kKapasitas').value = k.kapasitas||36;
+  document.getElementById('judulFormKelas').innerText = 'Edit Kelas - ' + k.nama_kelas;
+  document.getElementById('btnSimpanKelas').innerText = '💾 Update Kelas';
+  document.getElementById('btnBatalKelas').style.display = 'inline-block';
+  show('kelas', null);
+  window.scrollTo(0,0);
+  toast('✏️ Lagi ngedit ' + k.nama_kelas);
+}
+function batalEditKelas(){
+  document.getElementById('kId').value='';
+  document.getElementById('kNama').value=''; document.getElementById('kWali').value=''; document.getElementById('kRuang').value=''; document.getElementById('kKapasitas').value=36;
+  document.getElementById('judulFormKelas').innerText = 'Tambah Kelas Baru (Langsung Masuk DB!)';
+  document.getElementById('btnSimpanKelas').innerText = '💾 Simpan Kelas';
+  document.getElementById('btnBatalKelas').style.display = 'none';
+}
+async function hapusKelas(id){
+  let k = kelasCache.find(x=>x.id===id);
+  let jumlah = siswaCache.filter(s=>s.kelas_id===id).length;
+  if(jumlah > 0){
+    if(!confirm('Kelas '+(k?k.nama_kelas:'')+' masih ada '+jumlah+' siswa! Tetep hapus? Siswa jadi gak punya kelas!')) return;
+  } else {
+    if(!confirm('Hapus kelas '+(k?k.nama_kelas:'')+' ?')) return;
+  }
+  let {error} = await supabaseClient.from('kelas').delete().eq('id', id);
+  if(error){ alert('Gagal hapus: '+error.message); return; }
+  toast('🗑️ Kelas dihapus');
   loadAll();
 }
 async function tandaiLunas(id){
