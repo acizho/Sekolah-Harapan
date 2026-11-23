@@ -2,136 +2,94 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Dashboard Guru - WAJIB LANDSCAPE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Guru - Black & Gold</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  *{margin:0; padding:0; box-sizing:border-box;}
-  body{font-family:'Plus Jakarta Sans',sans-serif; background:#000; overflow:hidden;}
-  
-  /* PEMBUNGKUS LAPTOP - LEBAR FIX 1280 */
-  #laptopView{
-    width:1280px; height:720px;
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1508 100%);
-    color:white;
-    position:absolute; top:0; left:0;
-    transform-origin: top left;
-    overflow:hidden;
-    flex-shrink:0;
-  }
-  .gold-text{background:linear-gradient(135deg,#f6d365,#d4af37 40%,#fff3b0 60%,#b8860b); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-  .gold-card{background:linear-gradient(145deg,#1c1c1c,#0f0f0f); border:1px solid rgba(212,175,55,.4); border-radius:20px;}
-  .btn-gold{background:linear-gradient(135deg,#d4af37,#f6e27a); color:#000;}
-
-  /* LAYAR PUTAR HP - MUNCUL KALAU MASIH TEGAK */
-  #putarHP{
-    display:none; position:fixed; inset:0; z-index:9999;
-    background:#000; color:white;
-    flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; padding:30px;
-  }
-  #putarHP h2{font-size:22px; font-weight:900; margin-top:15px;}
-  #putarHP p{color:#d4af37; margin-top:8px; font-size:14px;}
-
-  /* KALAU HP TEGAK, SEMBUNYIKAN LAPTOP, MUNCULKAN PERINGATAN */
-  @media (orientation: portrait) and (max-width: 900px){
-    #putarHP{ display:flex !important; }
-    #laptopView{ display:none !important; }
-  }
+  body{font-family:'Plus Jakarta Sans',sans-serif; background:#0a0a0a; color:white;}
+  .gold-text{background:linear-gradient(135deg,#f6d365,#d4af37 45%,#fff3b0 70%,#b8860b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;}
+  .card-gold{background:linear-gradient(145deg,#1a1a1a,#0d0d0d); border:1px solid rgba(212,175,55,.5); border-radius:22px;}
+  .card-white{background:#ffffff; color:#000; border-radius:22px;}
+  .btn-gold-big{background:linear-gradient(135deg,#d4af37,#f6e27a); color:#000;}
+  .icon-box{width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:22px;}
 </style>
 </head>
-<body>
+<body class="max-w-[430px] mx-auto min-h-screen pb-28 relative">
 
-<!-- PERINGATAN PUTAR HP -->
-<div id="putarHP">
-  <div style="font-size:70px;">📱↻</div>
-  <h2>PUTAR HP KAMU<br>JADI TIDUR (LANDSCAPE)</h2>
-  <p>Dashboard Guru hanya bisa dibuka<br>dalam mode Landscape</p>
-  <div style="margin-top:20px; background:#1a1a1a; border:1px solid #d4af37; padding:12px 20px; border-radius:999px; font-size:13px;">Black & Gold • Panel Guru</div>
-</div>
-
-<!-- TAMPILAN LAPTOP YANG DIPAKSA MASUK HP -->
-<div id="laptopView">
-  <!-- HEADER ala FOTO TADI -->
-  <div style="display:flex; justify-content:space-between; align-items:center; padding:24px 40px;">
+  <!-- HEADER - SAMA KAYAK FOTO -->
+  <div class="px-5 pt-5 flex justify-between items-start">
     <div>
-      <p style="font-size:11px; letter-spacing:4px; color:#d4af37; font-weight:800;">SEKOLAH • PANEL GURU</p>
-      <h1 style="font-size:32px; font-weight:900; margin-top:4px;">Selamat Datang, <span class="gold-text">Pak Budi</span></h1>
-      <p style="color:#a1a1aa; font-size:14px;">Guru Matematika • Hari Ini: Senin • 3 Kelas Diajar</p>
+      <p class="text-[11px] tracking-[3px] font-extrabold text-[#d4af37]">SEKOLAH • PANEL GURU</p>
+      <h1 class="text-[28px] leading-[1.1] font-black mt-1">Selamat Datang,<br><span class="gold-text">Pak Budi</span></h1>
+      <p class="text-[#a1a1aa] text-[13px] mt-1">Guru Matematika • Hari Ini: Senin • 3 Kelas Diajar</p>
     </div>
-    <div style="display:flex; gap:10px; align-items:center;">
-      <span style="background:#1a1a1a; border:1px solid #d4af37; padding:8px 16px; border-radius:999px; font-size:13px;">🔔 2 Notif</span>
-      <div style="width:48px; height:48px; border-radius:999px; background:linear-gradient(135deg,#d4af37,#f6e27a); color:#000; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:18px;">B</div>
-    </div>
-  </div>
-
-  <!-- 4 KARTU GEDE ala FOTO -->
-  <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:20px; padding:0 40px;">
-    <div class="gold-card" style="padding:24px; cursor:pointer;" onclick="alert('Buka Absensi')">
-      <div style="width:56px; height:56px; border-radius:14px;" class="btn-gold flex items-center justify-center text-2xl font-black">✓</div>
-      <h3 style="font-weight:800; font-size:18px; margin-top:16px;">ABSENSI</h3>
-      <p style="color:#a1a1aa; font-size:13px; margin-top:4px;">Centang hadir / alfa murid<br>dengan 1 klik</p>
-      <p style="color:#d4af37; font-weight:800; font-size:13px; margin-top:14px;">12 Belum Diabsen →</p>
-    </div>
-    <div class="gold-card" style="padding:24px; cursor:pointer;" onclick="alert('Buka Nilai')">
-      <div style="width:56px; height:56px; border-radius:14px; background:white; color:black; display:flex; align-items:center; justify-content:center; font-weight:900;">100</div>
-      <h3 style="font-weight:800; font-size:18px; margin-top:16px;">NILAI</h3>
-      <p style="color:#a1a1aa; font-size:13px; margin-top:4px;">Input nilai tugas<br>& ulangan murid</p>
-      <p style="color:#d4af37; font-weight:800; font-size:13px; margin-top:14px;">X-1 Belum Dinilai →</p>
-    </div>
-    <div class="gold-card" style="padding:24px; cursor:pointer;" onclick="alert('Buka Materi')">
-      <div style="width:56px; height:56px; border-radius:14px; background:white; display:flex; align-items:center; justify-content:center; font-size:24px;">📚</div>
-      <h3 style="font-weight:800; font-size:18px; margin-top:16px;">MATERI</h3>
-      <p style="color:#a1a1aa; font-size:13px; margin-top:4px;">Upload PDF / Video<br>ke halaman murid</p>
-      <p style="color:#d4af37; font-weight:800; font-size:13px; margin-top:14px;">5 Materi Terkirim →</p>
-    </div>
-    <div class="gold-card" style="padding:24px; cursor:pointer;" onclick="alert('Buka Kelas')">
-      <div style="width:56px; height:56px; border-radius:14px; background:white; display:flex; align-items:center; justify-content:center; font-size:24px;">👥</div>
-      <h3 style="font-weight:800; font-size:18px; margin-top:16px;">KELAS SAYA</h3>
-      <p style="color:#a1a1aa; font-size:13px; margin-top:4px;">Lihat daftar murid<br>per kelas</p>
-      <p style="color:#d4af37; font-weight:800; font-size:13px; margin-top:14px;">68 Murid Total →</p>
+    <div class="flex items-center gap-2">
+      <span class="bg-[#1a1a1a] border border-[#d4af37]/60 px-3 py-2 rounded-full text-[12px]">🔔 2 Notif</span>
+      <div class="w-[48px] h-[48px] rounded-full bg-gradient-to-br from-[#d4af37] to-[#f6e27a] text-black flex items-center justify-center font-black text-[18px] border-2 border-white/20">B</div>
     </div>
   </div>
 
-  <!-- BAWAH: JADWAL + GRAFIK -->
-  <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:20px; padding:20px 40px;">
-    <div class="gold-card" style="padding:20px;">
-      <h3 style="font-weight:800;">Jadwal Hari Ini</h3>
-      <div style="display:flex; justify-content:space-between; margin-top:14px; padding-bottom:12px; border-bottom:1px solid #333;"><div><p style="font-weight:700;">X-1 • Matematika</p><p style="color:#888; font-size:13px;">07.30 - 09.00</p></div><span class="btn-gold" style="padding:6px 16px; border-radius:999px; font-weight:800; font-size:13px;">Absen</span></div>
-      <div style="display:flex; justify-content:space-between; margin-top:12px;"><div><p style="font-weight:700;">XI IPA 1 • Matematika</p><p style="color:#888; font-size:13px;">10.00 - 11.30</p></div><span style="background:#222; padding:6px 16px; border-radius:999px; font-size:13px;">Belum Mulai</span></div>
+  <!-- 4 TOMBOL GEDE 2x2 - 100% TATA LETAK FOTO -->
+  <div class="px-5 mt-5 grid grid-cols-2 gap-3">
+    <!-- 1. ABSENSI - EMAS, SAMA KAYAK FOTO -->
+    <div class="card-gold p-4" onclick="alert('Buka Absensi')">
+      <div class="icon-box btn-gold-big">✓</div>
+      <h3 class="font-extrabold text-[17px] mt-3">ABSENSI</h3>
+      <p class="text-[#a1a1aa] text-[12px] leading-snug mt-1">Centang hadir / alfa<br>muri dengan 1 klik</p>
+      <p class="text-[#d4af37] font-extrabold text-[12px] mt-3">12 Belum Diabsen →</p>
     </div>
-    <div class="gold-card" style="padding:20px;">
-      <h3 style="font-weight:800;">Ringkasan Kehadiran</h3>
-      <p style="font-size:32px; font-weight:900; margin-top:8px;"><span class="gold-text">94% Hadir</span></p>
-      <p style="color:#888; font-size:13px;">Minggu ini • 68 Murid • 4 Alfa</p>
+    <!-- 2. NILAI - PUTIH -->
+    <div class="card-white p-4" onclick="alert('Buka Nilai')">
+      <div class="icon-box bg-black text-white">100</div>
+      <h3 class="font-extrabold text-[17px] mt-3">NILAI</h3>
+      <p class="text-gray-500 text-[12px] leading-snug mt-1">Input nilai tugas<br>& ulangan murid</p>
+      <p class="text-black font-extrabold text-[12px] mt-3">X-1 Belum Dinilai →</p>
+    </div>
+    <!-- 3. MATERI - PUTIH -->
+    <div class="card-white p-4" onclick="alert('Buka Materi')">
+      <div class="icon-box bg-black text-white text-[24px]">📚</div>
+      <h3 class="font-extrabold text-[17px] mt-3">MATERI</h3>
+      <p class="text-gray-500 text-[12px] leading-snug mt-1">Upload PDF / Video<br>ke halaman murid</p>
+      <p class="text-black font-extrabold text-[12px] mt-3">5 Materi Terkirim →</p>
+    </div>
+    <!-- 4. KELAS SAYA - PUTIH -->
+    <div class="card-white p-4" onclick="alert('Buka Kelas')">
+      <div class="icon-box bg-black text-white text-[24px]">👥</div>
+      <h3 class="font-extrabold text-[17px] mt-3">KELAS SAYA</h3>
+      <p class="text-gray-500 text-[12px] leading-snug mt-1">Lihat daftar murid<br>per kelas</p>
+      <p class="text-black font-extrabold text-[12px] mt-3">68 Murid Total →</p>
     </div>
   </div>
-</div>
 
-<script>
-function paksaMasukLayar(){
-  const el = document.getElementById('laptopView');
-  const lebarLaptop = 1280;
-  const tinggiLaptop = 720;
-  const lebarHP = window.innerWidth;
-  const tinggiHP = window.innerHeight;
-  // Hitung skala biar laptop 1280px muat di HP
-  const skalaLebar = lebarHP / lebarLaptop;
-  const skalaTinggi = tinggiHP / tinggiLaptop;
-  const skala = Math.min(skalaLebar, skalaTinggi);
-  el.style.transform = `scale(${skala})`;
-  // Biar pas di tengah kalau ada sisa
-  el.style.left = ((lebarHP - lebarLaptop * skala) / 2) + 'px';
-  el.style.top = ((tinggiHP - tinggiLaptop * skala) / 2) + 'px';
-  // Coba kunci landscape kalau browser izinin
-  if(screen.orientation && screen.orientation.lock){
-    screen.orientation.lock('landscape').catch(()=>{});
-  }
-}
-window.addEventListener('resize', paksaMasukLayar);
-window.addEventListener('orientationchange', ()=>{ setTimeout(paksaMasukLayar, 300); });
-paksaMasukLayar();
-</script>
+  <!-- JADWAL + RINGKASAN - SAMA KAYAK FOTO, DITUMPUK KE BAWAH BIAR DI HP MUAT -->
+  <div class="px-5 mt-4 space-y-3">
+    <div class="card-gold p-4">
+      <h3 class="font-extrabold text-[16px]">Jadwal Hari Ini</h3>
+      <div class="flex justify-between items-center mt-3 pb-3 border-b border-white/10">
+        <div><p class="font-bold text-[14px]">X-1 • Matematika</p><p class="text-[#888] text-[12px]">07.30 - 09.00</p></div>
+        <span class="btn-gold-big px-4 py-1.5 rounded-full font-extrabold text-[12px]">Absen</span>
+      </div>
+      <div class="flex justify-between items-center mt-3">
+        <div><p class="font-bold text-[14px]">XI IPA 1 • Matematika</p><p class="text-[#888] text-[12px]">10.00 - 11.30</p></div>
+        <span class="bg-[#222] px-4 py-1.5 rounded-full text-[12px]">Belum Mulai</span>
+      </div>
+    </div>
+    <div class="card-gold p-4">
+      <h3 class="font-extrabold text-[16px]">Ringkasan Kehadiran</h3>
+      <p class="text-[30px] font-black mt-1"><span class="gold-text">94% Hadir</span></p>
+      <p class="text-[#888] text-[12px]">Minggu ini • 68 Murid • 4 Alfa</p>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV - SAMA KAYAK FOTO -->
+  <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-[#111] border-t border-[#d4af37]/30 px-6 py-3 flex justify-between items-center z-50">
+    <div class="flex flex-col items-center text-[#d4af37]"><span class="text-[20px]">🏠</span><span class="text-[10px] font-bold">Beranda</span></div>
+    <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">👥</span><span class="text-[10px]">Kelas</span></div>
+    <div class="w-[52px] h-[52px] -mt-8 rounded-full bg-gradient-to-br from-[#d4af37] to-[#f6e27a] text-black flex items-center justify-center text-[26px] font-black shadow-[0_0_20px_rgba(212,175,55,.6)] border-4 border-[#0a0a0a]">+</div>
+    <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">📝</span><span class="text-[10px]">Nilai</span></div>
+    <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">👤</span><span class="text-[10px]">Profil</span></div>
+  </div>
+
 </body>
 </html>
