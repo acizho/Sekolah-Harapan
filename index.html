@@ -100,7 +100,7 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
   <div class="chat-header"><img src="https://i.pravatar.cc/100?img=5"><div><b>Admin SMA N 1 Harapan</b><br><span>● Online - Balas &lt; 5 menit</span></div><button class="chat-close" onclick="toggleChat()">✕</button></div>
   <div class="chat-body" id="chatBody"><div class="msg admin">Halo! Selamat datang di SMA Negeri 1 Harapan 👋<br>Ada yang bisa kami bantu?<small>Admin • 16:20</small></div></div>
   <div class="chat-quick"><button onclick="quickChat('Info PPDB dong')">📝 Info PPDB</button><button onclick="quickChat('Biaya masuk berapa?')">💰 Biaya Masuk</button><button onclick="quickChat('Jadwal PPDB kapan?')">📅 Jadwal PPDB</button></div>
-  <div class="chat-input"><input type="text" id="chatInput" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter') sendChat()"><button onclick="sendChat()">➤</button></div>
+  <div class="chat-input"><input type="text" id="chatInput" placeholder="Ketik pesan... (@budi untuk login)" onkeypress="if(event.key==='Enter') sendChat()"><button onclick="sendChat()">➤</button></div>
 </div>
 <div class="pin-overlay" id="pinOverlay">
   <div class="pin-card" id="pinCard">
@@ -143,33 +143,35 @@ function toggleChat(){
 async function saveToDatabase(nama, pertanyaan, jawaban){
   await supabaseClient.from('chat_messages').insert([{ nama: nama || 'Tamu', pertanyaan, jawaban, status: 'Baru' }]);
 }
+// ===== PERBAIKAN: @ # $ & ITU PERINTAH CARI! BUKAN CHAT! =====
+// @budi -> cari "budi", #timun -> cari "timun", $kodok -> cari "kodok", &masphus -> cari "masphus"
+// @ # $ & nya DIBUANG, yang dicari cuma kata setelahnya!
 function extractTrigger(text){
-  let m = text.match(/[@#\$&]\s*([a-zA-Z0-9_]+)/);
+  let m = String(text).match(/[@#\$&]\s*([a-zA-Z0-9_]+)/);
   if(m) return m[1].toLowerCase();
   return null;
 }
+// ===== PERBAIKAN: CARI CUMA DI 2 TEMPAT! guru.code + admin.code! =====
 async function checkSecretCode(keyword){
   let k = String(keyword).toLowerCase().trim();
+  // 1. CARI DI TABEL GURU -> KOLOM CODE!
   let g = await supabaseClient.from('guru').select('*').limit(100);
   if(g.data){
     for(let row of g.data){
-      if(!row) continue;
-      if(!row.code) continue;
+      if(!row || !row.code) continue;
       let c = String(row.code).toLowerCase().trim();
-      if(!c) continue;
-      if(c === k){
+      if(c && c === k){
         return { found: true, table: 'guru', pin: String(row.pin||'').replace(/\D/g,''), target: 'guru.html', row: row };
       }
     }
   }
+  // 2. KALO DI GURU GAK ADA, CARI DI TABEL ADMIN -> KOLOM CODE!
   let a = await supabaseClient.from('admin').select('*').limit(100);
   if(a.data){
     for(let row of a.data){
-      if(!row) continue;
-      if(!row.code) continue;
+      if(!row || !row.code) continue;
       let c = String(row.code).toLowerCase().trim();
-      if(!c) continue;
-      if(c === k){
+      if(c && c === k){
         return { found: true, table: 'admin', pin: String(row.pin||'').replace(/\D/g,''), target: 'as7.html', row: row };
       }
     }
@@ -243,7 +245,7 @@ function checkPin(){
     document.getElementById('pinStatus').textContent = '✅ Terbuka...';
     document.getElementById('pinStatus').className = 'pin-status';
     saveToDatabase('Login Berhasil', 'Login code: ' + pendingLogin.code, 'PIN cocok -> ' + pendingLogin.target);
-    // ===== EDITED: BAGI KARCIS CODE + PIN, GAK PAKE ID! =====
+    // ===== BAGI KARCIS: CUMA CODE + PIN! GAK PAKE ID! SOALNYA CODE ITU UNIK! =====
     let row = pendingLogin.row || {};
     if(pendingLogin.table === 'guru'){
       let codeAsli = row.code || pendingLogin.code;
@@ -297,21 +299,24 @@ async function sendChat(){
     addMsg('Dibatalkan. Ada yang bisa kami bantu lagi?', 'admin');
     return;
   }
+  // ===== INI KUNCINYA, KO! JANGAN SAMPE BOT GAGAL PAHAM LAGI! =====
   let keyword = extractTrigger(text);
+  // ADA @ # $ & ? -> WAJIB CARI DI DATABASE! BUKAN CHAT BIASA!
   if(keyword){
     let result = await checkSecretCode(keyword);
     if(result.found){
-      // ===== EDITED: BAWA ROW + CODE ASLI, BIAR KARCISNYA LENGKAP! =====
       pendingLogin = { code: result.row?.code || keyword, pin: result.pin, target: result.target, table: result.table, row: result.row };
-      saveToDatabase('Tamu - Trigger', text, 'Membuka layar kunci PIN - ' + result.table);
+      saveToDatabase('Tamu - Trigger', text, 'Membuka layar kunci PIN - ' + result.table + ' - code: ' + keyword);
       openPinLock();
     } else {
+      // PERBAIKAN: Kalo gak ketemu, ngomong jujur! Jangan ngomong "Terima kasih" kayak chat biasa!
       pendingLogin = null;
-      addMsg('Terima kasih! Pesan kamu sudah kami terima. Admin akan segera menghubungi anda 🙏', 'admin');
-      saveToDatabase('Tamu', text, 'Kode tidak dikenal, dibalas sebagai chat biasa');
+      addMsg('CODE <b>' + keyword + '</b> gak ketemu di tabel guru & admin, Ko! Cek lagi CODE-nya! Contoh: @budi, @timun, @kodok', 'admin');
+      saveToDatabase('Tamu', text, 'Kode ' + keyword + ' tidak ketemu di guru.code / admin.code');
     }
-    return;
+    return; // STOP! Udah ditanganin sebagai perintah cari! Gak boleh lanjut ke chat biasa!
   }
+  // GAK ADA @ # $ & ? -> BARU INI CHAT BIASA! JANGAN CARI DATABASE!
   let botJawaban = await cariJawabanBot(text);
   let reply;
   if(botJawaban){
@@ -327,6 +332,7 @@ async function sendChat(){
 }
 function quickChat(text){ addMsg(text,'user'); setTimeout(()=>{ sendChatAuto(text) },600); }
 async function sendChatAuto(text){
+  // Tombol cepat PPDB / Biaya / Jadwal itu CHAT BIASA! Gak ada @ # $ &, jadi gak cari database!
   let botJawaban = await cariJawabanBot(text);
   let reply;
   if(botJawaban){
