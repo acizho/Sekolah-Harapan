@@ -9,8 +9,8 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
 :root{--gold:#e8c55a;--cream:#f7e8a0;--bg:#0a0a0a}
 html,body{background:var(--bg);color:#fff;overflow-x:hidden}
-#app{width:1200px;min-width:1200px;margin:0 auto;display:flex;transform-origin:top left}
-.sidebar{width:260px;min-width:260px;background:#0a0a0a;border-right:1px solid var(--gold);padding:16px 12px;position:fixed;left:0;top:0;bottom:0;overflow:auto;z-index:50}
+#app{width:1200px;min-width:1200px;margin:0 auto;display:flex;transform-origin:top left;align-items:flex-start}
+.sidebar{width:260px;min-width:260px;max-width:260px;background:#0a0a0a;border-right:1px solid var(--gold);padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:50;flex-shrink:0}
 .sidebar .logo{display:flex;gap:10px;align-items:center;padding:4px 6px 14px;border-bottom:1px solid #333}
 .sidebar .logo h1{font-size:17px;line-height:1.1;color:var(--cream)} .sidebar .logo h1 small{font-size:12px;font-weight:400;display:block;color:#ccc}
 .admin-card{display:flex;gap:10px;align-items:center;background:#111;border:1px solid var(--gold);border-radius:10px;padding:12px;margin:14px 0}
@@ -22,7 +22,7 @@ html,body{background:var(--bg);color:#fff;overflow-x:hidden}
 .sidebar button.menu-btn small{background:#222;color:var(--gold);padding:2px 8px;border-radius:20px;font-size:11px;float:right}
 .btn-keluar{width:100%;border:1px solid var(--gold);background:none;color:#fff;padding:10px;border-radius:8px;cursor:pointer;margin-top:14px}
 .sidebar .versi{margin-top:16px;border:1px solid var(--gold);padding:12px;text-align:center;border-radius:8px}.sidebar .versi p{font-size:11px;color:#888;margin-top:6px}
-.main{flex:1;margin-left:260px;padding:22px 20px 40px;width:940px;min-width:940px}
+.main{flex:1;padding:22px 20px 40px;width:940px;min-width:940px;max-width:940px}
 .page{display:none}.page.active{display:block}
 h1.big{font-family:Georgia,serif;font-size:52px;text-align:center;font-weight:400;color:var(--cream);line-height:1}
 .sub-center{text-align:center;color:var(--cream);font-size:16px;margin:8px 0 18px;font-weight:600}
