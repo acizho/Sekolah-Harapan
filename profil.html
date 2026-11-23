@@ -43,6 +43,9 @@ input.login-input::placeholder{color:#666;letter-spacing:0}
 .modal-box p{font-size:12px;color:#aaa;margin-bottom:14px}
 .modal-box input{width:100%;background:#000;border:1px solid #d4af37;color:#fff;padding:13px;border-radius:12px;font-size:18px;text-align:center;letter-spacing:3px;margin-bottom:10px;outline:none}
 .pin-info{font-size:11px;color:#888;margin:8px 0 14px;line-height:1.5}
+/* TOMBOL CHAT MELAYANG */
+#btnChatMelayang{position:fixed;bottom:20px;right:20px;width:62px;height:62px;border-radius:50%;background:linear-gradient(180deg,#f5d67b,#d4af37,#a8831d);border:3px solid #fff;color:#000;font-size:28px;cursor:pointer;box-shadow:0 10px 25px rgba(212,175,55,.6);z-index:999;display:none;align-items:center;justify-content:center}
+#btnChatMelayang:active{transform:scale(.95)}
 </style>
 </head>
 <body>
@@ -96,14 +99,11 @@ input.login-input::placeholder{color:#666;letter-spacing:0}
 <div class="icon">🔒</div><div class="txt"><label>PIN Login:</label><div>•••••• • Klik untuk Ganti PIN ➜</div></div><div style="font-size:20px">›</div>
 </div>
 <p style="font-size:11px;color:#888;text-align:center;margin:-6px 0 12px">Ganti PIN acak dari Admin ke PIN yang kamu inget.</p>
-
-<!-- TOMBOL BELAJAR - MUNCUL SETELAH MASUK -->
 <button class="btn" onclick="bukaBelajar()">📚 BELAJAR ➜</button>
-<button class="btn" style="background:linear-gradient(180deg,#fff,#ddd);box-shadow:none" onclick="location.href='index.html'">🏫 LIHAT GEDUNG ➜</button>
 <button class="back" onclick="logout()">⬅ Logout</button>
 </div>
 
-<!-- ============ BELAJAR (DALAM 1 FILE) ============ -->
+<!-- ============ BELAJAR ============ -->
 <div id="belajarBox" style="display:none;max-width:430px;margin:0 auto">
   <p style="font-size:10px; color:#d4af37; font-weight:bold; letter-spacing:2px;">BELAJAR • MURID</p>
   <h1 style="font-size:28px; margin:5px 0 15px;">Belajar, <span id="namaBelajar" style="color:#d4af37;">-</span></h1>
@@ -142,6 +142,32 @@ input.login-input::placeholder{color:#666;letter-spacing:0}
   </div>
 </div>
 
+<!-- ============ CHAT @GURU ============ -->
+<div id="chatBox" style="display:none;max-width:430px;margin:0 auto">
+  <p style="font-size:10px;color:#d4af37;font-weight:bold;letter-spacing:2px;">CHAT • 1-1</p>
+  <h1 style="font-size:24px;margin:5px 0 5px;">Chat Guru, <span id="namaChat" style="color:#d4af37;">-</span></h1>
+  <p id="kelasChat" style="font-size:12px;color:#aaa;margin-bottom:15px;">-</p>
+  <div id="pilihGuruBox">
+    <label class="login-label">Cari Guru Kelas Kamu</label>
+    <input class="login-input" id="cariGuru" placeholder="@nama guru..." oninput="cariGuruList()" style="text-align:left">
+    <div id="listGuru" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <p style="font-size:11px;color:#888;text-align:center;margin-top:10px;">Ketik @ lalu nama guru. Hanya guru kelas kamu yang muncul.</p>
+  </div>
+  <div id="ruangChat" style="display:none">
+    <div style="background:#141414;border:1px solid #d4af37;border-radius:16px;padding:12px;display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+      <div style="width:40px;height:40px;border-radius:50%;background:#d4af37;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900;">👨‍🏫</div>
+      <div style="flex:1"><b id="namaGuruAktif">-</b><br><span id="mapelGuruAktif" style="font-size:11px;color:#aaa;">-</span></div>
+      <button onclick="gantiGuru()" style="background:transparent;border:1px solid #333;color:#aaa;padding:8px 12px;border-radius:999px;cursor:pointer;">Ganti</button>
+    </div>
+    <div id="isiChat" style="height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.04);border:1px solid #222;border-radius:16px;padding:12px;"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <input id="inputChat" placeholder="Ketik pesan..." style="flex:1;background:#111;border:1px solid #d4af37;color:#fff;padding:13px;border-radius:999px;outline:none;">
+      <button onclick="kirimChat()" style="background:#d4af37;border:none;padding:13px 18px;border-radius:999px;font-weight:900;cursor:pointer;">➤</button>
+    </div>
+  </div>
+  <button class="back" onclick="kembaliDariChat()">⬅ Kembali ke Profil</button>
+</div>
+
 <!-- MODAL GANTI PIN -->
 <div class="modal" id="modalPin">
 <div class="modal-box">
@@ -161,19 +187,22 @@ input.login-input::placeholder{color:#666;letter-spacing:0}
 </div>
 </div>
 
+<!-- TOMBOL CHAT MELAYANG -->
+<button id="btnChatMelayang" onclick="bukaChat()">💬</button>
+
 <script>
 const SUPABASE_URL = "https://rotxnwbrnbwbscihvafq.supabase.co/rest/v1";
 const SUPABASE_KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
 const supabaseClient = window.supabase.createClient("https://rotxnwbrnbwbscihvafq.supabase.co", SUPABASE_KEY);
 let nisLogin = localStorage.getItem('nis_login');
 let dataSiswaLogin = null;
-
-// ===== BELAJAR STATE =====
 let semuaMateri = [];
 let materiAktif = null;
 let listSoal = [];
 let indexSoal = 0;
 let benar = 0;
+let semuaGuruKelas = [];
+let guruAktif = null;
 
 if(!nisLogin){
   document.getElementById('loginBox').style.display='block';
@@ -280,6 +309,8 @@ async function ambilDariSupabase(){
     let m = data[0];
     if(!m){ alert("Data tidak ditemukan"); logout(); return; }
     dataSiswaLogin = m;
+    // MUNCULIN TOMBOL CHAT MELAYANG CUMA KALO UDAH LOGIN
+    document.getElementById('btnChatMelayang').style.display = 'flex';
     document.getElementById('fNama').innerText = m.nama || "-";
     document.getElementById('fNip').innerText = m.nis || "-";
     document.getElementById('fNoPendaftaran').innerText = m.no_pendaftaran || "-";
@@ -291,6 +322,8 @@ async function ambilDariSupabase(){
     document.getElementById('fWaOrtu').innerText = m.no_wa_orang_tua || "-";
     document.getElementById('fStatus').innerText = m.status || "-";
     document.getElementById('namaBelajar').innerText = m.nama || "-";
+    document.getElementById('namaChat').innerText = m.nama || "-";
+    document.getElementById('kelasChat').innerText = 'Kelas: ' + ((m.kelas && m.kelas.nama_kelas) ? m.kelas.nama_kelas : '-');
     if(m.foto_url){
       let im=document.getElementById('imgFoto'); im.src=m.foto_url; im.style.display='block';
       document.getElementById('emojiFoto').style.display='none';
@@ -301,7 +334,6 @@ async function ambilDariSupabase(){
   }catch(e){ console.log(e); }
 }
 
-// ===== PIN =====
 function bukaGantiPin(isBaru=false){
   document.getElementById('pinLama').value = '';
   document.getElementById('pinBaru').value = '';
@@ -346,10 +378,11 @@ async function simpanPinBaru(){
 function logout(){
   localStorage.removeItem('nis_login');
   localStorage.removeItem('nama_login');
+  document.getElementById('btnChatMelayang').style.display = 'none';
   location.href = 'index.html';
 }
 
-// ===== PINDAH PROFIL <-> BELAJAR (1 FILE) =====
+// ===== PINDAH =====
 function bukaBelajar(){
   document.getElementById('profilBox').style.display='none';
   document.getElementById('belajarBox').style.display='block';
@@ -362,7 +395,7 @@ function kembaliKeProfil(){
   window.scrollTo(0,0);
 }
 
-// ===== BELAJAR LOGIC =====
+// ===== BELAJAR =====
 function bukaMateri(id){
   const m = semuaMateri.find(x=>x.id===id);
   materiAktif = m;
@@ -405,7 +438,6 @@ async function jawabSoal(pilih){
     document.getElementById('nilaiBesar').innerText = nilai;
     document.getElementById('nilaiPesan').innerText = nilai===100 ? 'Sempurna! Lu jago banget!' : nilai>=70 ? 'Bagus! Dikit lagi sempurna.' : 'Gpp, belajar lagi yuk!';
     document.getElementById('popupNilai').style.display='block';
-    // NILAI NYAMBUNG KE SISWA YANG LOGIN, BUKAN BEDUL LAGI
     await supabaseClient.from('nilai').insert([{nama: dataSiswaLogin ? dataSiswaLogin.nama : localStorage.getItem('nama_login'), nis: nisLogin, materi_id: materiAktif.id, nilai: nilai}]);
   }
 }
@@ -427,6 +459,78 @@ async function loadMateri(){
       <b>${x.judul}</b><br><span style="font-size:11px; color:#aaa;">${x.mapel} • ${x.guru} • ${x.durasi}</span>
       <div style="text-align:right; color:#d4af37; font-size:12px;">Lihat →</div>
     </div>`).join('');
+}
+
+// ===== CHAT @GURU MELAYANG =====
+function bukaChat(){
+  document.getElementById('profilBox').style.display='none';
+  document.getElementById('belajarBox').style.display='none';
+  document.getElementById('chatBox').style.display='block';
+  document.getElementById('btnChatMelayang').style.display='none';
+  loadGuruKelas();
+  window.scrollTo(0,0);
+}
+function kembaliDariChat(){
+  document.getElementById('chatBox').style.display='none';
+  document.getElementById('profilBox').style.display='block';
+  document.getElementById('btnChatMelayang').style.display='flex';
+}
+function gantiGuru(){
+  guruAktif = null;
+  document.getElementById('ruangChat').style.display='none';
+  document.getElementById('pilihGuruBox').style.display='block';
+  document.getElementById('cariGuru').value = '';
+  loadGuruKelas();
+}
+async function loadGuruKelas(){
+  let kelasSiswa = dataSiswaLogin && dataSiswaLogin.kelas ? dataSiswaLogin.kelas.nama_kelas : '';
+  const { data } = await supabaseClient.from('guru').select('*');
+  if(!data) return;
+  semuaGuruKelas = data.filter(g => {
+    if(!kelasSiswa) return true;
+    let k = String(g.kelas || g.mengajar_kelas || '').toLowerCase();
+    if(!k) return true;
+    return k.includes(kelasSiswa.toLowerCase()) || k.includes('semua');
+  });
+  tampilGuruList('');
+}
+function tampilGuruList(keyword){
+  let kw = keyword.replace('@','').toLowerCase().trim();
+  let list = semuaGuruKelas.filter(g => String(g.nama||'').toLowerCase().includes(kw));
+  document.getElementById('listGuru').innerHTML = list.length ? list.map(g=>`
+    <div onclick="pilihGuru('${g.id}')" style="background:#141414;border:1px solid #222;padding:13px;border-radius:14px;cursor:pointer;display:flex;gap:10px;align-items:center;">
+      <div style="width:38px;height:38px;border-radius:50%;background:#d4af37;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900;">${String(g.nama||'?')[0]}</div>
+      <div style="flex:1"><b>@${g.nama}</b><br><span style="font-size:11px;color:#aaa;">${g.mapel||''} • ${g.kelas||'Semua Kelas'}</span></div>
+      <span style="color:#d4af37;">Chat ➜</span>
+    </div>`).join('') : '<p style="text-align:center;color:#888;font-size:13px;">Guru tidak ditemukan di kelas kamu</p>';
+}
+function cariGuruList(){ tampilGuruList(document.getElementById('cariGuru').value); }
+async function pilihGuru(id){
+  guruAktif = semuaGuruKelas.find(g=>String(g.id)===String(id));
+  if(!guruAktif) return;
+  document.getElementById('pilihGuruBox').style.display='none';
+  document.getElementById('ruangChat').style.display='block';
+  document.getElementById('namaGuruAktif').innerText = '@' + guruAktif.nama;
+  document.getElementById('mapelGuruAktif').innerText = (guruAktif.mapel||'') + ' • ' + (guruAktif.kelas||'');
+  loadPesan();
+}
+async function loadPesan(){
+  if(!guruAktif) return;
+  const { data } = await supabaseClient.from('chat_siswa_guru').select('*').eq('nis_siswa', nisLogin).eq('guru_id', guruAktif.id).order('created_at');
+  let box = document.getElementById('isiChat');
+  if(!data || data.length===0){ box.innerHTML = '<p style="text-align:center;color:#888;font-size:12px;margin-top:20px;">Belum ada chat.<br> Sapa guru kamu dulu 👋</p>'; return; }
+  box.innerHTML = data.map(c=>{
+    let saya = c.pengirim === 'siswa';
+    return `<div style="align-self:${saya?'flex-end':'flex-start'};max-width:80%;background:${saya?'#d4af37':'#222'};color:${saya?'#000':'#fff'};padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.4;">${c.pesan}</div>`;
+  }).join('');
+  box.scrollTop = box.scrollHeight;
+}
+async function kirimChat(){
+  let isi = document.getElementById('inputChat').value.trim();
+  if(!isi || !guruAktif) return;
+  document.getElementById('inputChat').value = '';
+  await supabaseClient.from('chat_siswa_guru').insert([{nis_siswa: nisLogin, nama_siswa: dataSiswaLogin.nama, guru_id: guruAktif.id, nama_guru: guruAktif.nama, pesan: isi, pengirim: 'siswa'}]);
+  loadPesan();
 }
 </script>
 </body>
