@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Guru - Black & Gold</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Plus Jakarta Sans',sans-serif; background:#0a0a0a;}
+  .gold-text{background:linear-gradient(135deg,#f6d365 0%,#d4af37 40%,#fff3b0 60%,#b8860b 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+  .gold-border{border:1px solid rgba(212,175,55,.35)}
+  .card{background:linear-gradient(145deg,#161616,#0f0f0f); border:1px solid rgba(212,175,55,.25);}
+  .card:active{transform:scale(.97); border-color:#d4af37;}
+  .btn-gold{background:linear-gradient(135deg,#d4af37,#f6e27a); color:#000;}
+</style>
+</head>
+<body class="text-white min-h-screen pb-10">
+
+<!-- HEADER -->
+<div class="px-5 pt-6 pb-5">
+  <p class="text-[11px] tracking-[0.3em] text-[#d4af37] font-bold">SEKOLAH • PANEL GURU</p>
+  <h1 class="text-2xl font-extrabold mt-1">Selamat Datang, <span class="gold-text">Pak Budi</span></h1>
+  <p class="text-zinc-400 text-sm mt-1">Guru Matematika • Kelas: X-1, X-2, XI IPA 1</p>
+  <div class="flex gap-2 mt-3">
+    <span class="text-xs bg-[#1a1a1a] gold-border px-3 py-1 rounded-full">Hari Ini: Senin</span>
+    <span class="text-xs bg-[#1a1a1a] gold-border px-3 py-1 rounded-full">3 Kelas Diajar</span>
+  </div>
+</div>
+
+<!-- 4 MENU UTAMA - TOMBOL GEDE -->
+<div class="px-5 grid grid-cols-2 gap-3">
+  <!-- ABSENSI -->
+  <button onclick="buka('absensi')" class="card rounded-2xl p-5 text-left">
+    <div class="w-11 h-11 rounded-xl btn-gold flex items-center justify-center text-xl font-bold">✓</div>
+    <h3 class="font-bold mt-3">ABSENSI</h3>
+    <p class="text-xs text-zinc-400 mt-1">Centang hadir / alfa murid</p>
+    <p class="text-[11px] text-[#d4af37] mt-2 font-bold">12 Belum Diabsen →</p>
+  </button>
+
+  <!-- NILAI -->
+  <button onclick="buka('nilai')" class="card rounded-2xl p-5 text-left">
+    <div class="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center text-xl font-bold">100</div>
+    <h3 class="font-bold mt-3">NILAI</h3>
+    <p class="text-xs text-zinc-400 mt-1">Input nilai tugas & ulangan</p>
+    <p class="text-[11px] text-[#d4af37] mt-2 font-bold">X-1 Belum Dinilai →</p>
+  </button>
+
+  <!-- MATERI -->
+  <button onclick="buka('materi')" class="card rounded-2xl p-5 text-left">
+    <div class="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center text-xl">📚</div>
+    <h3 class="font-bold mt-3">MATERI</h3>
+    <p class="text-xs text-zinc-400 mt-1">Upload PDF / Video ke murid</p>
+    <p class="text-[11px] text-[#d4af37] mt-2 font-bold">5 Materi Terkirim →</p>
+  </button>
+
+  <!-- KELAS SAYA -->
+  <button onclick="buka('kelas')" class="card rounded-2xl p-5 text-left">
+    <div class="w-11 h-11 rounded-xl bg-white text-black flex items-center justify-center text-xl">👥</div>
+    <h3 class="font-bold mt-3">KELAS SAYA</h3>
+    <p class="text-xs text-zinc-400 mt-1">Lihat daftar murid per kelas</p>
+    <p class="text-[11px] text-[#d4af37] mt-2 font-bold">68 Murid Total →</p>
+  </button>
+</div>
+
+<!-- JADWAL HARI INI -->
+<div class="px-5 mt-5">
+  <div class="card rounded-2xl p-4">
+    <h3 class="font-bold text-sm">Jadwal Hari Ini</h3>
+    <div class="mt-3 space-y-3">
+      <div class="flex justify-between items-center">
+        <div><p class="font-semibold text-sm">X-1 • Matematika</p><p class="text-xs text-zinc-400">07.30 - 09.00</p></div>
+        <span class="text-xs btn-gold px-3 py-1 rounded-full font-bold">Absen</span>
+      </div>
+      <div class="h-px bg-zinc-800"></div>
+      <div class="flex justify-between items-center">
+        <div><p class="font-semibold text-sm">XI IPA 1 • Matematika</p><p class="text-xs text-zinc-400">10.00 - 11.30</p></div>
+        <span class="text-xs bg-zinc-800 px-3 py-1 rounded-full">Belum Mulai</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AREA KERJA -->
+<div id="areaKerja" class="px-5 mt-4 hidden">
+  <div class="bg-[#1a1a1a] gold-border rounded-2xl p-4">
+    <h3 id="judulKerja" class="font-bold">ABSENSI</h3>
+    <div id="isiKerja" class="mt-3 text-sm text-zinc-300"></div>
+    <button onclick="simpan()" class="w-full btn-gold py-3 rounded-xl font-bold mt-4">SIMPAN & KIRIM</button>
+  </div>
+</div>
+
+<script>
+function buka(menu){
+  const area = document.getElementById('areaKerja');
+  const judul = document.getElementById('judulKerja');
+  const isi = document.getElementById('isiKerja');
+  area.classList.remove('hidden');
+  window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
+
+  if(menu==='absensi'){
+    judul.innerText='ABSENSI - KELAS X-1';
+    isi.innerHTML=`
+      <label class="flex justify-between py-2 border-b border-zinc-800"><span>Ahmad Rizki</span><select class="bg-black border border-[#d4af37] rounded px-2"><option>Hadir</option><option>Sakit</option><option>Izin</option><option>Alfa</option></select></label>
+      <label class="flex justify-between py-2 border-b border-zinc-800"><span>Siti Nur</span><select class="bg-black border border-[#d4af37] rounded px-2"><option>Hadir</option><option>Sakit</option><option>Izin</option><option>Alfa</option></select></label>
+      <label class="flex justify-between py-2"><span>Budi Santoso</span><select class="bg-black border border-[#d4af37] rounded px-2"><option>Hadir</option><option>Sakit</option><option>Izin</option><option>Alfa</option></select></label>
+    `;
+  }
+  if(menu==='nilai'){
+    judul.innerText='NILAI - TUGAS 1';
+    isi.innerHTML=`<input placeholder="Cari nama murid..." class="w-full bg-black border border-zinc-700 rounded-xl px-3 py-3 mb-2"><p class="text-zinc-400">Pilih murid, isi nilai 0-100, lalu Simpan.</p>`;
+  }
+  if(menu==='materi'){
+    judul.innerText='UPLOAD MATERI';
+    isi.innerHTML=`<input placeholder="Judul Materi, contoh: Bab 1 Aljabar" class="w-full bg-black border border-zinc-700 rounded-xl px-3 py-3 mb-2"><input placeholder="Link YouTube / PDF" class="w-full bg-black border border-zinc-700 rounded-xl px-3 py-3"><p class="text-xs text-zinc-500 mt-2">Materi langsung muncul di Halaman Belajar murid.</p>`;
+  }
+  if(menu==='kelas'){
+    judul.innerText='KELAS SAYA';
+    isi.innerHTML=`<p>X-1 : 32 Murid</p><p class="mt-1">X-2 : 30 Murid</p><p class="mt-1">XI IPA 1 : 28 Murid</p>`;
+  }
+}
+function simpan(){ alert('Berhasil disimpan! (Nanti disambung ke Supabase)'); }
+</script>
+</body>
+</html>
