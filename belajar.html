@@ -4,83 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Belajar</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
-<style>
-  body{font-family:'Plus Jakarta Sans',sans-serif; background:#050505; color:#fff;}
-  .serif{font-family:'Playfair Display',serif;}
-  .gold{background:linear-gradient(135deg,#f6d365,#d4af37 45%,#fff3b0 65%,#b8860b);}
-  .gold-text{background:linear-gradient(135deg,#f6d365,#d4af37,#fff3b0,#b8860b); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
-  .card{background:#141414; border:1px solid rgba(212,175,55,.3); border-radius:16px;}
-  .card-gold{background:linear-gradient(135deg,#f6d365,#d4af37 45%,#fff3b0 65%,#b8860b); color:#000; border-radius:16px;}
-</style>
 </head>
-<body class="max-w-[430px] mx-auto min-h-[100dvh] flex flex-col bg-[#080808]">
+<body style="font-family:sans-serif; background:#050505; color:#fff; max-width:430px; margin:0 auto; padding:16px;">
 
-  <div class="px-4 pt-4 flex justify-between items-center">
-    <div>
-      <p class="text-[10px] tracking-[2px] text-[#d4af37] font-bold">BELAJAR • MURID</p>
-      <h1 class="serif text-[22px] leading-none font-black mt-1">Belajar, <span class="gold-text">Bedul</span></h1>
-    </div>
-    <div class="w-[40px] h-[40px] rounded-full bg-[#1a1a1a] flex items-center justify-center font-black border border-[#d4af37]">B</div>
+  <p style="font-size:10px; color:#d4af37; font-weight:bold;">BELAJAR • MURID</p>
+  <h1>Belajar, <span style="color:#d4af37;">Bedul</span></h1>
+
+  <div id="debug" style="background:#222; border:1px solid red; padding:10px; border-radius:10px; font-size:12px; margin:10px 0;">STATUS: Lagi nyoba nyambung...</div>
+
+  <div id="materiUtama" style="background:#d4af37; color:#000; border-radius:16px; padding:16px;">
+    <p>Memuat...</p>
   </div>
 
-  <!-- MATERI UTAMA - DARI DATABASE -->
-  <div id="materiUtama" class="mx-4 mt-3 card-gold p-4">
-    <p class="text-[10px] font-extrabold opacity-70">SEDANG DIMUAT...</p>
-    <p class="font-black text-[16px]">Tunggu sebentar...</p>
-  </div>
-
-  <!-- LIST MATERI - DARI DATABASE -->
-  <p class="px-4 mt-4 font-extrabold text-[13px]">Materi Dari Guru</p>
-  <div id="listMateri" class="px-4 mt-2 space-y-2 flex-1"></div>
-
-  <!-- DETAIL -->
-  <div id="detail" class="hidden mx-4 mb-3 card p-4">
-    <p class="text-[10px] text-[#d4af37] font-bold">MATERI</p>
-    <h3 id="judulDetail" class="font-black text-[15px] mt-1"></h3>
-    <p id="isiDetail" class="text-[12px] text-[#aaa] leading-relaxed mt-1"></p>
-    <button onclick="document.getElementById('detail').classList.add('hidden')" class="mt-3 w-full bg-[#222] py-2 rounded-full text-[11px] font-bold">Tutup</button>
-  </div>
-
-  <div class="mt-auto bg-[#0f0f0f] border-t border-[#d4af37]/30 px-6 py-3 flex justify-between items-center">
-    <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">🏠</span><span class="text-[9px]">Beranda</span></div>
-    <div class="flex flex-col items-center text-[#d4af37]"><span class="text-[20px]">📚</span><span class="text-[9px] font-bold">Belajar</span></div>
-    <div class="w-[44px] h-[44px] rounded-full gold flex items-center justify-center text-[22px] font-black text-black -mt-1">+</div>
-    <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">💬</span><span class="text-[9px]">Pesan</span></div>
-    <div class="flex flex-col items-center text-gray-400"><span class="text-[20px]">👤</span><span class="text-[9px]">Profil</span></div>
-  </div>
+  <div id="listMateri" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;"></div>
 
 <script>
 const supabaseClient = window.supabase.createClient("https://rotxnwbrnbwbscihvafq.supabase.co", "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81");
 
 async function loadMateri(){
-  const { data } = await supabaseClient.from('materi').select('*').order('id',{ascending:false});
-  const list = document.getElementById('listMateri');
-  const utama = document.getElementById('materiUtama');
-  if(!data || data.length===0){
-    utama.innerHTML = `<p class="text-[10px] font-extrabold opacity-70">BELUM ADA MATERI</p><p class="font-black text-[16px] mt-1">Guru belum kasih materi<br>hari ini.</p><p class="text-[11px] opacity-70 mt-1">Coba cek lagi nanti.</p>`;
-    list.innerHTML = '';
-    return;
+  const debug = document.getElementById('debug');
+  try {
+    const { data, error } = await supabaseClient.from('materi').select('*').order('id',{ascending:false});
+    if(error){
+      debug.innerHTML = "ERROR DARI SUPABASE: " + error.message;
+      return;
+    }
+    debug.innerHTML = "SUKSES! Ketemu " + data.length + " materi. Data: " + JSON.stringify(data).slice(0,200);
+    if(!data || data.length===0){
+      document.getElementById('materiUtama').innerHTML = `<p><b>Belum ada materi</b><br>Tabelnya kosong, belum di-insert.</p>`;
+      return;
+    }
+    const m = data[0];
+    document.getElementById('materiUtama').innerHTML = `<p>${m.mapel}</p><h2>${m.judul}</h2><p>Oleh ${m.guru} • ${m.durasi}</p><p style="margin-top:10px;">${m.isi}</p>`;
+    document.getElementById('listMateri').innerHTML = data.map(x=>`<div style="background:#141414; padding:12px; border-radius:12px;"><b>${x.judul}</b><br><span style="font-size:11px; color:#aaa;">${x.mapel}</span></div>`).join('');
+  } catch(e){
+    debug.innerHTML = "ERROR JAVASCRIPT: " + e.message;
   }
-  const m = data[0];
-  utama.innerHTML = `<p class="text-[10px] font-extrabold opacity-70">MATERI TERBARU • ${m.mapel} • ${m.durasi}</p><p class="font-black text-[16px] leading-tight mt-1">${m.judul}</p><p class="text-[11px] opacity-70 mt-1">Oleh ${m.guru}</p><button onclick="bukaMateri(${m.id})" class="mt-3 bg-black text-white w-full py-2.5 rounded-full text-[12px] font-extrabold">Buka Materi →</button>`;
-  list.innerHTML = data.map(x=>`
-    <div onclick="bukaMateri(${x.id})" class="card p-3 flex justify-between items-center">
-      <div><p class="font-bold text-[13px]">${x.judul}</p><p class="text-[11px] text-[#aaa]">${x.mapel} • ${x.durasi} • ${x.guru}</p></div>
-      <span class="bg-[#d4af37] text-black px-2 py-1 rounded-full text-[10px] font-extrabold">Buka</span>
-    </div>`).join('');
-  window._materi = data;
-}
-function bukaMateri(id){
-  const m = window._materi.find(x=>x.id===id);
-  document.getElementById('judulDetail').textContent = m.judul;
-  document.getElementById('isiDetail').textContent = m.isi || 'Belum ada isi dari guru.';
-  document.getElementById('detail').classList.remove('hidden');
 }
 loadMateri();
-setInterval(loadMateri, 5000);
 </script>
 </body>
 </html>
