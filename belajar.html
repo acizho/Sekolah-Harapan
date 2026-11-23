@@ -3,44 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Belajar</title>
+<title>Belajar - Bedul</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body style="font-family:sans-serif; background:#050505; color:#fff; max-width:430px; margin:0 auto; padding:16px;">
 
-  <p style="font-size:10px; color:#d4af37; font-weight:bold;">BELAJAR • MURID</p>
-  <h1>Belajar, <span style="color:#d4af37;">Bedul</span></h1>
+  <p style="font-size:10px; color:#d4af37; font-weight:bold; letter-spacing:2px;">BELAJAR • MURID</p>
+  <h1 style="font-size:28px; margin:5px 0 15px;">Belajar, <span style="color:#d4af37;">Bedul</span></h1>
 
-  <div id="debug" style="background:#222; border:1px solid red; padding:10px; border-radius:10px; font-size:12px; margin:10px 0;">STATUS: Lagi nyoba nyambung...</div>
-
-  <div id="materiUtama" style="background:#d4af37; color:#000; border-radius:16px; padding:16px;">
+  <div id="materiUtama" style="background:#d4af37; color:#000; border-radius:20px; padding:18px;">
     <p>Memuat...</p>
   </div>
 
-  <div id="listMateri" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;"></div>
+  <h3 style="margin-top:20px;">Materi Lainnya</h3>
+  <div id="listMateri" style="display:flex; flex-direction:column; gap:10px;"></div>
 
 <script>
 const supabaseClient = window.supabase.createClient("https://rotxnwbrnbwbscihvafq.supabase.co", "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81");
 
 async function loadMateri(){
-  const debug = document.getElementById('debug');
-  try {
-    const { data, error } = await supabaseClient.from('materi').select('*').order('id',{ascending:false});
-    if(error){
-      debug.innerHTML = "ERROR DARI SUPABASE: " + error.message;
-      return;
-    }
-    debug.innerHTML = "SUKSES! Ketemu " + data.length + " materi. Data: " + JSON.stringify(data).slice(0,200);
-    if(!data || data.length===0){
-      document.getElementById('materiUtama').innerHTML = `<p><b>Belum ada materi</b><br>Tabelnya kosong, belum di-insert.</p>`;
-      return;
-    }
-    const m = data[0];
-    document.getElementById('materiUtama').innerHTML = `<p>${m.mapel}</p><h2>${m.judul}</h2><p>Oleh ${m.guru} • ${m.durasi}</p><p style="margin-top:10px;">${m.isi}</p>`;
-    document.getElementById('listMateri').innerHTML = data.map(x=>`<div style="background:#141414; padding:12px; border-radius:12px;"><b>${x.judul}</b><br><span style="font-size:11px; color:#aaa;">${x.mapel}</span></div>`).join('');
-  } catch(e){
-    debug.innerHTML = "ERROR JAVASCRIPT: " + e.message;
+  const { data } = await supabaseClient.from('materi').select('*').order('id',{ascending:false});
+  if(!data || data.length===0){
+    document.getElementById('materiUtama').innerHTML = `<p><b>Belum ada materi</b></p>`;
+    return;
   }
+  const m = data[0];
+  document.getElementById('materiUtama').innerHTML = `
+    <p style="font-size:11px; font-weight:bold;">${m.mapel} • ${m.durasi}</p>
+    <h2 style="margin:8px 0;">${m.judul}</h2>
+    <p style="font-size:13px; opacity:0.7;">Oleh ${m.guru}</p>
+    <p style="margin-top:12px; line-height:1.6;">${m.isi}</p>
+    <div style="margin-top:15px; background:#000; color:#d4af37; text-align:center; padding:12px; border-radius:12px; font-weight:bold;">Mulai Belajar →</div>
+  `;
+  document.getElementById('listMateri').innerHTML = data.map(x=>`
+    <div style="background:#141414; border:1px solid #222; padding:14px; border-radius:14px;">
+      <b>${x.judul}</b><br>
+      <span style="font-size:11px; color:#aaa;">${x.mapel} • ${x.guru} • ${x.durasi}</span>
+    </div>`).join('');
 }
 loadMateri();
 </script>
