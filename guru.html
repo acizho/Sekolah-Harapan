@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guru - Sinkron DB</title>
+<title>Guru - Dari Bot Index</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
@@ -20,33 +20,18 @@
 </head>
 <body class="max-w-[430px] mx-auto min-h-[100dvh] flex flex-col bg-[#080808] relative overflow-hidden">
 
-  <!-- LOGIN GURU - KALO BELUM LOGIN -->
-  <div id="loginGuru" class="p-4 pt-10">
-    <p class="text-[10px] tracking-[2px] text-[#d4af37] font-bold">LOGIN • GURU</p>
-    <h1 class="serif text-[28px] font-black">Halo, Guru! 👋</h1>
-    <p class="text-[12px] text-[#aaa] mt-1">Masuk pake nama lu, biar data ke-load dari database.</p>
-    <input id="inputNamaGuru" class="input mt-4" placeholder="Contoh: Budi / Hendra Hartono">
-    <button onclick="loginGuru()" class="gold text-black w-full py-3 rounded-full font-extrabold mt-3">MASUK ➜</button>
-    <p id="errLogin" class="text-red-400 text-[12px] mt-2 hidden"></p>
-    <p class="text-[11px] text-[#666] mt-3">Nama harus sama kayak di tabel `guru` di Supabase. Kalo gak ketemu, cek lagi nama-nya.</p>
-  </div>
-
-  <!-- ISI UTAMA - DISEMBUNYIIN SAMPE LOGIN -->
-  <div id="isiUtama" class="hidden flex-col flex-1">
+  <div id="isiUtama" class="flex flex-col flex-1">
   <div class="px-4 pt-4 flex justify-between items-center">
     <div>
       <p class="text-[10px] tracking-[2px] text-[#d4af37] font-bold">SELAMAT DATANG • GURU</p>
-      <h1 class="serif text-[22px] leading-none font-black mt-1">Halo, <span id="namaGuruHeader" class="gold-text">-</span></h1>
+      <h1 class="serif text-[22px] leading-none font-black mt-1">Halo, <span id="namaGuruHeader" class="gold-text">Memuat...</span></h1>
       <p id="infoGuruHeader" class="text-[11px] text-[#aaa] mt-1">-</p>
     </div>
-    <button onclick="logoutGuru()" class="w-[40px] h-[40px] rounded-full bg-[#1a1a1a] border border-[#d4af37]/30 text-[14px]">⬅</button>
+    <button onclick="keluarKeIndex()" class="w-[40px] h-[40px] rounded-full bg-[#1a1a1a] border border-[#d4af37]/30 text-[14px]" title="Keluar ke Index">⬅</button>
   </div>
 
   <div class="mx-4 mt-3 card-gold px-4 py-3 flex justify-between items-center">
-    <div>
-      <p class="text-[10px] font-extrabold opacity-70">KELAS BERIKUTNYA</p>
-      <p id="kelasBerikutnya" class="font-black text-[14px] leading-tight mt-0.5">Memuat...</p>
-    </div>
+    <div><p class="text-[10px] font-extrabold opacity-70">KELAS BERIKUTNYA</p><p id="kelasBerikutnya" class="font-black text-[14px] leading-tight mt-0.5">Memuat...</p></div>
     <button onclick="bukaFungsi('absensi')" class="bg-black text-white px-3.5 py-2 rounded-full text-[11px] font-extrabold shrink-0 ml-2">Absen →</button>
   </div>
 
@@ -68,7 +53,7 @@
 
   <div class="mx-4 mt-3 card p-3 flex-1">
     <div class="flex justify-between items-center"><h3 class="font-extrabold text-[13px]">Jadwal Hari Ini</h3><button onclick="bukaFungsi('jadwal')" class="text-[11px] text-[#d4af37] font-bold">Semua →</button></div>
-    <div id="listJadwal" class="mt-2 space-y-2"><p class="text-[12px] text-[#888]">Memuat jadwal...</p></div>
+    <div id="listJadwal" class="mt-2 space-y-2"><p class="text-[12px] text-[#888]">Memuat...</p></div>
     <div class="mt-3 bg-[#0f0f0f] border border-[#d4af37]/30 rounded-xl p-2.5 flex justify-between items-center">
       <p class="text-[11px] font-bold">💬 Ada <span id="chatCount" class="text-[#d4af37]">0</span> chat baru</p>
       <button onclick="openChat()" class="gold text-black px-3 py-1.5 rounded-full text-[11px] font-extrabold">Buka Chat →</button>
@@ -76,7 +61,7 @@
   </div>
 
   <div class="mt-3 bg-[#0f0f0f] border-t border-[#d4af37]/30 px-6 py-3 flex justify-between items-center">
-    <div class="flex flex-col items-center text-[#d4af37]"><span class="text-[20px]">🏠</span><span class="text-[9px] font-bold mt-0.5">Beranda</span></div>
+    <div class="flex flex-col items-center text-[#d4af37]"><span class="text-[20px]">🏠</span><span class="text-[9px] font-bold">Beranda</span></div>
     <button onclick="bukaFungsi('kelas')" class="flex flex-col items-center text-gray-400"><span class="text-[20px]">👥</span><span class="text-[9px]">Kelas</span></button>
     <button onclick="bukaFungsi('materi')" class="w-[44px] h-[44px] rounded-full gold flex items-center justify-center text-[22px] font-black text-black -mt-1">+</button>
     <button onclick="openChat()" class="flex flex-col items-center text-gray-400 relative"><span class="text-[20px]">💬</span><span class="text-[9px]">Pesan</span><span id="dotChat" class="hidden absolute -top-1 right-0 w-[8px] h-[8px] bg-red-500 rounded-full"></span></button>
@@ -84,41 +69,18 @@
   </div>
   </div>
 
-  <!-- PANEL FUNGSI - ABSENSI / NILAI / MATERI / KELAS / JADWAL / LAPORAN / PROFIL -->
   <div id="panelFungsi" class="absolute inset-0 bg-[#080808] flex flex-col translate-y-full z-30">
-    <div class="px-4 pt-4 pb-3 flex justify-between items-center border-b border-[#d4af37]/20">
-      <h2 id="judulFungsi" class="serif text-[20px] font-black">Fungsi</h2>
-      <button onclick="tutupFungsi()" class="w-[36px] h-[36px] rounded-full bg-[#1a1a1a] border border-[#d4af37]/30 font-black">✕</button>
-    </div>
+    <div class="px-4 pt-4 pb-3 flex justify-between items-center border-b border-[#d4af37]/20"><h2 id="judulFungsi" class="serif text-[20px] font-black">Fungsi</h2><button onclick="tutupFungsi()" class="w-[36px] h-[36px] rounded-full bg-[#1a1a1a] border border-[#d4af37]/30 font-black">✕</button></div>
     <div id="isiFungsi" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
   </div>
 
-  <!-- CHAT PANEL -->
   <div id="chatPanel" class="absolute inset-0 bg-[#080808] flex flex-col translate-y-full z-20">
-    <div class="px-4 pt-4 pb-3 flex justify-between items-center border-b border-[#d4af37]/20">
-      <div><p class="text-[10px] tracking-[2px] text-[#d4af37] font-bold">PESAN • DARI SISWA</p><h2 class="serif text-[20px] font-black leading-none mt-1">Chat</h2></div>
-      <button onclick="closeChat()" class="w-[36px] h-[36px] rounded-full bg-[#1a1a1a] border border-[#d4af37]/30 font-black">✕</button>
-    </div>
-    <div class="mx-4 mt-2 bg-[#1a1a1a] border border-[#d4af37]/30 rounded-xl px-3 py-2 flex justify-between items-center">
-      <p class="text-[11px] font-bold">🚪 Pintu: <span id="pintuInfo" class="text-[#d4af37]">Belum kebuka - ketik #nama</span></p>
-      <button onclick="tutupPintu()" class="text-[10px] bg-[#222] px-2 py-1 rounded-full font-bold">Tutup</button>
-    </div>
-    <div class="px-4 py-2 flex gap-2">
-      <input id="namaSaya" readonly class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-3 py-2 text-[12px] outline-none">
-      <input id="tujuan" value="#siswa" readonly class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-3 py-2 text-[12px] outline-none">
-    </div>
-    <div class="px-4 flex gap-2 pb-2 overflow-x-auto">
-      <button onclick="kirimCepat('#budi')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">#budi</button>
-      <button onclick="kirimCepat('/nis')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/nis</button>
-      <button onclick="kirimCepat('/nilai')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/nilai</button>
-      <button onclick="kirimCepat('/absen')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/absen</button>
-      <button onclick="kirimCepat('/spp')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/spp</button>
-    </div>
+    <div class="px-4 pt-4 pb-3 flex justify-between items-center border-b border-[#d4af37]/20"><div><p class="text-[10px] tracking-[2px] text-[#d4af37] font-bold">PESAN • DARI SISWA</p><h2 class="serif text-[20px] font-black leading-none mt-1">Chat</h2></div><button onclick="closeChat()" class="w-[36px] h-[36px] rounded-full bg-[#1a1a1a] border border-[#d4af37]/30 font-black">✕</button></div>
+    <div class="mx-4 mt-2 bg-[#1a1a1a] border border-[#d4af37]/30 rounded-xl px-3 py-2 flex justify-between items-center"><p class="text-[11px] font-bold">🚪 Pintu: <span id="pintuInfo" class="text-[#d4af37]">Belum kebuka - ketik #nama</span></p><button onclick="tutupPintu()" class="text-[10px] bg-[#222] px-2 py-1 rounded-full font-bold">Tutup</button></div>
+    <div class="px-4 py-2 flex gap-2"><input id="namaSaya" readonly class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-3 py-2 text-[12px] outline-none"><input id="tujuan" value="#siswa" readonly class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-3 py-2 text-[12px] outline-none"></div>
+    <div class="px-4 flex gap-2 pb-2 overflow-x-auto"><button onclick="kirimCepat('#budi')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">#budi</button><button onclick="kirimCepat('/nis')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/nis</button><button onclick="kirimCepat('/nilai')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/nilai</button><button onclick="kirimCepat('/absen')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/absen</button><button onclick="kirimCepat('/spp')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/spp</button></div>
     <div id="chatList" class="flex-1 overflow-y-auto px-4 py-2 space-y-2"></div>
-    <div class="p-3 border-t border-[#d4af37]/20 flex gap-2 bg-[#0f0f0f]">
-      <input id="isiChat" class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-4 py-2.5 text-[13px] outline-none" placeholder="Ketik #nama / /perintah / chat biasa...">
-      <button onclick="kirimChat()" class="gold text-black w-[44px] h-[44px] rounded-full font-black shrink-0">➤</button>
-    </div>
+    <div class="p-3 border-t border-[#d4af37]/20 flex gap-2 bg-[#0f0f0f]"><input id="isiChat" class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-4 py-2.5 text-[13px] outline-none" placeholder="Ketik #nama / /perintah / chat biasa..."><button onclick="kirimChat()" class="gold text-black w-[44px] h-[44px] rounded-full font-black shrink-0">➤</button></div>
   </div>
 
 <script>
@@ -127,227 +89,84 @@ let guruLogin = null;
 let pintuTerbuka = null;
 let pesanBot = [];
 let dataSiswaKelas = [];
+function normalisasi(t){ return String(t||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+function keluarKeIndex(){ sessionStorage.clear(); window.location.href='index.html'; }
 
-// ===== LOGIN GURU - SINKRON KE TABEL guru =====
-async function loginGuru(){
-  let nama = document.getElementById('inputNamaGuru').value.trim();
-  if(!nama) return alert('Isi nama dulu, Ko!');
-  let { data } = await supabaseClient.from('guru').select('*').ilike('nama','%'+nama+'%').limit(1);
-  if(!data || !data.length){
-    document.getElementById('errLogin').textContent = 'Guru "'+nama+'" gak ketemu di tabel guru. Cek nama di Supabase!';
-    document.getElementById('errLogin').classList.remove('hidden');
+// ===== PENJAGA - CUMA NGECEK KUNCI DARI BOT INDEX! GAK ADA PINTU DI SINI! =====
+(async function jagaHalamanGuru(){
+  let id = sessionStorage.getItem('guru_id_login');
+  let pin = sessionStorage.getItem('guru_pin_login');
+  // 1. Gak lewat Bot Index? Tendang balik!
+  if(!id || !pin){
+    alert('Lewat Bot di Index dulu, Ko! Ketik @guru di sana!');
+    window.location.href = 'index.html';
     return;
   }
-  guruLogin = data[0];
-  localStorage.setItem('guru_login', guruLogin.nama);
-  localStorage.setItem('guru_id', guruLogin.id);
-  document.getElementById('loginGuru').style.display='none';
-  document.getElementById('isiUtama').classList.remove('hidden');
-  document.getElementById('isiUtama').classList.add('flex');
+  // 2. Cek lagi ke database, kuncinya bener gak? Biar gak bisa dipalsuin!
+  let { data } = await supabaseClient.from('guru').select('*').eq('id', id).single();
+  if(!data || String(data.pin||'').trim() !== String(pin).trim()){
+    alert('Kuncinya salah / palsu! Balik ke Index lagi, Ko!');
+    sessionStorage.clear();
+    window.location.href = 'index.html';
+    return;
+  }
+  // 3. Lolos! Ini guru-nya, dikunci! Gak bisa ganti-ganti!
+  guruLogin = data;
   document.getElementById('namaSaya').value = guruLogin.nama;
   loadSemua();
-}
-function logoutGuru(){ localStorage.removeItem('guru_login'); localStorage.removeItem('guru_id'); location.reload(); }
-// Auto-login kalo udah pernah login
-(async()=>{
-  let nama = localStorage.getItem('guru_login');
-  if(nama){
-    let { data } = await supabaseClient.from('guru').select('*').ilike('nama','%'+nama+'%').limit(1);
-    if(data && data.length){ guruLogin = data[0]; document.getElementById('loginGuru').style.display='none'; document.getElementById('isiUtama').classList.remove('hidden'); document.getElementById('isiUtama').classList.add('flex'); document.getElementById('namaSaya').value = guruLogin.nama; loadSemua(); }
-  }
 })();
 
-function normalisasi(t){ return String(t||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
-
-// ===== LOAD SEMUA - SINKRON =====
 async function loadSemua(){
   if(!guruLogin) return;
   let mapelGuru = guruLogin.mapel || guruLogin.mata_pelajaran || guruLogin.mengajar || '-';
   let kelasGuru = guruLogin.kelas || guruLogin.mengajar_kelas || '-';
   document.getElementById('namaGuruHeader').textContent = guruLogin.nama;
-  document.getElementById('infoGuruHeader').textContent = mapelGuru + ' • Kelas: ' + kelasGuru;
+  document.getElementById('infoGuruHeader').textContent = mapelGuru + ' • Kelas: ' + kelasGuru + ' • Diantar Bot ✅';
   document.getElementById('kelasBerikutnya').textContent = kelasGuru + ' • ' + mapelGuru;
-
-  // 1. MURID - dari tabel siswa + kelas
   let kelasList = String(kelasGuru).split(',').map(s=>s.trim()).filter(Boolean);
   let { data: semuaSiswa } = await supabaseClient.from('siswa').select('*,kelas(nama_kelas)');
-  let siswaSaya = (semuaSiswa||[]).filter(s=>{
-    let kSiswa = s.kelas?.nama_kelas || s.kelas_id || '';
-    return kelasList.some(k=> normalisasi(k) === normalisasi(kSiswa) || kelasGuru==='Semua');
-  });
-  // Kalo kelas guru kosong, tampilin semua biar gak kosong, tapi kasih warning
+  let siswaSaya = (semuaSiswa||[]).filter(s=>{ let kSiswa = s.kelas?.nama_kelas || s.kelas_id || ''; return kelasList.some(k=> normalisasi(k) === normalisasi(kSiswa) || kelasGuru==='Semua'); });
   if(!guruLogin.kelas && !guruLogin.mengajar_kelas){ siswaSaya = semuaSiswa||[]; }
   dataSiswaKelas = siswaSaya;
   document.getElementById('statMurid').textContent = siswaSaya.length;
   document.getElementById('statKelas').textContent = kelasList[0]==='-' ? 0 : kelasList.length;
   document.getElementById('labelKelas').textContent = siswaSaya.length + ' Murid';
   document.getElementById('labelAbsen').textContent = siswaSaya.length + ' Siswa';
-
-  // 2. MATERI - dari tabel materi, filter guru ini
   let { data: materi } = await supabaseClient.from('materi').select('*');
   let materiSaya = (materi||[]).filter(m=> String(m.guru||'').toLowerCase().includes(guruLogin.nama.toLowerCase().split(' ')[0]) || String(m.guru||'')===guruLogin.nama);
-  // Kalo filter nama gak ketemu, pake semua materi yang mapel-nya sama
   if(materiSaya.length===0) materiSaya = (materi||[]).filter(m=> String(m.mapel||'').toLowerCase()===String(mapelGuru).toLowerCase());
   document.getElementById('labelMateri').textContent = materiSaya.length + ' Terkirim';
-
-  // 3. NILAI - dari tabel nilai
   let { data: nilai } = await supabaseClient.from('nilai').select('*');
   document.getElementById('labelNilai').textContent = (nilai||[]).length + ' Nilai Masuk';
-
-  // 4. HADIR - dari tabel kehadiran, hitung persen hari ini
   let { data: hadir } = await supabaseClient.from('kehadiran').select('*');
-  let total = (hadir||[]).length;
-  let hadirCount = (hadir||[]).filter(h=> String(h.status||'').toLowerCase().includes('hadir')).length;
+  let total = (hadir||[]).length; let hadirCount = (hadir||[]).filter(h=> String(h.status||'').toLowerCase().includes('hadir')).length;
   document.getElementById('statHadir').textContent = total ? Math.round(hadirCount/total*100)+'%' : '-';
-
-  // 5. JADWAL - dari tabel jadwal kalo ada, kalo gak ada pake kelas guru
   let { data: jadwal } = await supabaseClient.from('jadwal').select('*');
   let jadwalHtml = '';
-  if(jadwal && jadwal.length){
-    let jSaya = jadwal.filter(j=> String(j.guru||'').toLowerCase().includes(guruLogin.nama.toLowerCase().split(' ')[0]) || String(j.mapel||'')===mapelGuru);
-    jadwalHtml = jSaya.slice(0,3).map(j=>`<div class="flex justify-between items-center"><p class="text-[12px] font-bold">${j.kelas||'-'} • ${j.mapel||mapelGuru} <span class="text-[#888] font-medium">• ${j.jam||''}</span></p><button onclick="bukaFungsi('absensi')" class="bg-[#d4af37] text-black px-2 py-1 rounded-full text-[10px] font-extrabold">Absen</button></div>`).join('');
-  }
+  if(jadwal && jadwal.length){ let jSaya = jadwal.filter(j=> String(j.guru||'').toLowerCase().includes(guruLogin.nama.toLowerCase().split(' ')[0]) || String(j.mapel||'')===mapelGuru); jadwalHtml = jSaya.slice(0,3).map(j=>`<div class="flex justify-between items-center"><p class="text-[12px] font-bold">${j.kelas||'-'} • ${j.mapel||mapelGuru} <span class="text-[#888] font-medium">• ${j.jam||''}</span></p><button onclick="bukaFungsi('absensi')" class="bg-[#d4af37] text-black px-2 py-1 rounded-full text-[10px] font-extrabold">Absen</button></div>`).join(''); }
   if(!jadwalHtml) jadwalHtml = kelasList.map(k=>`<div class="flex justify-between items-center"><p class="text-[12px] font-bold">${k} • ${mapelGuru} <span class="text-[#888] font-medium">• 07.30</span></p><button onclick="bukaFungsi('absensi')" class="bg-[#d4af37] text-black px-2 py-1 rounded-full text-[10px] font-extrabold">Absen</button></div>`).join('');
-  document.getElementById('listJadwal').innerHTML = jadwalHtml || '<p class="text-[12px] text-[#888]">Belum ada jadwal. Isi kelas di tabel guru!</p>';
-
+  document.getElementById('listJadwal').innerHTML = jadwalHtml || '<p class="text-[12px] text-[#888]">Belum ada jadwal. Isi kelas di Admin -> Guru!</p>';
   loadChat();
 }
-
-// ===== PANEL FUNGSI - SEMUA BISA DI KLIK =====
-function bukaFungsi(nama){
-  document.getElementById('panelFungsi').style.transform='translateY(0)';
-  let judul = {absensi:'✓ Absensi', nilai:'💯 Nilai', materi:'📚 Materi', kelas:'👥 Kelas Saya', jadwal:'📅 Jadwal', laporan:'📊 Laporan', profil:'👤 Profil Guru'}[nama]||nama;
-  document.getElementById('judulFungsi').textContent = judul;
-  let box = document.getElementById('isiFungsi');
-  box.innerHTML = '<p class="text-[13px] text-[#888]">Memuat...</p>';
-  if(nama==='absensi') renderAbsensi();
-  if(nama==='nilai') renderNilai();
-  if(nama==='materi') renderMateri();
-  if(nama==='kelas') renderKelas();
-  if(nama==='jadwal') renderJadwal();
-  if(nama==='laporan') renderLaporan();
-  if(nama==='profil') renderProfil();
-}
+function bukaFungsi(nama){ document.getElementById('panelFungsi').style.transform='translateY(0)'; let judul = {absensi:'✓ Absensi', nilai:'💯 Nilai', materi:'📚 Materi', kelas:'👥 Kelas Saya', jadwal:'📅 Jadwal', laporan:'📊 Laporan', profil:'👤 Profil Guru'}[nama]||nama; document.getElementById('judulFungsi').textContent = judul; document.getElementById('isiFungsi').innerHTML = '<p class="text-[13px] text-[#888]">Memuat...</p>'; if(nama==='absensi') renderAbsensi(); if(nama==='nilai') renderNilai(); if(nama==='materi') renderMateri(); if(nama==='kelas') renderKelas(); if(nama==='jadwal') renderJadwal(); if(nama==='laporan') renderLaporan(); if(nama==='profil') renderProfil(); }
 function tutupFungsi(){ document.getElementById('panelFungsi').style.transform='translateY(100%)'; }
-
-async function renderAbsensi(){
-  let box = document.getElementById('isiFungsi');
-  if(!dataSiswaKelas.length){ box.innerHTML='<p class="text-[13px]">Belum ada siswa di kelas lu. Isi kelas di tabel guru dulu, Ko!</p>'; return; }
-  box.innerHTML = dataSiswaKelas.map(s=>`<div class="card p-3 flex justify-between items-center"><div><b class="text-[13px]">${s.nama}</b><br><span class="text-[11px] text-[#aaa]">NIS: ${s.nis} • ${s.kelas?.nama_kelas||s.kelas_id||'-'}</span></div><div class="flex gap-1"><button onclick="simpanAbsen('${s.nis}','${s.nama}','Hadir')" class="bg-green-600 px-3 py-1.5 rounded-full text-[11px] font-bold">Hadir</button><button onclick="simpanAbsen('${s.nis}','${s.nama}','Izin')" class="bg-yellow-600 px-3 py-1.5 rounded-full text-[11px] font-bold">Izin</button><button onclick="simpanAbsen('${s.nis}','${s.nama}','Alpa')" class="bg-red-600 px-3 py-1.5 rounded-full text-[11px] font-bold">Alpa</button></div></div>`).join('');
-}
-async function simpanAbsen(nis, nama, status){
-  let { error } = await supabaseClient.from('kehadiran').insert([{nis_siswa:nis, nama_siswa:nama, siswa_id:nis, status:status, tanggal:new Date().toISOString().slice(0,10), guru:guruLogin.nama}]);
-  if(error) return alert('Gagal: '+error.message+' - Cek kolom tabel kehadiran di Supabase!');
-  alert('✅ '+nama+' : '+status); loadSemua();
-}
-async function renderNilai(){
-  let box = document.getElementById('isiFungsi');
-  let { data } = await supabaseClient.from('nilai').select('*').order('id',{ascending:false}).limit(30);
-  if(!data||!data.length){ box.innerHTML='<p class="text-[13px]">Belum ada nilai. Nilai masuk otomatis kalo siswa ngerjain soal di halaman Belajar.</p>'; return; }
-  box.innerHTML = data.map(n=>`<div class="card p-3 flex justify-between"><div><b class="text-[13px]">${n.nama||n.nis||'-'}</b><br><span class="text-[11px] text-[#aaa]">Materi ID: ${n.materi_id||'-'}</span></div><b class="text-[#d4af37] text-[16px]">${n.nilai}</b></div>`).join('');
-}
-async function renderMateri(){
-  let box = document.getElementById('isiFungsi');
-  let { data } = await supabaseClient.from('materi').select('*').order('id',{ascending:false});
-  let list = (data||[]).filter(m=> String(m.guru||'').toLowerCase().includes(guruLogin.nama.toLowerCase().split(' ')[0]));
-  if(!list.length) list = data||[];
-  box.innerHTML = `<input id="judulMateriBaru" class="input" placeholder="Judul materi baru"><input id="isiMateriBaru" class="input mt-2" placeholder="Isi materi..."><button onclick="tambahMateri()" class="gold text-black w-full py-2.5 rounded-full font-extrabold mt-2">+ TAMBAH MATERI ➜</button><h3 class="font-bold text-[13px] mt-3">Materi Terkirim:</h3>` + list.map(m=>`<div class="card p-3"><b class="text-[13px]">${m.judul}</b><br><span class="text-[11px] text-[#aaa]">${m.mapel} • ${m.kelas||'-'} • Oleh ${m.guru}</span><p class="text-[12px] mt-1">${String(m.isi||'').substring(0,100)}...</p></div>`).join('');
-}
-async function tambahMateri(){
-  let judul = document.getElementById('judulMateriBaru').value.trim();
-  let isi = document.getElementById('isiMateriBaru').value.trim();
-  if(!judul) return alert('Isi judul dulu!');
-  let kelasGuru = guruLogin.kelas || guruLogin.mengajar_kelas || '';
-  let { error } = await supabaseClient.from('materi').insert([{judul:judul, isi:isi||judul, mapel:guruLogin.mapel||guruLogin.mata_pelajaran||'', guru:guruLogin.nama, kelas:kelasGuru, durasi:'30 menit'}]);
-  if(error) return alert('Gagal: '+error.message);
-  alert('✅ Materi terkirim! Langsung muncul di siswa kelas '+kelasGuru); bukaFungsi('materi'); loadSemua();
-}
-async function renderKelas(){
-  let box = document.getElementById('isiFungsi');
-  if(!dataSiswaKelas.length){ box.innerHTML='<p class="text-[13px]">Belum ada siswa. Isi kelas di tabel guru!</p>'; return; }
-  box.innerHTML = dataSiswaKelas.map(s=>`<div class="card p-3 flex justify-between items-center"><div><b class="text-[13px]">${s.nama}</b><br><span class="text-[11px] text-[#aaa]">NIS ${s.nis} • ${s.kelas?.nama_kelas||''} • ${s.status||''}</span></div><button onclick="kirimCepat('#${s.nama}'); tutupFungsi(); openChat();" class="gold text-black px-3 py-1.5 rounded-full text-[11px] font-bold">Chat 💬</button></div>`).join('');
-}
-async function renderJadwal(){
-  let box = document.getElementById('isiFungsi');
-  let { data } = await supabaseClient.from('jadwal').select('*');
-  if(!data||!data.length){ box.innerHTML = `<p class="text-[13px]">Belum ada tabel jadwal. Untuk sekarang jadwal diambil dari kelas di tabel guru:</p><div class="card p-3 mt-2"><b>${guruLogin.kelas||'-'} • ${guruLogin.mapel||guruLogin.mata_pelajaran||'-'}</b><br><span class="text-[11px] text-[#aaa]">07.30 - 09.00</span></div>`; return; }
-  box.innerHTML = data.map(j=>`<div class="card p-3"><b class="text-[13px]">${j.kelas} • ${j.mapel}</b><br><span class="text-[11px] text-[#aaa]">${j.hari||''} • ${j.jam||''} • Guru: ${j.guru||''}</span></div>`).join('');
-}
-async function renderLaporan(){
-  let box = document.getElementById('isiFungsi');
-  let { data: nilai } = await supabaseClient.from('nilai').select('*');
-  let { data: hadir } = await supabaseClient.from('kehadiran').select('*');
-  let totalNilai = (nilai||[]).length;
-  let rata = totalNilai ? Math.round((nilai||[]).reduce((a,b)=>a+(b.nilai||0),0)/totalNilai) : 0;
-  let totalHadir = (hadir||[]).length;
-  let hadirCount = (hadir||[]).filter(h=> String(h.status||'').toLowerCase().includes('hadir')).length;
-  box.innerHTML = `<div class="card p-4 text-center"><p class="text-[11px] text-[#aaa]">RATA-RATA NILAI</p><p class="text-[32px] font-black gold-text">${rata}</p></div><div class="grid grid-cols-2 gap-2"><div class="card p-3 text-center"><b>${totalNilai}</b><br><span class="text-[11px] text-[#aaa]">Nilai Masuk</span></div><div class="card p-3 text-center"><b>${totalHadir ? Math.round(hadirCount/totalHadir*100)+'%' : '-'}</b><br><span class="text-[11px] text-[#aaa]">Kehadiran</span></div></div><p class="text-[11px] text-[#666]">Laporan dihitung langsung dari tabel nilai + kehadiran di Supabase.</p>`;
-}
-function renderProfil(){
-  let box = document.getElementById('isiFungsi');
-  box.innerHTML = `<div class="card p-4"><p class="text-[11px] text-[#d4af37] font-bold">PROFIL GURU • DARI DATABASE</p><h2 class="font-black text-[18px] mt-1">${guruLogin.nama}</h2><p class="text-[13px] mt-2">Mapel: ${guruLogin.mapel||guruLogin.mata_pelajaran||'-'}</p><p class="text-[13px]">Kelas: ${guruLogin.kelas||guruLogin.mengajar_kelas||'-'}</p><p class="text-[13px]">ID: ${guruLogin.id}</p><p class="text-[11px] text-red-400 mt-3">Kalo kelas di sini masih KOSONG / -, isi di Supabase tabel guru -> kolom kelas -> contoh: X IPA 1. Itu yang bikin kemarin Andi nyangkut!</p></div><button onclick="logoutGuru()" class="w-full py-3 rounded-full border border-red-500 text-red-400 font-bold mt-2">Logout</button>`;
-}
-
-// ===== CHAT - SINKRON KE chat_siswa_guru + chat =====
-let pintuTerbuka = null;
-let pesanBot = [];
+async function renderAbsensi(){ let box = document.getElementById('isiFungsi'); if(!dataSiswaKelas.length){ box.innerHTML='<p class="text-[13px]">Belum ada siswa. Isi kelas di Admin -> Guru!</p>'; return; } box.innerHTML = dataSiswaKelas.map(s=>`<div class="card p-3 flex justify-between items-center"><div><b class="text-[13px]">${s.nama}</b><br><span class="text-[11px] text-[#aaa]">NIS: ${s.nis} • ${s.kelas?.nama_kelas||s.kelas_id||'-'}</span></div><div class="flex gap-1"><button onclick="simpanAbsen('${s.nis}','${s.nama}','Hadir')" class="bg-green-600 px-3 py-1.5 rounded-full text-[11px] font-bold">Hadir</button><button onclick="simpanAbsen('${s.nis}','${s.nama}','Izin')" class="bg-yellow-600 px-3 py-1.5 rounded-full text-[11px] font-bold">Izin</button><button onclick="simpanAbsen('${s.nis}','${s.nama}','Alpa')" class="bg-red-600 px-3 py-1.5 rounded-full text-[11px] font-bold">Alpa</button></div></div>`).join(''); }
+async function simpanAbsen(nis, nama, status){ let { error } = await supabaseClient.from('kehadiran').insert([{nis_siswa:nis, nama_siswa:nama, siswa_id:nis, status:status, tanggal:new Date().toISOString().slice(0,10), guru:guruLogin.nama}]); if(error) return alert('Gagal: '+error.message); alert('✅ '+nama+' : '+status); loadSemua(); }
+async function renderNilai(){ let box = document.getElementById('isiFungsi'); let { data } = await supabaseClient.from('nilai').select('*').order('id',{ascending:false}).limit(30); if(!data||!data.length){ box.innerHTML='<p class="text-[13px]">Belum ada nilai.</p>'; return; } box.innerHTML = data.map(n=>`<div class="card p-3 flex justify-between"><div><b class="text-[13px]">${n.nama||n.nis||'-'}</b><br><span class="text-[11px] text-[#aaa]">Materi ID: ${n.materi_id||'-'}</span></div><b class="text-[#d4af37] text-[16px]">${n.nilai}</b></div>`).join(''); }
+async function renderMateri(){ let box = document.getElementById('isiFungsi'); let { data } = await supabaseClient.from('materi').select('*').order('id',{ascending:false}); let list = (data||[]).filter(m=> String(m.guru||'').toLowerCase().includes(guruLogin.nama.toLowerCase().split(' ')[0])); if(!list.length) list = data||[]; box.innerHTML = `<input id="judulMateriBaru" class="input" placeholder="Judul materi baru"><input id="isiMateriBaru" class="input mt-2" placeholder="Isi materi..."><button onclick="tambahMateri()" class="gold text-black w-full py-2.5 rounded-full font-extrabold mt-2">+ TAMBAH MATERI ➜</button><h3 class="font-bold text-[13px] mt-3">Materi Terkirim:</h3>` + list.map(m=>`<div class="card p-3"><b class="text-[13px]">${m.judul}</b><br><span class="text-[11px] text-[#aaa]">${m.mapel} • ${m.kelas||'-'} • Oleh ${m.guru}</span><p class="text-[12px] mt-1">${String(m.isi||'').substring(0,100)}...</p></div>`).join(''); }
+async function tambahMateri(){ let judul = document.getElementById('judulMateriBaru').value.trim(); let isi = document.getElementById('isiMateriBaru').value.trim(); if(!judul) return alert('Isi judul dulu!'); let kelasGuru = guruLogin.kelas || guruLogin.mengajar_kelas || ''; let { error } = await supabaseClient.from('materi').insert([{judul:judul, isi:isi||judul, mapel:guruLogin.mapel||guruLogin.mata_pelajaran||'', guru:guruLogin.nama, kelas:kelasGuru, durasi:'30 menit'}]); if(error) return alert('Gagal: '+error.message); alert('✅ Materi terkirim!'); bukaFungsi('materi'); loadSemua(); }
+async function renderKelas(){ let box = document.getElementById('isiFungsi'); if(!dataSiswaKelas.length){ box.innerHTML='<p class="text-[13px]">Belum ada siswa.</p>'; return; } box.innerHTML = dataSiswaKelas.map(s=>`<div class="card p-3 flex justify-between items-center"><div><b class="text-[13px]">${s.nama}</b><br><span class="text-[11px] text-[#aaa]">NIS ${s.nis} • ${s.kelas?.nama_kelas||''}</span></div><button onclick="kirimCepat('#${s.nama}'); tutupFungsi(); openChat();" class="gold text-black px-3 py-1.5 rounded-full text-[11px] font-bold">Chat 💬</button></div>`).join(''); }
+async function renderJadwal(){ let box = document.getElementById('isiFungsi'); let { data } = await supabaseClient.from('jadwal').select('*'); if(!data||!data.length){ box.innerHTML = `<p class="text-[13px]">Belum ada tabel jadwal.</p><div class="card p-3 mt-2"><b>${guruLogin.kelas||'-'} • ${guruLogin.mapel||guruLogin.mata_pelajaran||'-'}</b><br><span class="text-[11px] text-[#aaa]">07.30 - 09.00</span></div>`; return; } box.innerHTML = data.map(j=>`<div class="card p-3"><b class="text-[13px]">${j.kelas} • ${j.mapel}</b><br><span class="text-[11px] text-[#aaa]">${j.hari||''} • ${j.jam||''} • Guru: ${j.guru||''}</span></div>`).join(''); }
+async function renderLaporan(){ let box = document.getElementById('isiFungsi'); let { data: nilai } = await supabaseClient.from('nilai').select('*'); let { data: hadir } = await supabaseClient.from('kehadiran').select('*'); let totalNilai = (nilai||[]).length; let rata = totalNilai ? Math.round((nilai||[]).reduce((a,b)=>a+(b.nilai||0),0)/totalNilai) : 0; let totalHadir = (hadir||[]).length; let hadirCount = (hadir||[]).filter(h=> String(h.status||'').toLowerCase().includes('hadir')).length; box.innerHTML = `<div class="card p-4 text-center"><p class="text-[11px] text-[#aaa]">RATA-RATA NILAI</p><p class="text-[32px] font-black gold-text">${rata}</p></div><div class="grid grid-cols-2 gap-2"><div class="card p-3 text-center"><b>${totalNilai}</b><br><span class="text-[11px] text-[#aaa]">Nilai Masuk</span></div><div class="card p-3 text-center"><b>${totalHadir ? Math.round(hadirCount/totalHadir*100)+'%' : '-'}</b><br><span class="text-[11px] text-[#aaa]">Kehadiran</span></div></div>`; }
+function renderProfil(){ let box = document.getElementById('isiFungsi'); box.innerHTML = `<div class="card p-4"><p class="text-[11px] text-[#d4af37] font-bold">PROFIL GURU • DIANTAR BOT DARI INDEX ✅</p><h2 class="font-black text-[18px] mt-1">${guruLogin.nama}</h2><p class="text-[13px] mt-2">Mapel: ${guruLogin.mapel||guruLogin.mata_pelajaran||'-'}</p><p class="text-[13px]">Kelas: ${guruLogin.kelas||guruLogin.mengajar_kelas||'-'}</p><p class="text-[13px]">ID: ${guruLogin.id}</p><p class="text-[11px] text-[#aaa] mt-3">Lu masuk lewat Bot @guru di Index. Data ini diisi dari Admin.</p></div><button onclick="keluarKeIndex()" class="w-full py-3 rounded-full border border-red-500 text-red-400 font-bold mt-2">⬅ Keluar ke Index</button>`; }
 function updatePintu(){ let el=document.getElementById('pintuInfo'); if(!pintuTerbuka){ el.textContent='Belum kebuka - ketik #nama'; return; } el.textContent='Siswa '+pintuTerbuka.nama; document.getElementById('tujuan').value='#'+pintuTerbuka.nama; }
-function tutupPintu(){ pintuTerbuka=null; document.getElementById('tujuan').value='#siswa'; updatePintu(); tampilBot('Pintu ditutup. Ketik #nama buat buka pintu ke siswa.'); }
+function tutupPintu(){ pintuTerbuka=null; document.getElementById('tujuan').value='#siswa'; updatePintu(); tampilBot('Pintu ditutup.'); }
 function kirimCepat(teks){ document.getElementById('isiChat').value=teks; kirimChat(); }
 function openChat(){ document.getElementById('chatPanel').style.transform='translateY(0)'; loadChat(); }
 function closeChat(){ document.getElementById('chatPanel').style.transform='translateY(100%)'; }
 function tampilBot(pesan){ pesanBot.push(pesan); let list=document.getElementById('chatList'); list.innerHTML+=`<div class="flex justify-start"><div class="bg-[#d4af37] text-black rounded-2xl px-3 py-2 max-w-[85%]"><p class="text-[10px] font-extrabold">🤖 BOT • PRIVASI</p><p class="text-[13px] font-bold whitespace-pre-line leading-snug">${pesan}</p></div></div>`; list.scrollTop=list.scrollHeight; }
-async function loadChat(){
-  if(!guruLogin) return;
-  // Ambil dari 2 tabel: chat_siswa_guru (yang dipake siswa) + chat (yang lama)
-  let { data: c1 } = await supabaseClient.from('chat_siswa_guru').select('*').eq('guru_id', guruLogin.id).order('created_at',{ascending:true});
-  let { data: c2 } = await supabaseClient.from('chat').select('*').order('id',{ascending:true});
-  let list = document.getElementById('chatList');
-  let count = document.getElementById('chatCount');
-  let gabung = [];
-  (c1||[]).forEach(c=> gabung.push({dari: c.pengirim==='siswa' ? c.nama_siswa : guruLogin.nama, ke: c.pengirim==='siswa' ? guruLogin.nama : c.nama_siswa, isi: c.pesan}));
-  (c2||[]).forEach(c=> gabung.push(c));
-  if(!gabung.length){ list.innerHTML='<p class="text-center text-[#888] text-[12px] mt-4">Belum ada chat.<br>Coba ketik:<br><b style="color:#d4af37">#Andi</b> = buka pintu ke Siswa Andi<br><b style="color:#d4af37">/nis /nilai</b> = cek data Andi</p>'; count.textContent='0'; }
-  else{
-    count.textContent=gabung.length;
-    document.getElementById('dotChat').classList.remove('hidden');
-    list.innerHTML = gabung.map(c=>{ let saya = String(c.dari||'').toLowerCase()===guruLogin.nama.toLowerCase(); return `<div class="flex ${saya?'justify-end':'justify-start'}"><div class="${saya?'gold text-black':'bg-[#141414] border border-[#d4af37]/20'} rounded-2xl px-3 py-2 max-w-[80%]"><p class="text-[10px] font-extrabold opacity-70">${c.dari} → ${c.ke}</p><p class="text-[13px] font-bold leading-snug whitespace-pre-line">${c.isi}</p></div></div>`; }).join('');
-  }
-  pesanBot.forEach(p=>{ list.innerHTML+=`<div class="flex justify-start"><div class="bg-[#d4af37] text-black rounded-2xl px-3 py-2 max-w-[85%]"><p class="text-[10px] font-extrabold">🤖 BOT • PRIVASI</p><p class="text-[13px] font-bold whitespace-pre-line leading-snug">${p}</p></div></div>`; });
-  list.scrollTop=list.scrollHeight;
-}
-async function kirimChat(){
-  const dari = document.getElementById('namaSaya').value.trim() || guruLogin.nama;
-  const isi = document.getElementById('isiChat').value.trim();
-  if(!dari || !isi) return alert('Isi pesan dulu');
-  document.getElementById('isiChat').value='';
-  if(isi.startsWith('#')){
-    let nama = isi.slice(1).trim();
-    if(!nama) return tampilBot('Ketik namanya, contoh: #Andi');
-    let { data } = await supabaseClient.from('siswa').select('id,nama,nis').ilike('nama','%'+nama+'%').limit(1);
-    if(!data||!data.length) return tampilBot('Siswa '+nama+' gak ketemu, Ko.');
-    pintuTerbuka={tipe:'#', nama:data[0].nama, id:data[0].id, nis:data[0].nis};
-    updatePintu(); return tampilBot('Pintu ke Siswa '+data[0].nama+' kebuka.\nKetik /nis /nilai /absen /spp buat cek.\nKetik biasa buat chat ke dia.');
-  }
-  if(isi.startsWith('/')){
-    if(!pintuTerbuka) return tampilBot('Buka pintu dulu! Ketik #nama buat siswa.');
-    let perintah = isi.toLowerCase().split(' ')[0];
-    if(perintah==='/nis'){ let { data } = await supabaseClient.from('siswa').select('nis,nama').eq('id', pintuTerbuka.id).single(); if(!data) return tampilBot('Data gak ketemu.'); return tampilBot('NIS '+data.nama+' : '+data.nis); }
-    if(perintah==='/nilai'){ let { data } = await supabaseClient.from('nilai').select('*').eq('nis', pintuTerbuka.nis); if(!data||!data.length) return tampilBot('Belum ada nilai buat '+pintuTerbuka.nama); return tampilBot('📊 NILAI '+pintuTerbuka.nama+':\n'+data.map(n=> 'Materi '+ (n.materi_id||'-')+' : '+n.nilai).join('\n')); }
-    if(perintah==='/absen'){ let { data } = await supabaseClient.from('kehadiran').select('*').eq('nis_siswa', pintuTerbuka.nis).order('id',{ascending:false}).limit(5); if(!data||!data.length) return tampilBot('Belum ada absen buat '+pintuTerbuka.nama); return tampilBot('✅ ABSEN '+pintuTerbuka.nama+' (5 terakhir):\n'+data.map(a=> (a.tanggal||'-')+' : '+a.status).join('\n')); }
-    if(perintah==='/spp'){ let { data } = await supabaseClient.from('spp').select('*').eq('siswa_id', pintuTerbuka.id).order('id',{ascending:false}).limit(5); if(!data||!data.length) return tampilBot('Belum ada SPP buat '+pintuTerbuka.nama); return tampilBot('💰 SPP '+pintuTerbuka.nama+':\n'+data.map(s=> (s.bulan||'')+' '+(s.tahun||'')+' : '+s.status).join('\n')); }
-    return tampilBot('Perintah gak dikenal. Coba: /nis /nilai /absen /spp');
-  }
-  // Chat biasa -> masuk ke chat_siswa_guru biar nyambung ke siswa!
-  if(pintuTerbuka){
-    let { error } = await supabaseClient.from('chat_siswa_guru').insert([{nis_siswa:pintuTerbuka.nis, nama_siswa:pintuTerbuka.nama, guru_id:guruLogin.id, nama_guru:guruLogin.nama, pesan:isi, pengirim:'guru'}]);
-    if(error) return alert(error.message);
-  } else {
-    let { error } = await supabaseClient.from('chat').insert([{dari, ke:document.getElementById('tujuan').value.trim(), isi}]);
-    if(error) return alert(error.message);
-  }
-  loadChat();
-}
+async function loadChat(){ if(!guruLogin) return; let { data: c1 } = await supabaseClient.from('chat_siswa_guru').select('*').eq('guru_id', guruLogin.id).order('created_at',{ascending:true}); let { data: c2 } = await supabaseClient.from('chat').select('*').order('id',{ascending:true}); let list = document.getElementById('chatList'); let count = document.getElementById('chatCount'); let gabung = []; (c1||[]).forEach(c=> gabung.push({dari: c.pengirim==='siswa' ? c.nama_siswa : guruLogin.nama, ke: c.pengirim==='siswa' ? guruLogin.nama : c.nama_siswa, isi: c.pesan})); (c2||[]).forEach(c=> gabung.push(c)); if(!gabung.length){ list.innerHTML='<p class="text-center text-[#888] text-[12px] mt-4">Belum ada chat.<br>Coba ketik:<br><b style="color:#d4af37">#Andi</b> = buka pintu ke Siswa Andi</p>'; count.textContent='0'; } else{ count.textContent=gabung.length; document.getElementById('dotChat').classList.remove('hidden'); list.innerHTML = gabung.map(c=>{ let saya = String(c.dari||'').toLowerCase()===guruLogin.nama.toLowerCase(); return `<div class="flex ${saya?'justify-end':'justify-start'}"><div class="${saya?'gold text-black':'bg-[#141414] border border-[#d4af37]/20'} rounded-2xl px-3 py-2 max-w-[80%]"><p class="text-[10px] font-extrabold opacity-70">${c.dari} → ${c.ke}</p><p class="text-[13px] font-bold leading-snug whitespace-pre-line">${c.isi}</p></div></div>`; }).join(''); } pesanBot.forEach(p=>{ list.innerHTML+=`<div class="flex justify-start"><div class="bg-[#d4af37] text-black rounded-2xl px-3 py-2 max-w-[85%]"><p class="text-[10px] font-extrabold">🤖 BOT • PRIVASI</p><p class="text-[13px] font-bold whitespace-pre-line leading-snug">${p}</p></div></div>`; }); list.scrollTop=list.scrollHeight; }
+async function kirimChat(){ const dari = document.getElementById('namaSaya').value.trim() || guruLogin.nama; const isi = document.getElementById('isiChat').value.trim(); if(!dari || !isi) return alert('Isi pesan dulu'); document.getElementById('isiChat').value=''; if(isi.startsWith('#')){ let nama = isi.slice(1).trim(); if(!nama) return tampilBot('Ketik namanya, contoh: #Andi'); let { data } = await supabaseClient.from('siswa').select('id,nama,nis').ilike('nama','%'+nama+'%').limit(1); if(!data||!data.length) return tampilBot('Siswa '+nama+' gak ketemu, Ko.'); pintuTerbuka={tipe:'#', nama:data[0].nama, id:data[0].id, nis:data[0].nis}; updatePintu(); return tampilBot('Pintu ke Siswa '+data[0].nama+' kebuka.\nKetik /nis /nilai /absen /spp buat cek.\nKetik biasa buat chat ke dia.'); } if(isi.startsWith('/')){ if(!pintuTerbuka) return tampilBot('Buka pintu dulu! Ketik #nama buat siswa.'); let perintah = isi.toLowerCase().split(' ')[0]; if(perintah==='/nis'){ let { data } = await supabaseClient.from('siswa').select('nis,nama').eq('id', pintuTerbuka.id).single(); if(!data) return tampilBot('Data gak ketemu.'); return tampilBot('NIS '+data.nama+' : '+data.nis); } if(perintah==='/nilai'){ let { data } = await supabaseClient.from('nilai').select('*').eq('nis', pintuTerbuka.nis); if(!data||!data.length) return tampilBot('Belum ada nilai buat '+pintuTerbuka.nama); return tampilBot('📊 NILAI '+pintuTerbuka.nama+':\n'+data.map(n=> 'Materi '+ (n.materi_id||'-')+' : '+n.nilai).join('\n')); } if(perintah==='/absen'){ let { data } = await supabaseClient.from('kehadiran').select('*').eq('nis_siswa', pintuTerbuka.nis).order('id',{ascending:false}).limit(5); if(!data||!data.length) return tampilBot('Belum ada absen buat '+pintuTerbuka.nama); return tampilBot('✅ ABSEN '+pintuTerbuka.nama+' (5 terakhir):\n'+data.map(a=> (a.tanggal||'-')+' : '+a.status).join('\n')); } if(perintah==='/spp'){ let { data } = await supabaseClient.from('spp').select('*').eq('siswa_id', pintuTerbuka.id).order('id',{ascending:false}).limit(5); if(!data||!data.length) return tampilBot('Belum ada SPP buat '+pintuTerbuka.nama); return tampilBot('💰 SPP '+pintuTerbuka.nama+':\n'+data.map(s=> (s.bulan||'')+' '+(s.tahun||'')+' : '+s.status).join('\n')); } return tampilBot('Perintah gak dikenal. Coba: /nis /nilai /absen /spp'); } if(pintuTerbuka){ let { error } = await supabaseClient.from('chat_siswa_guru').insert([{nis_siswa:pintuTerbuka.nis, nama_siswa:pintuTerbuka.nama, guru_id:guruLogin.id, nama_guru:guruLogin.nama, pesan:isi, pengirim:'guru'}]); if(error) return alert(error.message); } else { let { error } = await supabaseClient.from('chat').insert([{dari, ke:document.getElementById('tujuan').value.trim(), isi}]); if(error) return alert(error.message); } loadChat(); }
 document.getElementById('isiChat').addEventListener('keydown', e=>{ if(e.key==='Enter') kirimChat(); });
 setInterval(()=>{ if(guruLogin) loadChat(); }, 5000);
 </script>
