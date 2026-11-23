@@ -21,14 +21,12 @@ body{background:#000;color:#fff;min-height:100vh;padding:22px 16px 40px;backgrou
 .btn{width:100%;margin-top:8px;background:linear-gradient(180deg,#f5d67b,#d4af37,#a8831d);color:#000;border:none;padding:15px;border-radius:999px;font-weight:900;font-size:20px;letter-spacing:2px;cursor:pointer;box-shadow:0 10px 25px rgba(212,175,55,.4)}
 .back{width:100%;margin-top:12px;background:transparent;border:1px solid #555;color:#aaa;padding:12px;border-radius:999px;cursor:pointer}
 #err{color:#ff6b6b;font-size:13px;margin-top:6px;display:none;text-align:center}
-/* ===== TOMBOL GESER CEK PPDB / MASUK ===== */
 .toggle-wrap{display:flex;background:rgba(255,255,255,.08);border:1px solid rgba(212,175,55,.7);border-radius:999px;padding:4px;margin:6px 0 22px;position:relative}
 .toggle-wrap button{flex:1;border:none;background:transparent;color:#aaa;padding:12px;border-radius:999px;font-weight:800;font-size:14px;letter-spacing:1px;cursor:pointer;position:relative;z-index:2;transition:.25s}
 .toggle-wrap button.active{background:linear-gradient(180deg,#f5d67b,#d4af37);color:#000;box-shadow:0 5px 15px rgba(212,175,55,.5)}
 label.login-label{display:block;text-align:left;color:#e8c97a;font-size:13px;font-weight:700;margin-bottom:6px}
 input.login-input{width:100%;background:#111;border:1px solid #d4af37;color:#fff;padding:15px;border-radius:14px;font-size:18px;text-align:center;outline:none;margin-bottom:12px;letter-spacing:1px}
 input.login-input::placeholder{color:#666;letter-spacing:0}
-/* ===== HASIL CEK PPDB ===== */
 #hasilCek{display:none;background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.7);border-radius:16px;padding:16px;margin-top:16px;text-align:left}
 #hasilCek h3{color:#e8c97a;font-size:16px;margin-bottom:10px;text-align:center}
 #hasilCek p{font-size:14px;line-height:1.8;color:#ddd}
@@ -37,22 +35,27 @@ input.login-input::placeholder{color:#666;letter-spacing:0}
 .st-lolos{background:#14532d;color:#4ade80}
 .st-tunggu{background:#422006;color:#fbbf24}
 .st-tolak{background:#7f1d1d;color:#fca5a5}
+/* MODAL GANTI PIN */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;padding:20px;z-index:999}
+.modal.show{display:flex}
+.modal-box{width:100%;max-width:360px;background:#111;border:1px solid #d4af37;border-radius:20px;padding:22px;text-align:center}
+.modal-box h3{color:#e8c97a;margin-bottom:6px}
+.modal-box p{font-size:12px;color:#aaa;margin-bottom:14px}
+.modal-box input{width:100%;background:#000;border:1px solid #d4af37;color:#fff;padding:13px;border-radius:12px;font-size:18px;text-align:center;letter-spacing:3px;margin-bottom:10px;outline:none}
+.pin-info{font-size:11px;color:#888;margin:8px 0 14px;line-height:1.5}
 </style>
 </head>
 <body>
 
-<!-- ========== 1. FORM GESER: CEK PPDB / MASUK ========== -->
 <div id="loginBox" style="display:none;max-width:380px;margin:0 auto;text-align:center">
 <div style="font-size:60px">🎓</div>
 <div class="header"><h1>PROFIL SISWA</h1><div class="garis"></div></div>
 
-<!-- TOMBOL GESER -->
 <div class="toggle-wrap">
 <button id="btnCek" class="active" onclick="gantiMode('cek')">CEK PPDB</button>
 <button id="btnMasuk" onclick="gantiMode('masuk')">MASUK</button>
 </div>
 
-<!-- MODE: CEK PPDB (DEFAULT) -->
 <div id="modeCek">
 <label class="login-label">Nomor Pendaftaran</label>
 <input class="login-input" id="noPendaftaran" placeholder="PPDB-2026-0001">
@@ -60,21 +63,20 @@ input.login-input::placeholder{color:#666;letter-spacing:0}
 <input class="login-input" id="noKK" placeholder="16 Digit Nomor KK" inputmode="numeric" maxlength="16">
 <button class="btn" onclick="cekPPDB()">CEK PPDB ➜</button>
 <div id="err"></div>
-<!-- KETERANGAN HASIL CEK -->
 <div id="hasilCek"></div>
 </div>
 
-<!-- MODE: MASUK (NIS) -->
 <div id="modeMasuk" style="display:none">
 <label class="login-label">NIS</label>
 <input class="login-input" id="nis" placeholder="20260101" inputmode="numeric">
+<label class="login-label">🔒 PIN Siswa (6 Digit)</label>
+<input class="login-input" id="pinMasuk" placeholder="••••••" inputmode="numeric" maxlength="6">
 <button class="btn" onclick="cekNis()">MASUK ➜</button>
 <div id="err2"></div>
+<p style="font-size:11px;color:#888;margin-top:10px;line-height:1.5">PIN dikasih Admin via WA pribadi.<br>Lupa PIN? Hubungi Admin / TU.</p>
+</div>
 </div>
 
-</div>
-
-<!-- ========== 2. PROFIL SISWA ========== -->
 <div id="profilBox" style="display:none;max-width:420px;margin:0 auto">
 <div class="header"><h1>PROFIL SISWA</h1><div class="garis"></div></div>
 <div class="foto">
@@ -91,14 +93,41 @@ input.login-input::placeholder{color:#666;letter-spacing:0}
 <div class="row"><div class="icon">👨‍👩‍👧</div><div class="txt"><label>Orang Tua:</label><div id="fOrtu">-</div></div></div>
 <div class="row"><div class="icon">📞</div><div class="txt"><label>No WA Orang Tua:</label><div id="fWaOrtu">-</div></div></div>
 <div class="row"><div class="icon">☀️</div><div class="txt"><label>Status:</label><div id="fStatus">-</div></div></div>
+
+<!-- GANTI PIN -->
+<div class="row" style="cursor:pointer" onclick="bukaGantiPin()">
+<div class="icon">🔒</div><div class="txt"><label>PIN Login:</label><div>•••••• • Klik untuk Ganti PIN ➜</div></div><div style="font-size:20px">›</div>
+</div>
+<p style="font-size:11px;color:#888;text-align:center;margin:-6px 0 12px">Ganti PIN acak dari Admin ke PIN yang kamu inget.</p>
+
 <button class="btn" onclick="location.href='index.html'">🏫 LIHAT GEDUNG ➜</button>
 <button class="back" onclick="logout()">⬅ Logout</button>
+</div>
+
+<!-- MODAL GANTI PIN -->
+<div class="modal" id="modalPin">
+<div class="modal-box">
+<div style="font-size:40px">🔒</div>
+<h3>GANTI PIN</h3>
+<p>Ganti PIN acak dari Admin ke PIN baru yang kamu inget.</p>
+<label class="login-label">PIN Lama</label>
+<input id="pinLama" placeholder="PIN lama" inputmode="numeric" maxlength="6">
+<label class="login-label">PIN Baru (6 Digit)</label>
+<input id="pinBaru" placeholder="Contoh: 778899" inputmode="numeric" maxlength="6">
+<label class="login-label">Ulangi PIN Baru</label>
+<input id="pinBaru2" placeholder="Ulangi PIN baru" inputmode="numeric" maxlength="6">
+<div class="pin-info">Jangan pake tanggal lahir / NIS / No HP.<br>Pilih yang gampang kamu inget tapi susah ditebak orang.</div>
+<div id="pinErr" style="color:#ff6b6b;font-size:12px;display:none;margin-bottom:10px"></div>
+<button class="btn" style="font-size:16px;padding:13px" onclick="simpanPinBaru()">💾 SIMPAN PIN BARU</button>
+<button class="back" onclick="tutupGantiPin()">Batal</button>
+</div>
 </div>
 
 <script>
 const SUPABASE_URL = "https://rotxnwbrnbwbscihvafq.supabase.co/rest/v1";
 const SUPABASE_KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
 let nisLogin = localStorage.getItem('nis_login');
+let dataSiswaLogin = null;
 
 if(!nisLogin){
   document.getElementById('loginBox').style.display='block';
@@ -108,7 +137,6 @@ if(!nisLogin){
   ambilDariSupabase();
 }
 
-// ===== GANTI MODE GESER =====
 function gantiMode(mode){
   document.getElementById('btnCek').classList.toggle('active', mode==='cek');
   document.getElementById('btnMasuk').classList.toggle('active', mode==='masuk');
@@ -118,10 +146,8 @@ function gantiMode(mode){
   let e=document.getElementById('err'); if(e) e.style.display='none';
   let e2=document.getElementById('err2'); if(e2) e2.style.display='none';
 }
-
 function showErr(m, id='err'){ let e=document.getElementById(id); e.innerText=m; e.style.display='block'; }
 
-// ===== CEK PPDB: No Pendaftaran + No KK =====
 async function cekPPDB(){
   let noP = document.getElementById('noPendaftaran').value.trim();
   let noKK = document.getElementById('noKK').value.trim();
@@ -129,12 +155,9 @@ async function cekPPDB(){
   if(!noP || !noKK){ showErr("❌ Isi Nomor Pendaftaran & Nomor KK dulu!"); return; }
   document.getElementById('err').style.display='none';
   box.innerHTML = '<p style="text-align:center;color:#aaa">⏳ Mengecek...</p>'; box.style.display='block';
-
   try{
-    // Coba cari pakai no_pendaftaran + no_kk
     let r = await fetch(SUPABASE_URL + "/siswa?select=*,kelas(nama_kelas)&no_pendaftaran=eq." + encodeURIComponent(noP), {headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
     let data = await r.json();
-    // Fallback: kalau kolom no_pendaftaran belum ada di DB, cari pakai no_akta / nis sebagai nomor pendaftaran
     if(!data || data.length===0){
       let r2 = await fetch(SUPABASE_URL + "/siswa?select=*,kelas(nama_kelas)&no_akta=eq." + encodeURIComponent(noP), {headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
       data = await r2.json();
@@ -144,40 +167,35 @@ async function cekPPDB(){
       return;
     }
     let m = data[0];
-    // Cocokkan No KK - cek kolom no_kk, kalau belum ada pakai no_akta sebagai pembanding
     let kkDB = String(m.no_kk || m.no_akta || '').replace(/\D/g,'');
     let kkInput = String(noKK).replace(/\D/g,'');
     if(kkDB && kkDB !== kkInput){
-      box.innerHTML = '<h3>❌ Nomor KK Tidak Cocok</h3><p style="text-align:center">Nomor KK tidak cocok dengan Nomor Pendaftaran ini.<br>Cek lagi 16 digit Nomor KK kamu.</p>';
+      box.innerHTML = '<h3>❌ Nomor KK Tidak Cocok</h3><p style="text-align:center">Nomor KK tidak cocok dengan Nomor Pendaftaran ini.</p>';
       return;
     }
-    // KETERANGAN - tampilkan semua dari database
     let status = m.status || 'Menunggu';
     let badge = '', judul='', pesan='', tombol='';
     if(status==='Aktif'){
       badge='<span class="badge-status st-lolos">🟢 LOLOS - DITERIMA</span>';
       judul='Selamat! Kamu Diterima 🎉';
       pesan=`Kamu resmi jadi siswa SMA Negeri 1 Harapan.`;
-      tombol = m.nis ? `<button class="btn" onclick="masukDariPPDB('${m.nis}')">LIHAT PROFIL ➜</button>` : '';
+      // SUDAH LOLOS, TAPI TETEP HARUS LEWAT PIN - JANGAN LANGSUNG NYELONONG
+      tombol = `<p style="text-align:center;color:#fbbf24;font-size:12px;margin-top:10px">Untuk liat profil lengkap, pindah ke tab MASUK & isi NIS + PIN kamu ya 🔒</p><button class="btn" onclick="gantiMode('masuk');document.getElementById('nis').value='${m.nis||''}';document.getElementById('pinMasuk').focus()">MASUK PAKAI PIN ➜</button>`;
     } else if(status==='Ditolak'){
       badge='<span class="badge-status st-tolak">🔴 DITOLAK</span>';
       judul='Mohon Maaf Belum Lolos';
-      pesan=`Pendaftaranmu belum lolos verifikasi PPDB. Silakan hubungi admin untuk info lebih lanjut.`;
+      pesan=`Pendaftaranmu belum lolos verifikasi PPDB.`;
     } else {
       badge='<span class="badge-status st-tunggu">🟡 MENUNGGU</span>';
       judul='Masih Dalam Antrian';
-      pesan=`Pendaftaranmu sedang diverifikasi panitia. Cek lagi berkala ya.`;
+      pesan=`Pendaftaranmu sedang diverifikasi panitia.`;
     }
     box.innerHTML = `
       <div style="text-align:center">${badge}<h3>${judul}</h3><p style="text-align:center;color:#aaa">${pesan}</p></div>
       <p><b>Nama:</b> ${m.nama||'-'}</p>
       <p><b>No. Pendaftaran:</b> ${m.no_pendaftaran||noP}</p>
-      <p><b>No. KK:</b> ${m.no_kk||'****'+String(noKK).slice(-4)}</p>
       <p><b>Gelombang:</b> ${m.gelombang||'-'}</p>
       <p><b>Nilai Rapor:</b> ${m.nilai_rapor ?? '-'}</p>
-      <p><b>Tanggal Lahir:</b> ${m.tanggal_lahir||'-'}</p>
-      <p><b>Jenis Kelamin:</b> ${m.jenis_kelamin==='L'?'Laki-laki':m.jenis_kelamin==='P'?'Perempuan':(m.jenis_kelamin||'-')}</p>
-      <p><b>Orang Tua:</b> ${m.nama_orang_tua||'-'}</p>
       <p><b>Status:</b> ${status}</p>
       ${status==='Aktif' ? `<p><b>NIS:</b> ${m.nis||'-'}</p><p><b>Kelas:</b> ${(m.kelas && m.kelas.nama_kelas) ? m.kelas.nama_kelas : 'Belum ada kelas - hubungi admin'}</p>` : ''}
       ${tombol}
@@ -185,24 +203,27 @@ async function cekPPDB(){
   }catch(e){ box.innerHTML='<p style="text-align:center">❌ Gagal mengecek. Cek koneksi internet.</p>'; console.log(e); }
 }
 
-// Kalau sudah LOLOS, langsung masuk ke profil pakai NIS-nya
-function masukDariPPDB(nis){
-  localStorage.setItem('nis_login', nis);
-  document.getElementById('loginBox').style.display='none';
-  document.getElementById('profilBox').style.display='block';
-  nisLogin = nis;
-  ambilDariSupabase();
-}
-
-// ===== MASUK: pakai NIS (fungsi lama, tetap jalan) =====
+// MASUK: NIS + PIN - WAJIB, GAK BISA NYELONONG LAGI
 async function cekNis(){
   let nis = document.getElementById('nis').value.trim();
-  if(!nis) return alert("Isi NIS dulu!");
+  let pin = document.getElementById('pinMasuk').value.trim();
+  if(!nis){ showErr("❌ Isi NIS dulu!", 'err2'); return; }
+  if(!pin){ showErr("❌ Isi PIN 6 digit dulu! PIN dari Admin.", 'err2'); return; }
+  if(pin.length !== 6){ showErr("❌ PIN harus 6 digit!", 'err2'); return; }
   let r = await fetch(SUPABASE_URL + "/siswa?select=*,kelas(nama_kelas)&nis=eq." + nis, {headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
   let data = await r.json();
   if(!data || data.length===0){ showErr("❌ NIS tidak ditemukan!", 'err2'); return; }
+  let s = data[0];
+  let pinDB = String(s.pin || '').trim();
+  // Kalau siswa belum punya PIN di DB (siswa lama), izinkan sekali, suruh langsung bikin PIN
+  if(!pinDB){
+    alert("Kamu belum punya PIN. Login dulu, lalu langsung Ganti PIN ya!");
+  } else if(pinDB !== pin){
+    showErr("❌ PIN Salah! Cek WA dari Admin / hubungi TU.", 'err2');
+    return;
+  }
   localStorage.setItem('nis_login', nis);
-  localStorage.setItem('nama_login', data[0].nama);
+  localStorage.setItem('nama_login', s.nama);
   document.getElementById('loginBox').style.display='none';
   document.getElementById('profilBox').style.display='block';
   nisLogin = nis;
@@ -215,6 +236,7 @@ async function ambilDariSupabase(){
     let data = await r.json();
     let m = data[0];
     if(!m){ alert("Data tidak ditemukan"); logout(); return; }
+    dataSiswaLogin = m;
     document.getElementById('fNama').innerText = m.nama || "-";
     document.getElementById('fNip').innerText = m.nis || "-";
     document.getElementById('fNoPendaftaran').innerText = m.no_pendaftaran || "-";
@@ -229,7 +251,59 @@ async function ambilDariSupabase(){
       let im=document.getElementById('imgFoto'); im.src=m.foto_url; im.style.display='block';
       document.getElementById('emojiFoto').style.display='none';
     }
+    // Kalau belum punya PIN, langsung suruh bikin
+    if(!m.pin){
+      setTimeout(()=>{ bukaGantiPin(true); }, 500);
+    }
   }catch(e){ console.log(e); }
+}
+
+// ===== GANTI PIN =====
+function bukaGantiPin(isBaru=false){
+  document.getElementById('pinLama').value = '';
+  document.getElementById('pinBaru').value = '';
+  document.getElementById('pinBaru2').value = '';
+  document.getElementById('pinErr').style.display='none';
+  if(isBaru){
+    document.querySelector('#modalPin h3').innerText = 'BUAT PIN BARU';
+    document.querySelector('#modalPin p').innerText = 'Kamu belum punya PIN. Buat PIN 6 digit yang kamu inget ya!';
+  } else {
+    document.querySelector('#modalPin h3').innerText = 'GANTI PIN';
+    document.querySelector('#modalPin p').innerText = 'Ganti PIN acak dari Admin ke PIN baru yang kamu inget.';
+  }
+  document.getElementById('modalPin').classList.add('show');
+}
+function tutupGantiPin(){ document.getElementById('modalPin').classList.remove('show'); }
+async function simpanPinBaru(){
+  let lama = document.getElementById('pinLama').value.trim();
+  let baru = document.getElementById('pinBaru').value.trim();
+  let baru2 = document.getElementById('pinBaru2').value.trim();
+  let errBox = document.getElementById('pinErr');
+  function gagal(msg){ errBox.innerText = msg; errBox.style.display='block'; }
+  if(!dataSiswaLogin) { gagal('Data siswa belum ke-load, refresh dulu!'); return; }
+  // Kalau siswa udah punya PIN, PIN lama wajib cocok
+  if(dataSiswaLogin.pin && lama !== String(dataSiswaLogin.pin)){
+    gagal('❌ PIN Lama salah!'); return;
+  }
+  // Kalau belum punya PIN, PIN lama boleh kosong
+  if(!dataSiswaLogin.pin && !lama){
+    // Boleh, anggap buat baru
+  }
+  if(baru.length !== 6 || /\D/.test(baru)){ gagal('❌ PIN Baru harus 6 digit angka!'); return; }
+  if(baru !== baru2){ gagal('❌ PIN Baru & Ulangi tidak sama!'); return; }
+  if(baru === String(dataSiswaLogin.nis)){ gagal('❌ Jangan pake NIS sebagai PIN!'); return; }
+  // Simpan ke Supabase via REST PATCH
+  try{
+    let r = await fetch(SUPABASE_URL + "/siswa?nis=eq." + nisLogin, {
+      method:'PATCH',
+      headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json","Prefer":"return=representation"},
+      body: JSON.stringify({pin: baru})
+    });
+    if(!r.ok){ gagal('❌ Gagal simpan: ' + r.status); return; }
+    dataSiswaLogin.pin = baru;
+    alert('✅ PIN berhasil diganti jadi: ' + baru + '\nInget-inget ya! Jangan kasih ke orang lain!');
+    tutupGantiPin();
+  }catch(e){ gagal('❌ Gagal koneksi!'); console.log(e); }
 }
 
 function logout(){
