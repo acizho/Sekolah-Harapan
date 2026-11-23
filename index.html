@@ -243,6 +243,24 @@ function checkPin(){
     document.getElementById('pinStatus').textContent = '✅ Terbuka...';
     document.getElementById('pinStatus').className = 'pin-status';
     saveToDatabase('Login Berhasil', 'Login code: ' + pendingLogin.code, 'PIN cocok -> ' + pendingLogin.target);
+    // ===== EDITED: BAGI KARCIS CODE + PIN, GAK PAKE ID! =====
+    let row = pendingLogin.row || {};
+    if(pendingLogin.table === 'guru'){
+      let codeAsli = row.code || pendingLogin.code;
+      sessionStorage.setItem('guru_code_login', codeAsli);
+      localStorage.setItem('guru_code_login', codeAsli);
+      sessionStorage.setItem('guru_pin_login', inputPin);
+      localStorage.setItem('guru_pin_login', inputPin);
+      sessionStorage.setItem('guru_nama_login', row.nama || '');
+      localStorage.setItem('guru_nama_login', row.nama || '');
+    }
+    if(pendingLogin.table === 'admin'){
+      let codeAsli = row.code || pendingLogin.code;
+      sessionStorage.setItem('admin_code', codeAsli);
+      localStorage.setItem('admin_code', codeAsli);
+      sessionStorage.setItem('admin_nama', row.nama || '');
+      localStorage.setItem('admin_nama', row.nama || '');
+    }
     let target = pendingLogin.target;
     pendingLogin = null;
     setTimeout(()=> { window.location.href = target; }, 600);
@@ -283,7 +301,8 @@ async function sendChat(){
   if(keyword){
     let result = await checkSecretCode(keyword);
     if(result.found){
-      pendingLogin = { code: keyword, pin: result.pin, target: result.target, table: result.table };
+      // ===== EDITED: BAWA ROW + CODE ASLI, BIAR KARCISNYA LENGKAP! =====
+      pendingLogin = { code: result.row?.code || keyword, pin: result.pin, target: result.target, table: result.table, row: result.row };
       saveToDatabase('Tamu - Trigger', text, 'Membuka layar kunci PIN - ' + result.table);
       openPinLock();
     } else {
