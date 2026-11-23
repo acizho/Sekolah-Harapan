@@ -1,122 +1,35 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-* {
-  margin: 0;
-  box-sizing: border-box;
-}
-body {
-  font-family: sans-serif;
-  background: #111;
-  color: #fff;
-}
-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px;
-  background: #0a0a0a;
-  border-bottom: 2px solid #e8c55a;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-#btnMenu {
-  font-size: 26px;
-  background: none;
-  border: 1px solid #e8c55a;
-  color: #f7e8a0;
-  padding: 4px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 260px;
-  height: 100vh;
-  background: #0a0a0a;
-  border-right: 2px solid #e8c55a;
-  padding: 20px;
-  transform: translateX(-110%);
-  transition: transform 0.3s ease;
-  z-index: 20;
-}
-.sidebar.open {
-  transform: translateX(0);
-}
-.sidebar h2 {
-  color: #f7e8a0;
-  margin-bottom: 16px;
-}
-.sidebar button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: 1px solid #e8c55a;
-  color: #fff;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 8px;
-}
-#overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  z-index: 15;
-}
-#overlay.show {
-  display: block;
-}
-.main {
-  padding: 20px;
-}
-</style>
-</head>
-<body>
-
-<header>
-  <button id="btnMenu">☰</button>
-  <h3>SMA NEGERI 1</h3>
-</header>
-
-<div class="sidebar" id="sidebar">
-  <h2>MENU</h2>
-  <button>Dashboard</button>
-  <button>PPDB</button>
-  <button>Data Siswa</button>
-  <button>Kas / SPP</button>
-</div>
-
-<div id="overlay"></div>
-
-<div class="main">
-  <h1>Ini Konten</h1>
-  <p>Pencet tombol garis 3 di atas.</p>
-  <p>Menu bakal ngesot dari kiri.</p>
-  <p>Pencet lagi / pencet area gelap buat nutup.</p>
-</div>
+<!-- TOMBOL CEK DEBUG - HAPUS LAGI KALO UDAH KETEMU -->
+<button onclick="cekDebug()" style="position:fixed;top:10px;right:10px;z-index:9999;background:red;color:#fff;border:none;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:bold;">CEK SALAHNYA</button>
+<div id="boxDebug" style="display:none;position:fixed;inset:10px;background:#000;border:2px solid red;border-radius:16px;padding:16px;z-index:10000;overflow-y:auto;font-size:12px;line-height:1.6;"></div>
 
 <script>
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-const btn = document.getElementById('btnMenu');
+async function cekDebug(){
+  let box = document.getElementById('boxDebug');
+  box.style.display = 'block';
+  box.innerHTML = '⏳ Lagi ngecek...';
+  
+  let kelasSiswa = dataSiswaLogin && dataSiswaLogin.kelas ? dataSiswaLogin.kelas.nama_kelas : 'KOSONG!';
+  let nis = nisLogin;
 
-btn.onclick = function() {
-  sidebar.classList.add('open');
-  overlay.classList.add('show');
-};
+  // Ambil data mentah dari Supabase
+  let g = await supabaseClient.from('guru').select('*');
+  let m = await supabaseClient.from('materi').select('*');
+  let s = await supabaseClient.from('siswa').select('*,kelas(nama_kelas)').eq('nis', nis).single();
 
-overlay.onclick = function() {
-  sidebar.classList.remove('open');
-  overlay.classList.remove('show');
-};
+  let html = `<button onclick="document.getElementById('boxDebug').style.display='none'" style="background:red;color:#fff;border:none;padding:10px;border-radius:12px;width:100%;margin-bottom:12px;">TUTUP ✕</button>`;
+  html += `<h3 style="color:#d4af37;">1. SISWA ANDI</h3>`;
+  html += `Nama: ${s.data?.nama}<br>NIS: ${s.data?.nis}<br>Kelas di DB: <b style="color:yellow;">${s.data?.kelas?.nama_kelas || s.data?.kelas_id || 'KOSONG'}</b><br>kelas_id: ${s.data?.kelas_id}<br><br>`;
+
+  html += `<h3 style="color:#d4af37;">2. SEMUA GURU (Yang kebaca)</h3>`;
+  html += (g.data||[]).map(x=>`• @${x.nama} | mapel: ${x.mapel} | kelas: <b>${x.kelas || x.mengajar_kelas || 'KOSONG!'}</b>`).join('<br>') + '<br><br>';
+
+  html += `<h3 style="color:#d4af37;">3. SEMUA MATERI (Yang kebaca)</h3>`;
+  html += (m.data||[]).map(x=>`• ${x.judul} | mapel: ${x.mapel} | kelas: <b>${x.kelas || x.kelas_nama || 'KOSONG!'}</b> | guru: ${x.guru}`).join('<br>') + '<br><br>';
+
+  html += `<h3 style="color:red;">KESIMPULAN:</h3>`;
+  html += `Kalo di no 2 ada guru Linear yang kelasnya KOSONG, berarti dia keambil semua karena filter kita yang lama nganggap KOSONG = SEMUA. Itu biang nyangkutnya!<br><br>`;
+  html += `Kalo di no 3 ada materi Linear yang kelasnya KOSONG, sama! Materi itu gak punya kelas, jadi kebaca sama semua siswa, termasuk Andi X IPA 1!`;
+
+  box.innerHTML = html;
+}
 </script>
-
-</body>
-</html>
