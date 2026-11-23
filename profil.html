@@ -22,51 +22,38 @@ body{background:#000;color:#fff;min-height:100vh;padding:22px 16px 40px;backgrou
 .back{width:100%;margin-top:12px;background:transparent;border:1px solid #555;color:#aaa;padding:12px;border-radius:999px;cursor:pointer}
 #err{color:#ff6b6b;font-size:13px;margin-top:6px;display:none;text-align:center}
 label.login-label{display:block;text-align:left;color:#e8c97a;font-size:13px;font-weight:700;margin-bottom:6px}
-input.login-input{width:100%;background:#111;border:1px solid #d4af37;color:#fff;padding:15px;border-radius:14px;font-size:18px;text-align:center;outline:none;margin-bottom:12px;letter-spacing:6px}
-.kembali{font-size:13px;color:#aaa;cursor:pointer;margin-top:8px;text-align:center}
+input.login-input{width:100%;background:#111;border:1px solid #d4af37;color:#fff;padding:15px;border-radius:14px;font-size:18px;text-align:center;outline:none;margin-bottom:12px;letter-spacing:2px}
 </style>
 </head>
 <body>
 
-<!-- ========== 1. FORM LOGIN - ADA DI DALEM profil.html ========== -->
+<!-- ========== 1. FORM LOGIN ========== -->
 <div id="loginBox" style="display:none;max-width:380px;margin:0 auto;text-align:center">
 <div style="font-size:60px">🎓</div>
 <div class="header"><h1>LOGIN SISWA</h1><div class="garis"></div></div>
 <p id="sub" style="color:#aaa;font-size:13px;margin-bottom:18px">Masukkan NIS kamu</p>
-<div id="step1">
 <label class="login-label">NIS</label>
-<input class="login-input" id="nis" placeholder="202401234" inputmode="numeric">
-<button class="btn" onclick="cekNis()">LANJUT ➜</button>
-</div>
-<div id="step2" style="display:none">
-<label class="login-label">MASUKKAN PIN 6 DIGIT</label>
-<p id="namaKetemu" style="color:#e8c97a;font-size:14px;margin-bottom:12px"></p>
-<input class="login-input" id="pin" placeholder="••••••" maxlength="6" inputmode="numeric" type="password">
-<button class="btn" onclick="loginPin()">MASUK ➜</button>
-<div class="kembali" onclick="keStep1()">⬅ Ganti NIS</div>
-</div>
+<input class="login-input" id="nis" placeholder="20260101" inputmode="numeric">
+<button class="btn" onclick="cekNis()">MASUK ➜</button>
 <div id="err"></div>
 </div>
 
-<!-- ========== 2. PROFIL SISWA - CUMA NAMPILIN ========== -->
+<!-- ========== 2. PROFIL SISWA ========== -->
 <div id="profilBox" style="display:none;max-width:420px;margin:0 auto">
 <div class="header"><h1>PROFIL SISWA</h1><div class="garis"></div></div>
-
-<!-- FOTO DOANG, TANPA TULISAN -->
 <div class="foto">
 <span id="emojiFoto">🎓</span>
 <img id="imgFoto" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
 </div>
-
-<!-- KOLOM NAMA BARU DI ATAS NIP / NIS -->
-<div class="row"><div class="icon">👤</div><div class="txt"><label>Nama:</label><div id="fNama">[Nama Placeholder]</div></div></div>
-<div class="row"><div class="icon">🪪</div><div class="txt"><label>NIP / NIS:</label><div id="fNip">[NIS Placeholder]</div></div></div>
-<div class="row"><div class="icon">🎓</div><div class="txt"><label>Kelas:</label><div id="fKelas">[Kelas Placeholder]</div></div></div>
-<div class="row"><div class="icon">📖</div><div class="txt"><label>Mata Pelajaran:</label><div id="fMapel">[Mata Pelajaran Placeholder]</div></div></div>
-<div class="row"><div class="icon">📞</div><div class="txt"><label>No WA:</label><div id="fWa">[+62 • • • • • • • •]</div></div></div>
-<div class="row"><div class="icon">📍</div><div class="txt"><label>Alamat:</label><div id="fAlamat">[Alamat Placeholder]</div></div></div>
-<div class="row"><div class="icon">☀️</div><div class="txt"><label>Status:</label><div id="fStatus">[Siswa Aktif Placeholder]</div></div></div>
-
+<div class="row"><div class="icon">👤</div><div class="txt"><label>Nama:</label><div id="fNama">-</div></div></div>
+<div class="row"><div class="icon">🪪</div><div class="txt"><label>NIS:</label><div id="fNip">-</div></div></div>
+<div class="row"><div class="icon">🎓</div><div class="txt"><label>Kelas:</label><div id="fKelas">-</div></div></div>
+<div class="row"><div class="icon">👦👧</div><div class="txt"><label>Jenis Kelamin:</label><div id="fJk">-</div></div></div>
+<div class="row"><div class="icon">🎂</div><div class="txt"><label>Tanggal Lahir:</label><div id="fTgl">-</div></div></div>
+<div class="row"><div class="icon">📍</div><div class="txt"><label>Alamat:</label><div id="fAlamat">-</div></div></div>
+<div class="row"><div class="icon">👨‍👩‍👧</div><div class="txt"><label>Orang Tua:</label><div id="fOrtu">-</div></div></div>
+<div class="row"><div class="icon">📞</div><div class="txt"><label>No WA Orang Tua:</label><div id="fWaOrtu">-</div></div></div>
+<div class="row"><div class="icon">☀️</div><div class="txt"><label>Status:</label><div id="fStatus">-</div></div></div>
 <button class="btn" onclick="location.href='index.html'">🏫 LIHAT GEDUNG ➜</button>
 <button class="back" onclick="logout()">⬅ Logout</button>
 </div>
@@ -74,7 +61,6 @@ input.login-input{width:100%;background:#111;border:1px solid #d4af37;color:#fff
 <script>
 const SUPABASE_URL = "https://rotxnwbrnbwbscihvafq.supabase.co/rest/v1";
 const SUPABASE_KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
-let nisValid = "";
 let nisLogin = localStorage.getItem('nis_login');
 
 if(!nisLogin){
@@ -85,51 +71,39 @@ if(!nisLogin){
 }
 
 function showErr(m){ let e=document.getElementById('err'); e.innerText=m; e.style.display='block'; }
-function hideErr(){ document.getElementById('err').style.display='none'; }
+
 async function cekNis(){
   let nis = document.getElementById('nis').value.trim();
   if(!nis) return alert("Isi NIS dulu!");
-  hideErr();
-  let r = await fetch(SUPABASE_URL + "/murid?select=nama,nis&nis=eq." + nis, {headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
+  // Ambil dari siswa + join kelas
+  let r = await fetch(SUPABASE_URL + "/siswa?select=*,kelas(nama_kelas)&nis=eq." + nis, {headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
   let data = await r.json();
-  if(data.length===0){ showErr("❌ NIS tidak ditemukan!"); return; }
-  nisValid = nis;
-  document.getElementById('step1').style.display='none';
-  document.getElementById('step2').style.display='block';
-  document.getElementById('sub').innerText = "NIS ditemukan!";
-  document.getElementById('namaKetemu').innerText = "Halo, " + data[0].nama + " 👋";
-  document.getElementById('pin').focus();
-}
-async function loginPin(){
-  let pin = document.getElementById('pin').value.trim();
-  if(pin.length!==6){ showErr("❌ PIN harus 6 digit!"); return; }
-  let r = await fetch(SUPABASE_URL + "/murid?select=*&nis=eq." + nisValid + "&pin=eq." + pin, {headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
-  let data = await r.json();
-  if(data.length===0){ showErr("❌ PIN salah!"); return; }
-  localStorage.setItem('nis_login', nisValid);
+  if(!data || data.length===0){ showErr("❌ NIS tidak ditemukan!"); return; }
+  localStorage.setItem('nis_login', nis);
   localStorage.setItem('nama_login', data[0].nama);
   document.getElementById('loginBox').style.display='none';
   document.getElementById('profilBox').style.display='block';
-  nisLogin = nisValid;
+  nisLogin = nis;
   ambilDariSupabase();
 }
-function keStep1(){ document.getElementById('step2').style.display='none'; document.getElementById('step1').style.display='block'; document.getElementById('sub').innerText="Masukkan NIS kamu"; hideErr(); }
 
 async function ambilDariSupabase(){
   try{
-    let r = await fetch(SUPABASE_URL + "/murid?select=*&nis=eq." + nisLogin, {headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
+    let r = await fetch(SUPABASE_URL + "/siswa?select=*,kelas(nama_kelas)&nis=eq." + nisLogin, {headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
     let data = await r.json();
     let m = data[0];
     if(!m){ alert("Data tidak ditemukan"); logout(); return; }
     document.getElementById('fNama').innerText = m.nama || "-";
     document.getElementById('fNip').innerText = m.nis || "-";
-    document.getElementById('fKelas').innerText = m.kelas || "-";
-    document.getElementById('fMapel').innerText = m.mapel_favorit || "-";
-    document.getElementById('fWa').innerText = m.wa || "-";
+    document.getElementById('fKelas').innerText = (m.kelas && m.kelas.nama_kelas) ? m.kelas.nama_kelas : "-";
+    document.getElementById('fJk').innerText = m.jenis_kelamin === 'L' ? 'Laki-laki' : m.jenis_kelamin === 'P' ? 'Perempuan' : (m.jenis_kelamin || "-");
+    document.getElementById('fTgl').innerText = m.tanggal_lahir || "-";
     document.getElementById('fAlamat').innerText = m.alamat || "-";
+    document.getElementById('fOrtu').innerText = m.nama_orang_tua || "-";
+    document.getElementById('fWaOrtu').innerText = m.no_wa_orang_tua || "-";
     document.getElementById('fStatus').innerText = m.status || "-";
-    if(m.foto){
-      let im=document.getElementById('imgFoto'); im.src=m.foto; im.style.display='block';
+    if(m.foto_url){
+      let im=document.getElementById('imgFoto'); im.src=m.foto_url; im.style.display='block';
       document.getElementById('emojiFoto').style.display='none';
     }
   }catch(e){ console.log(e); }
