@@ -1,35 +1,54 @@
-<!-- TOMBOL CEK DEBUG - HAPUS LAGI KALO UDAH KETEMU -->
-<button onclick="cekDebug()" style="position:fixed;top:10px;right:10px;z-index:9999;background:red;color:#fff;border:none;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:bold;">CEK SALAHNYA</button>
-<div id="boxDebug" style="display:none;position:fixed;inset:10px;background:#000;border:2px solid red;border-radius:16px;padding:16px;z-index:10000;overflow-y:auto;font-size:12px;line-height:1.6;"></div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEST - Cek Salahnya Dimana</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;font-family:sans-serif}
+body{background:#000;color:#fff;padding:16px}
+h1{color:#d4af37;font-size:20px}
+input{width:100%;padding:14px;border-radius:12px;border:1px solid #d4af37;background:#111;color:#fff;font-size:16px;margin-bottom:10px}
+button{width:100%;padding:14px;border:none;border-radius:12px;background:#d4af37;font-weight:900;font-size:16px;cursor:pointer}
+.card{background:#141414;border:1px solid #333;border-radius:14px;padding:14px;margin-top:12px;font-size:13px;line-height:1.7}
+.badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:bold}
+.ok{background:#14532d;color:#4ade80}
+.salah{background:#7f1d1d;color:#fca5a5}
+.kosong{background:#422006;color:#fbbf24}
+</style>
+</head>
+<body>
+<h1>🔍 TEST - Kenapa Andi Nyangkut ke Linear?</h1>
+<p style="font-size:12px;color:#aaa;">File ini cuma buat ngetes. Gak ngerubah data apa-apa.</p>
+
+<label style="font-size:12px;color:#d4af37;">Masukin NIS Andi:</label>
+<input id="nisInput" placeholder="NIS Andi, contoh 20260101" inputmode="numeric">
+<button onclick="jalaninTest()">CEK SEKARANG ➜</button>
+
+<div id="hasil"></div>
 
 <script>
-async function cekDebug(){
-  let box = document.getElementById('boxDebug');
-  box.style.display = 'block';
-  box.innerHTML = '⏳ Lagi ngecek...';
-  
-  let kelasSiswa = dataSiswaLogin && dataSiswaLogin.kelas ? dataSiswaLogin.kelas.nama_kelas : 'KOSONG!';
-  let nis = nisLogin;
+const supabaseClient = window.supabase.createClient("https://rotxnwbrnbwbscihvafq.supabase.co", "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81");
 
-  // Ambil data mentah dari Supabase
-  let g = await supabaseClient.from('guru').select('*');
-  let m = await supabaseClient.from('materi').select('*');
+async function jalaninTest(){
+  let nis = document.getElementById('nisInput').value.trim();
+  if(!nis){ alert('Isi NIS dulu, Ko!'); return; }
+  let box = document.getElementById('hasil');
+  box.innerHTML = '<p>⏳ Lagi ngecek...</p>';
+
+  // 1. AMBIL SISWA
   let s = await supabaseClient.from('siswa').select('*,kelas(nama_kelas)').eq('nis', nis).single();
+  // 2. AMBIL SEMUA GURU
+  let g = await supabaseClient.from('guru').select('*');
+  // 3. AMBIL SEMUA MATERI
+  let m = await supabaseClient.from('materi').select('*');
 
-  let html = `<button onclick="document.getElementById('boxDebug').style.display='none'" style="background:red;color:#fff;border:none;padding:10px;border-radius:12px;width:100%;margin-bottom:12px;">TUTUP ✕</button>`;
-  html += `<h3 style="color:#d4af37;">1. SISWA ANDI</h3>`;
-  html += `Nama: ${s.data?.nama}<br>NIS: ${s.data?.nis}<br>Kelas di DB: <b style="color:yellow;">${s.data?.kelas?.nama_kelas || s.data?.kelas_id || 'KOSONG'}</b><br>kelas_id: ${s.data?.kelas_id}<br><br>`;
+  if(!s.data){ box.innerHTML = `<div class="card">❌ NIS ${nis} gak ketemu di tabel siswa!</div>`; return; }
 
-  html += `<h3 style="color:#d4af37;">2. SEMUA GURU (Yang kebaca)</h3>`;
-  html += (g.data||[]).map(x=>`• @${x.nama} | mapel: ${x.mapel} | kelas: <b>${x.kelas || x.mengajar_kelas || 'KOSONG!'}</b>`).join('<br>') + '<br><br>';
+  let kelasAndi = s.data.kelas?.nama_kelas || s.data.kelas_id || 'KOSONG';
+  let html = '';
 
-  html += `<h3 style="color:#d4af37;">3. SEMUA MATERI (Yang kebaca)</h3>`;
-  html += (m.data||[]).map(x=>`• ${x.judul} | mapel: ${x.mapel} | kelas: <b>${x.kelas || x.kelas_nama || 'KOSONG!'}</b> | guru: ${x.guru}`).join('<br>') + '<br><br>';
-
-  html += `<h3 style="color:red;">KESIMPULAN:</h3>`;
-  html += `Kalo di no 2 ada guru Linear yang kelasnya KOSONG, berarti dia keambil semua karena filter kita yang lama nganggap KOSONG = SEMUA. Itu biang nyangkutnya!<br><br>`;
-  html += `Kalo di no 3 ada materi Linear yang kelasnya KOSONG, sama! Materi itu gak punya kelas, jadi kebaca sama semua siswa, termasuk Andi X IPA 1!`;
-
-  box.innerHTML = html;
-}
-</script>
+  // === SISWA ===
+  html += `<div class="card"><h3>1. SISWA</h3>Nama: <b>${s.data.nama}</b><br>NIS: ${s.data.nis}<br>Kelas di DB: <b style="color:yellow;font-size:16px;">${kelasAndi}</b><br>kelas_id: ${s.data.kelas_id}<br>`;
+  if(kelasAndi==='
