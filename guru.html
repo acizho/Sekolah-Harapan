@@ -87,21 +87,30 @@
       <button onclick="closeChat()" class="w-[36px] h-[36px] rounded-full bg-[#1a1a1a] border border-[#d4af37]/30 font-black">✕</button>
     </div>
 
-    <div class="px-4 py-2 flex gap-2">
-      <input id="namaSaya" value="bedul" class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-3 py-2 text-[12px] outline-none" placeholder="Nama lu, misal bedul">
-      <input id="tujuan" value="@guru" class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-3 py-2 text-[12px] outline-none" placeholder="Ke siapa? @guru / #ahmad">
+    <!-- INFO PINTU - BARU -->
+    <div class="mx-4 mt-2 bg-[#1a1a1a] border border-[#d4af37]/30 rounded-xl px-3 py-2 flex justify-between items-center">
+      <p class="text-[11px] font-bold">🚪 Pintu: <span id="pintuInfo" class="text-[#d4af37]">Belum kebuka - ketik @nama / #nama</span></p>
+      <button onclick="tutupPintu()" class="text-[10px] bg-[#222] px-2 py-1 rounded-full font-bold">Tutup</button>
     </div>
 
-    <div class="px-4 flex gap-2 pb-2">
-      <button onclick="setTujuan('@guru')" class="bg-[#d4af37] text-black px-3 py-1.5 rounded-full text-[11px] font-extrabold">@guru</button>
-      <button onclick="setTujuan('#ahmad')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold">#ahmad</button>
-      <button onclick="setTujuan('@all')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold">@all</button>
+    <div class="px-4 py-2 flex gap-2">
+      <input id="namaSaya" value="bedul" class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-3 py-2 text-[12px] outline-none" placeholder="Nama lu, misal bedul">
+      <input id="tujuan" value="@guru" readonly class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-3 py-2 text-[12px] outline-none" placeholder="Ke siapa? @guru / #ahmad">
+    </div>
+
+    <div class="px-4 flex gap-2 pb-2 overflow-x-auto">
+      <button onclick="kirimCepat('@guru')" class="bg-[#d4af37] text-black px-3 py-1.5 rounded-full text-[11px] font-extrabold shrink-0">@guru</button>
+      <button onclick="kirimCepat('#ahmad')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">#ahmad</button>
+      <button onclick="kirimCepat('/nis')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/nis</button>
+      <button onclick="kirimCepat('/nilai')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/nilai</button>
+      <button onclick="kirimCepat('/absen')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/absen</button>
+      <button onclick="kirimCepat('/spp')" class="bg-[#222] px-3 py-1.5 rounded-full text-[11px] font-bold shrink-0">/spp</button>
     </div>
 
     <div id="chatList" class="flex-1 overflow-y-auto px-4 py-2 space-y-2"></div>
 
     <div class="p-3 border-t border-[#d4af37]/20 flex gap-2 bg-[#0f0f0f]">
-      <input id="isiChat" class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-4 py-2.5 text-[13px] outline-none" placeholder="Ketik pesan... gak pakai nomor, pakai nama aja">
+      <input id="isiChat" class="flex-1 bg-[#141414] border border-[#d4af37]/30 rounded-full px-4 py-2.5 text-[13px] outline-none" placeholder="Ketik @nama / #nama / /perintah / chat biasa...">
       <button onclick="kirimChat()" class="gold text-black w-[44px] h-[44px] rounded-full font-black shrink-0">➤</button>
     </div>
   </div>
@@ -111,39 +120,136 @@ const SUPABASE_URL = "https://rotxnwbrnbwbscihvafq.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// ===== LOGIKA PINTU - BARU =====
+let pintuTerbuka = null; // { tipe:'@' atau '#', nama:'budi', id:123 }
+let pesanBot = []; // bot cuma tampil di layar, gak masuk DB biar privasi aman
+
+function updatePintu(){
+  let el = document.getElementById('pintuInfo');
+  if(!pintuTerbuka){ el.textContent = 'Belum kebuka - ketik @nama / #nama'; return; }
+  el.textContent = (pintuTerbuka.tipe === '@' ? 'Guru ' : 'Siswa ') + pintuTerbuka.nama;
+  document.getElementById('tujuan').value = pintuTerbuka.tipe + pintuTerbuka.nama;
+}
+function tutupPintu(){
+  pintuTerbuka = null;
+  document.getElementById('tujuan').value = '@guru';
+  updatePintu();
+  tampilBot('Pintu ditutup. Ketik @nama buat guru, #nama buat siswa.');
+}
+function kirimCepat(teks){
+  document.getElementById('isiChat').value = teks;
+  kirimChat();
+}
+
 function openChat(){ document.getElementById('chatPanel').style.transform='translateY(0)'; loadChat(); }
 function closeChat(){ document.getElementById('chatPanel').style.transform='translateY(100%)'; }
 function setTujuan(v){ document.getElementById('tujuan').value=v; loadChat(); }
+
+function tampilBot(pesan){
+  pesanBot.push(pesan);
+  let list = document.getElementById('chatList');
+  list.innerHTML += `<div class="flex justify-start"><div class="bg-[#d4af37] text-black rounded-2xl px-3 py-2 max-w-[85%]"><p class="text-[10px] font-extrabold">🤖 BOT • PRIVASI</p><p class="text-[13px] font-bold whitespace-pre-line leading-snug">${pesan}</p></div></div>`;
+  list.scrollTop = list.scrollHeight;
+}
 
 async function loadChat(){
   const { data, error } = await supabaseClient.from('chat').select('*').order('id',{ascending:true});
   const list = document.getElementById('chatList');
   const count = document.getElementById('chatCount');
   if(error){ list.innerHTML='<p class="text-center text-red-400 text-[12px] mt-10">Error: '+error.message+'</p>'; return; }
-  if(!data || data.length===0){ list.innerHTML='<p class="text-center text-[#888] text-[12px] mt-10">Belum ada chat hari ini.<br>Chat kemarin udah kehapus otomatis.</p>'; count.textContent='0'; return; }
-  count.textContent=data.length;
-  document.getElementById('dotChat').classList.remove('hidden');
-  list.innerHTML = data.map(c=>{
-    const saya = document.getElementById('namaSaya').value.trim().toLowerCase();
-    const isMe = c.dari.toLowerCase()===saya;
-    return `<div class="flex ${isMe?'justify-end':'justify-start'}"><div class="${isMe?'gold text-black':'bg-[#141414] border border-[#d4af37]/20'} rounded-2xl px-3 py-2 max-w-[80%]"><p class="text-[10px] font-extrabold opacity-70">${c.dari} → ${c.ke}</p><p class="text-[13px] font-bold leading-snug">${c.isi}</p></div></div>`;
-  }).join('');
+  if(!data || data.length===0){
+    list.innerHTML='<p class="text-center text-[#888] text-[12px] mt-4">Belum ada chat hari ini.<br><br>Coba ketik:<br><b style="color:#d4af37">@budi</b> = buka pintu ke Guru Budi<br><b style="color:#d4af37">#budi</b> = buka pintu ke Siswa Budi<br><b style="color:#d4af37">/nis /nilai</b> = cek data Budi</p>';
+    count.textContent='0';
+  } else {
+    count.textContent=data.length;
+    document.getElementById('dotChat').classList.remove('hidden');
+    list.innerHTML = data.map(c=>{
+      const saya = document.getElementById('namaSaya').value.trim().toLowerCase();
+      const isMe = (c.dari||'').toLowerCase()===saya;
+      return `<div class="flex ${isMe?'justify-end':'justify-start'}"><div class="${isMe?'gold text-black':'bg-[#141414] border border-[#d4af37]/20'} rounded-2xl px-3 py-2 max-w-[80%]"><p class="text-[10px] font-extrabold opacity-70">${c.dari} → ${c.ke}</p><p class="text-[13px] font-bold leading-snug whitespace-pre-line">${c.isi}</p></div></div>`;
+    }).join('');
+  }
+  // Tempel lagi pesan bot biar gak kehapus pas refresh
+  pesanBot.forEach(p=>{
+    list.innerHTML += `<div class="flex justify-start"><div class="bg-[#d4af37] text-black rounded-2xl px-3 py-2 max-w-[85%]"><p class="text-[10px] font-extrabold">🤖 BOT • PRIVASI</p><p class="text-[13px] font-bold whitespace-pre-line leading-snug">${p}</p></div></div>`;
+  });
   list.scrollTop = list.scrollHeight;
 }
 
 async function kirimChat(){
   const dari = document.getElementById('namaSaya').value.trim();
-  const ke = document.getElementById('tujuan').value.trim();
   const isi = document.getElementById('isiChat').value.trim();
-  if(!dari || !ke || !isi) return alert('Isi nama, tujuan, sama pesan dulu');
+  if(!dari || !isi) return alert('Isi nama sama pesan dulu');
+  document.getElementById('isiChat').value='';
+
+  // 1. @nama = BUKA PINTU KE GURU - JANGAN TAMPILIN DATA!
+  if(isi.startsWith('@')){
+    let nama = isi.slice(1).trim();
+    if(!nama) return tampilBot('Ketik namanya, contoh: @budi');
+    if(nama.toLowerCase()==='all' || nama.toLowerCase()==='guru'){
+      pintuTerbuka = { tipe:'@', nama:nama, id:null };
+      updatePintu();
+      return tampilBot('Pintu ke @'+nama+' kebuka. Ketik chat biasa buat kirim.');
+    }
+    let { data } = await supabaseClient.from('guru').select('id,nama').ilike('nama','%'+nama+'%').limit(1);
+    if(!data || !data.length) return tampilBot('Guru '+nama+' gak ketemu, Ko.');
+    pintuTerbuka = { tipe:'@', nama:data[0].nama, id:data[0].id };
+    updatePintu();
+    return tampilBot('Pintu ke Guru '+data[0].nama+' kebuka. Silakan chat. Data guru gak ditampilin demi privasi.');
+  }
+
+  // 2. #nama = BUKA PINTU KE SISWA - JANGAN TAMPILIN DATA!
+  if(isi.startsWith('#')){
+    let nama = isi.slice(1).trim();
+    if(!nama) return tampilBot('Ketik namanya, contoh: #budi');
+    let { data } = await supabaseClient.from('siswa').select('id,nama').ilike('nama','%'+nama+'%').limit(1);
+    if(!data || !data.length) return tampilBot('Siswa '+nama+' gak ketemu, Ko.');
+    pintuTerbuka = { tipe:'#', nama:data[0].nama, id:data[0].id };
+    updatePintu();
+    return tampilBot('Pintu ke Siswa '+data[0].nama+' kebuka.\nKetik /nis /nilai /absen /spp buat cek.\nKetik biasa buat chat ke dia.');
+  }
+
+  // 3. /perintah = HANYA BUAT PINTU YANG LAGI KEBUKA!
+  if(isi.startsWith('/')){
+    if(!pintuTerbuka) return tampilBot('Buka pintu dulu! Ketik @nama buat guru, #nama buat siswa.');
+    if(pintuTerbuka.tipe !== '#') return tampilBot('Perintah /nis /nilai /absen /spp cuma buat siswa (#nama). Pintu lu sekarang ke Guru.');
+    if(!pintuTerbuka.id) return tampilBot('Pintu ini gak ada ID-nya.');
+    let perintah = isi.toLowerCase().split(' ')[0];
+    let idSiswa = pintuTerbuka.id;
+
+    if(perintah === '/nis'){
+      let { data } = await supabaseClient.from('siswa').select('nis,nama').eq('id', idSiswa).single();
+      if(!data) return tampilBot('Data gak ketemu.');
+      return tampilBot('NIS '+data.nama+' : '+data.nis);
+    }
+    if(perintah === '/nilai'){
+      let { data } = await supabaseClient.from('nilai').select('*').eq('siswa_id', idSiswa);
+      if(!data || !data.length) return tampilBot('Belum ada nilai buat '+pintuTerbuka.nama);
+      return tampilBot('📊 NILAI '+pintuTerbuka.nama+':\n' + data.map(n=> (n.mata_pelajaran||'-')+' : '+n.nilai).join('\n'));
+    }
+    if(perintah === '/absen'){
+      let { data } = await supabaseClient.from('kehadiran').select('*').eq('siswa_id', idSiswa).order('id',{ascending:false}).limit(5);
+      if(!data || !data.length) return tampilBot('Belum ada absen buat '+pintuTerbuka.nama);
+      return tampilBot('✅ ABSEN '+pintuTerbuka.nama+' (5 terakhir):\n' + data.map(a=> (a.tanggal||'-')+' : '+a.status).join('\n'));
+    }
+    if(perintah === '/spp'){
+      let { data } = await supabaseClient.from('spp').select('*').eq('siswa_id', idSiswa).order('id',{ascending:false}).limit(5);
+      if(!data || !data.length) return tampilBot('Belum ada SPP buat '+pintuTerbuka.nama);
+      return tampilBot('💰 SPP '+pintuTerbuka.nama+':\n' + data.map(s=> (s.bulan||'')+' '+(s.tahun||'')+' : '+s.status).join('\n'));
+    }
+    return tampilBot('Perintah gak dikenal. Coba: /nis /nilai /absen /spp');
+  }
+
+  // 4. CHAT BIASA TANPA / = DITERUSIN KE PINTU YANG KEBUKA
+  let ke = pintuTerbuka ? (pintuTerbuka.tipe + pintuTerbuka.nama) : document.getElementById('tujuan').value.trim();
   const { error } = await supabaseClient.from('chat').insert([{dari, ke, isi}]);
   if(error) return alert(error.message);
-  document.getElementById('isiChat').value='';
   loadChat();
 }
 document.getElementById('isiChat').addEventListener('keydown', e=>{ if(e.key==='Enter') kirimChat(); });
-setInterval(loadChat, 3000);
+setInterval(loadChat, 5000);
 loadChat();
+updatePintu();
 </script>
 </body>
 </html>
