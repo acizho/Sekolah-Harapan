@@ -74,12 +74,11 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 <div class="main">
 <div id="dashboard" class="page active">
 <div class="top"><div><h1>Selamat Datang, <span>Admin Ko Cheng!</span></h1><p class="sub">Data LIVE dari Supabase • Bukan data bohong lagi!</p></div><button class="btn" onclick="show('siswa',null)">+ Tambah Siswa Baru</button></div>
-<div class="cards"><div class="card"><label>TOTAL SISWA (DB)</label><h2 id="cSiswa">...</h2><p>Data dari tabel siswa</p></div><div class="card"><label>TOTAL GURU (DB)</label><h2 id="cGuru">...</h2><p>Data dari tabel guru</p></div><div class="card"><label>KELAS AKTIF (DB)</label><h2 id="cKelas">...</h2><p>Data dari tabel kelas</p></div><div class="card"><label>TOTAL KAS SPP (DB)</label><h2 id="cKas">...</h2><p id="cKasSub">Menghitung...</p></div></div>
+<div class="cards"><div class="card"><label>TOTAL SISWA (DB)</label><h2 id="cSiswa">...</h2><p>Data dari tabel siswa - status Aktif</p></div><div class="card"><label>TOTAL GURU (DB)</label><h2 id="cGuru">...</h2><p>Data dari tabel guru</p></div><div class="card"><label>KELAS AKTIF (DB)</label><h2 id="cKelas">...</h2><p>Data dari tabel kelas</p></div><div class="card"><label>TOTAL KAS SPP (DB)</label><h2 id="cKas">...</h2><p id="cKasSub">Menghitung...</p></div></div>
 <div class="cards c3" style="margin-top:14px"><div class="card gold" style="cursor:pointer" onclick="show('ppdb',null)"><label>📝 ANTRIAN PPDB</label><h2 id="cPPDB">...</h2><p id="cPPDBSub">Klik untuk cek pendaftar baru</p></div><div class="card"><label>PPDB DITERIMA</label><h2 class="w" id="cPPDBTerima">...</h2><p>Sudah jadi siswa aktif</p></div><div class="card"><label>PPDB DITOLAK</label><h2 style="color:#fca5a5" id="cPPDBTolak">...</h2><p>Tidak lolos verifikasi</p></div></div>
 <div class="content"><div class="box"><h3>Aktivitas Terbaru - Dari Database</h3><p id="aktivitas">Memuat...</p></div><div class="box"><h3>Kas Per Bulan</h3><p>Dari tabel spp</p><div class="bars"><div class="bar" style="height:85%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:78%"></div><div class="bar" style="height:92%"></div><div class="bar" style="height:88%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:95%"></div></div><div class="months"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div></div></div>
 </div>
 
-<!-- ========== PPDB BARU ========== -->
 <div id="ppdb" class="page">
 <div class="top"><div><h1>PPDB - <span>Pendaftaran Baru</span></h1><p class="sub">Dari form ppdb.html • Status Menunggu = belum diproses</p></div><button class="btn" onclick="loadPPDB()">🔄 Refresh</button></div>
 <div class="filter-row">
@@ -91,7 +90,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;colo
 </div>
 
 <div id="siswa" class="page">
-<div class="top"><div><h1>Data <span>Siswa - LIVE</span></h1><p class="sub">Dari tabel siswa di Supabase</p></div></div>
+<div class="top"><div><h1>Data <span>Siswa - LIVE</span></h1><p class="sub">Dari tabel siswa di Supabase - Hanya status Aktif</p></div></div>
 <div class="box" style="margin-top:16px"><h3>Tambah Siswa Baru (Langsung Masuk DB!)</h3><div class="row"><div><label class="f">NIS</label><input id="fNis" placeholder="20260106"></div><div><label class="f">Nama Lengkap</label><input id="fNama" placeholder="Nama siswa..."></div></div><div class="row"><div><label class="f">Kelas</label><select id="fKelas"></select></div><div><label class="f">No WA Orang Tua</label><input id="fWa" placeholder="62812..."></div></div><button class="btn" style="margin-top:14px" onclick="tambahSiswa()">💾 Simpan Ke Database</button></div>
 <div class="box" style="margin-top:14px"><h3>Daftar Siswa - Dari Database</h3><div id="listSiswa">Memuat...</div></div>
 </div>
@@ -171,6 +170,7 @@ function toast(msg){
 }
 function rupiah(n){ return "Rp " + Number(n||0).toLocaleString('id-ID'); }
 function initials(n){ return (n||'?').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase(); }
+function escNama(n){ return (n||'').replace(/'/g,"").replace(/"/g,''); }
 
 // ===== PPDB =====
 let ppdbCache = [];
@@ -196,7 +196,6 @@ async function loadPPDB(){
     if(fCari && !((s.nama||'').toLowerCase().includes(fCari) || (s.no_akta||'').toLowerCase().includes(fCari) || (s.no_ijazah||'').toLowerCase().includes(fCari))) return false;
     return true;
   });
-  // Kalau filter Menunggu tapi kosong, kasih info
   if(!list.length){ document.getElementById('listPPDB').innerHTML = '<p style="color:#888">Tidak ada pendaftar untuk filter ini.</p>'; return; }
   document.getElementById('listPPDB').innerHTML = list.map(s=>`
     <div class="ppdb-card">
@@ -208,8 +207,8 @@ async function loadPPDB(){
       Alamat: ${s.alamat||'-'}</p>
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
         ${s.status==='Menunggu' ? `<button class="btn-green" onclick="ppdbUbah(${s.id},'Aktif')">✅ Terima</button><button class="btn-danger" onclick="ppdbUbah(${s.id},'Ditolak')">❌ Tolak</button>` : ''}
-        ${s.no_wa_orang_tua ? `<button class="btn2" onclick="kirimWAPPDB('${s.nama}','${s.no_wa_orang_tua}','${s.status}')">💬 WA Ortu</button>` : ''}
-        <button class="btn-danger" onclick="ppdbHapus(${s.id},'${(s.nama||'').replace(/'/g,"")}')">🗑️ Hapus</button>
+        ${s.no_wa_orang_tua ? `<button class="btn2" onclick="kirimWAPPDB('${escNama(s.nama)}','${s.no_wa_orang_tua}','${s.status}')">💬 WA Ortu</button>` : ''}
+        <button class="btn-danger" onclick="ppdbHapus(${s.id},'${escNama(s.nama)}')">🗑️ Hapus</button>
       </div>
     </div>`).join('');
 }
@@ -234,10 +233,19 @@ function kirimWAPPDB(nama, wa, status){
 }
 
 async function loadAll(){
-  let {data:siswa} = await supabaseClient.from('siswa').select('*, kelas(nama_kelas)').order('id');
+  // ===== SISWA - FIX: join harus pakai alias kelas_id + filter Aktif saja =====
+  let {data:siswa, error:siswaErr} = await supabaseClient.from('siswa').select('*, kelas:kelas_id(nama_kelas)').eq('status','Aktif').order('id');
+  if(siswaErr){
+    // Fallback: kalau join gagal (misal FK belum ada), ambil tanpa join biar tidak kosong total
+    console.warn('Join kelas gagal, fallback tanpa join:', siswaErr.message);
+    let retry = await supabaseClient.from('siswa').select('*').eq('status','Aktif').order('id');
+    siswa = retry.data || [];
+    siswaErr = null;
+    if(retry.error) document.getElementById('listSiswa').innerHTML = 'Gagal: ' + retry.error.message;
+  }
   document.getElementById('cSiswa').innerText = siswa?.length||0;
   document.getElementById('mSiswa').innerText = siswa?.length||0;
-  document.getElementById('listSiswa').innerHTML = siswa?.length ? `<table><tr><th>SISWA</th><th>NIS</th><th>KELAS</th><th>WA ORTU</th><th>AKSI</th></tr>` + siswa.map(s=>`<tr><td><span class="avatar">${initials(s.nama)}</span>${s.nama}</td><td>${s.nis}</td><td>${s.kelas?.nama_kelas||'-'}</td><td>${s.no_wa_orang_tua||'-'}</td><td><button class="btn2" onclick="hapusSiswa(${s.id},'${s.nama}')">Hapus</button></td></tr>`).join('') + `</table>` : 'Belum ada siswa. Tambah di atas!';
+  document.getElementById('listSiswa').innerHTML = siswa?.length ? `<table><tr><th>SISWA</th><th>NIS</th><th>KELAS</th><th>WA ORTU</th><th>AKSI</th></tr>` + siswa.map(s=>`<tr><td><span class="avatar">${initials(s.nama)}</span>${s.nama}</td><td>${s.nis||'-'}</td><td>${s.kelas?.nama_kelas||'-'}</td><td>${s.no_wa_orang_tua||'-'}</td><td><button class="btn2" onclick="hapusSiswa(${s.id},'${escNama(s.nama)}')">Hapus</button></td></tr>`).join('') + `</table>` : 'Belum ada siswa. Tambah di atas!';
   let {data:kelas} = await supabaseClient.from('kelas').select('*').order('id');
   document.getElementById('cKelas').innerText = kelas?.length||0;
   document.getElementById('mKelas').innerText = kelas?.length||0;
@@ -247,7 +255,12 @@ async function loadAll(){
   document.getElementById('cGuru').innerText = guru?.length||0;
   document.getElementById('mGuru').innerText = guru?.length||0;
   document.getElementById('listGuru').innerHTML = guru?.length ? `<table><tr><th>GURU</th><th>NIP</th><th>MAPEL</th><th>WA</th></tr>` + guru.map(g=>`<tr><td><span class="avatar">${initials(g.nama)}</span>${g.nama}</td><td>${g.nip||'-'}</td><td>${g.mata_pelajaran||'-'}</td><td>${g.no_wa||'-'}</td></tr>`).join('') + `</table>` : 'Belum ada guru';
-  let {data:spp} = await supabaseClient.from('spp').select('*, siswa(nama, kelas(nama_kelas))').order('id');
+  // ===== SPP - FIX: join nested juga pakai alias kelas_id =====
+  let {data:spp, error:sppErr} = await supabaseClient.from('spp').select('*, siswa(nama, kelas:kelas_id(nama_kelas))').order('id');
+  if(sppErr){
+    let retrySpp = await supabaseClient.from('spp').select('*, siswa(nama)').order('id');
+    spp = retrySpp.data || [];
+  }
   let lunas = spp?.filter(x=>x.status==='Lunas')||[];
   let belum = spp?.filter(x=>x.status!=='Lunas')||[];
   let total = lunas.reduce((a,b)=>a+Number(b.jumlah||0),0);
@@ -257,7 +270,7 @@ async function loadAll(){
   document.getElementById('sppTotal').innerText = rupiah(total);
   document.getElementById('sppLunas').innerText = lunas.length + ' Siswa';
   document.getElementById('sppBelum').innerText = belum.length + ' Siswa';
-  document.getElementById('listSpp').innerHTML = spp?.length ? `<table><tr><th>SISWA</th><th>BULAN</th><th>JUMLAH</th><th>STATUS</th><th>AKSI</th></tr>` + spp.map(s=>`<tr><td>${s.siswa?.nama||'Siswa #' + s.siswa_id}</td><td>${s.bulan} ${s.tahun}</td><td>${rupiah(s.jumlah)}</td><td><span class="badge ${s.status==='Lunas'?'lunas':'belum'}">${s.status}</span></td><td>${s.status==='Lunas' ? `<button class="btn2" onclick="kirimWA('${s.siswa?.nama}')">Kirim WA ✓</button>` : `<button class="btn2" onclick="tandaiLunas(${s.id})">Tandai Lunas</button> <button class="btn2" onclick="kirimWA('${s.siswa?.nama}')">Ingatkan WA</button>`}</td></tr>`).join('') + `</table>` : 'Belum ada data SPP';
+  document.getElementById('listSpp').innerHTML = spp?.length ? `<table><tr><th>SISWA</th><th>BULAN</th><th>JUMLAH</th><th>STATUS</th><th>AKSI</th></tr>` + spp.map(s=>`<tr><td>${s.siswa?.nama||'Siswa #' + s.siswa_id}</td><td>${s.bulan} ${s.tahun}</td><td>${rupiah(s.jumlah)}</td><td><span class="badge ${s.status==='Lunas'?'lunas':'belum'}">${s.status}</span></td><td>${s.status==='Lunas' ? `<button class="btn2" onclick="kirimWA('${escNama(s.siswa?.nama)}')">Kirim WA ✓</button>` : `<button class="btn2" onclick="tandaiLunas(${s.id})">Tandai Lunas</button> <button class="btn2" onclick="kirimWA('${escNama(s.siswa?.nama)}')">Ingatkan WA</button>`}</td></tr>`).join('') + `</table>` : 'Belum ada data SPP';
   let {data:hadir} = await supabaseClient.from('kehadiran').select('*, siswa(nama)').order('id',{ascending:false}).limit(20);
   document.getElementById('listHadir').innerHTML = hadir?.length ? `<table><tr><th>SISWA</th><th>TANGGAL</th><th>STATUS</th><th>JAM</th></tr>` + hadir.map(h=>`<tr><td>${h.siswa?.nama||'-'}</td><td>${h.tanggal}</td><td><span class="badge ${h.status==='Hadir'?'hadir':'izin'}">${h.status}</span></td><td>${h.jam_masuk||'-'}</td></tr>`).join('') + `</table>` : 'Belum ada kehadiran';
   let {data:nilai} = await supabaseClient.from('nilai').select('*, siswa(nama)').order('id',{ascending:false}).limit(20);
@@ -275,7 +288,7 @@ async function loadAll(){
     document.getElementById('mAdmin').innerText = '0';
   } else {
     document.getElementById('mAdmin').innerText = adminList?.length||0;
-    document.getElementById('listAdmin').innerHTML = adminList?.length ? `<table><tr><th>ID</th><th>CODE</th><th>PIN</th><th>NAMA</th><th>AKSI</th></tr>` + adminList.map(a=>`<tr><td>${a.id}</td><td><b style="color:#d4af37">${a.code}</b></td><td>${a.pin}</td><td><span class="avatar">${initials(a.nama)}</span>${a.nama}</td><td><button class="btn2" onclick="editAdmin(${a.id},'${a.code}','${a.pin}','${a.nama}')">✏️ Edit</button> <button class="btn-danger" onclick="hapusAdmin(${a.id},'${a.nama}')">🗑️ Hapus</button></td></tr>`).join('') + `</table>` : 'Belum ada admin. Tambah di atas!';
+    document.getElementById('listAdmin').innerHTML = adminList?.length ? `<table><tr><th>ID</th><th>CODE</th><th>PIN</th><th>NAMA</th><th>AKSI</th></tr>` + adminList.map(a=>`<tr><td>${a.id}</td><td><b style="color:#d4af37">${a.code}</b></td><td>${a.pin}</td><td><span class="avatar">${initials(a.nama)}</span>${a.nama}</td><td><button class="btn2" onclick="editAdmin(${a.id},'${a.code}','${a.pin}','${escNama(a.nama)}')">✏️ Edit</button> <button class="btn-danger" onclick="hapusAdmin(${a.id},'${escNama(a.nama)}')">🗑️ Hapus</button></td></tr>`).join('') + `</table>` : 'Belum ada admin. Tambah di atas!';
   }
   await loadPPDB();
   toast('✅ Tersambung! Data dari Supabase berhasil dimuat!');
