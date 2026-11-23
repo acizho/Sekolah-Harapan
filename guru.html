@@ -14,8 +14,26 @@
   .card:active{transform:scale(.97); border-color:#d4af37;}
   .btn-gold{background:linear-gradient(135deg,#d4af37,#f6e27a); color:#000;}
 </style>
+<style>
+  /* Kalau HP masih tegak, kasih peringatan */
+  #putarHP{
+    display:none; position:fixed; inset:0; z-index:99;
+    background:#0a0a0a; color:white;
+    flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:20px;
+  }
+  @media (orientation: portrait) and (max-width: 768px){
+    #putarHP{ display:flex; }
+  }
+</style>
 </head>
 <body class="text-white min-h-screen pb-10">
+<div id="putarHP">
+  <div style="font-size:50px;">📱↻</div>
+  <h2 style="font-weight:800; margin-top:10px;">PUTAR HP LU JADI TIDUR</h2>
+  <p style="color:#d4af37; margin-top:5px;">Biar dashboard guru-nya keliatan mewah kayak di laptop</p>
+  <p style="color:#888; font-size:13px; margin-top:10px;">Mode Landscape • Black & Gold</p>
+</div>
 
 <!-- HEADER -->
 <div class="px-5 pt-6 pb-5">
