@@ -18,8 +18,31 @@
   <h3 style="margin-top:20px;">Materi Lainnya</h3>
   <div id="listMateri" style="display:flex; flex-direction:column; gap:10px;"></div>
 
+  <!-- POPUP DETAIL -->
+  <div id="popup" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); padding:16px; z-index:99;">
+    <div style="background:#141414; border-radius:20px; padding:20px; max-width:400px; margin:40px auto;">
+      <div id="popupIsi"></div>
+      <button onclick="tutupPopup()" style="width:100%; margin-top:15px; padding:12px; border:none; border-radius:12px; background:#d4af37; font-weight:bold; cursor:pointer;">← Kembali</button>
+    </div>
+  </div>
+
 <script>
 const supabaseClient = window.supabase.createClient("https://rotxnwbrnbwbscihvafq.supabase.co", "sb_publishable_a-oUmMa2TdwiWO_hbZ07eA_8F93XM81");
+let semuaMateri = [];
+
+function bukaMateri(id){
+  const m = semuaMateri.find(x=>x.id===id);
+  if(!m) return;
+  document.getElementById('popupIsi').innerHTML = `
+    <p style="font-size:11px; color:#d4af37; font-weight:bold;">${m.mapel} • ${m.durasi}</p>
+    <h2 style="margin:8px 0;">${m.judul}</h2>
+    <p style="font-size:12px; color:#aaa;">Oleh ${m.guru}</p>
+    <hr style="border:1px solid #333; margin:15px 0;">
+    <p style="line-height:1.7; white-space:pre-wrap;">${m.isi}</p>
+  `;
+  document.getElementById('popup').style.display = 'block';
+}
+function tutupPopup(){ document.getElementById('popup').style.display = 'none'; }
 
 async function loadMateri(){
   const { data } = await supabaseClient.from('materi').select('*').order('id',{ascending:false});
@@ -27,18 +50,22 @@ async function loadMateri(){
     document.getElementById('materiUtama').innerHTML = `<p><b>Belum ada materi</b></p>`;
     return;
   }
+  semuaMateri = data;
   const m = data[0];
   document.getElementById('materiUtama').innerHTML = `
-    <p style="font-size:11px; font-weight:bold;">${m.mapel} • ${m.durasi}</p>
-    <h2 style="margin:8px 0;">${m.judul}</h2>
-    <p style="font-size:13px; opacity:0.7;">Oleh ${m.guru}</p>
-    <p style="margin-top:12px; line-height:1.6;">${m.isi}</p>
-    <div style="margin-top:15px; background:#000; color:#d4af37; text-align:center; padding:12px; border-radius:12px; font-weight:bold;">Mulai Belajar →</div>
+    <div onclick="bukaMateri(${m.id})" style="cursor:pointer;">
+      <p style="font-size:11px; font-weight:bold;">${m.mapel} • ${m.durasi}</p>
+      <h2 style="margin:8px 0;">${m.judul}</h2>
+      <p style="font-size:13px; opacity:0.7;">Oleh ${m.guru}</p>
+      <p style="margin-top:12px; line-height:1.6;">${m.isi.substring(0,80)}...</p>
+      <div style="margin-top:15px; background:#000; color:#d4af37; text-align:center; padding:12px; border-radius:12px; font-weight:bold;">Mulai Belajar →</div>
+    </div>
   `;
   document.getElementById('listMateri').innerHTML = data.map(x=>`
-    <div style="background:#141414; border:1px solid #222; padding:14px; border-radius:14px;">
+    <div onclick="bukaMateri(${x.id})" style="background:#141414; border:1px solid #222; padding:14px; border-radius:14px; cursor:pointer;">
       <b>${x.judul}</b><br>
       <span style="font-size:11px; color:#aaa;">${x.mapel} • ${x.guru} • ${x.durasi}</span>
+      <div style="text-align:right; color:#d4af37; font-size:12px; margin-top:5px;">Lihat →</div>
     </div>`).join('');
 }
 loadMateri();
