@@ -12,7 +12,7 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
 .logo{display:flex;align-items:center;gap:10px}
 .logo-icon{width:44px;height:44px;background:#000;border:2px solid #FFD700;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
 .logo b{font-size:15px;line-height:1.2;color:#000}.logo span{font-size:10px;color:#222;letter-spacing:1px}
-.menu-btn{background:#000;color:#FFD700;border:1px solid #FFD700;padding:8px 14px;border-radius:20px;font-size:13px}
+.menu-btn{background:#000;color:#FFD700;border:1px solid #FFD700;padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer}
 .hero{margin-top:10px;background:rgba(0,0,0,0.75);border:1px solid rgba(255,215,0,0.6);border-radius:22px;padding:24px}
 .hero small{background:#FFD700;color:#000;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:800}
 .hero h1{font-size:30px;line-height:1.1;margin:14px 0 8px}.hero h1 span{color:#FFD700}
@@ -78,11 +78,32 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
 .pin-cancel{margin-top:16px;background:transparent;border:1px solid rgba(255,215,0,.4);color:#FFD700;padding:10px 22px;border-radius:20px;font-size:12px;cursor:pointer;letter-spacing:1px}
 .pin-shake{animation:shake .4s}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-5px)}}
+/* MENU GARIS 3 - BARU! */
+.menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:2000;display:none}
+.menu-overlay.show{display:block}
+.menu-drawer{position:fixed;top:0;right:0;width:85%;max-width:340px;height:100dvh;background:#111;border-left:2px solid #FFD700;z-index:2001;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column}
+.menu-drawer.show{transform:translateX(0)}
+.menu-head{background:linear-gradient(90deg,#FFD700,#D4AF37);color:#000;padding:18px;display:flex;justify-content:space-between;align-items:center}
+.menu-head b{font-size:15px}
+.menu-head button{background:#000;color:#FFD700;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px}
+.menu-item{padding:16px 18px;border-bottom:1px solid #222;display:flex;gap:12px;align-items:center;cursor:pointer}
+.menu-item:active{background:#1a1a1a}
+.menu-item span{font-size:22px}
+.menu-item b{font-size:14px;display:block}
+.menu-item small{font-size:11px;color:#aaa}
+.menu-foot{margin-top:auto;padding:16px;text-align:center;font-size:11px;color:#888;line-height:1.6}
+.info-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:2100;display:none;align-items:flex-end;justify-content:center}
+.info-overlay.show{display:flex}
+.info-card{background:#111;border:1px solid #FFD700;border-bottom:none;border-radius:22px 22px 0 0;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;padding:22px}
+.info-card h2{color:#FFD700;font-size:18px;margin-bottom:10px}
+.info-card p{font-size:13px;color:#ccc;line-height:1.7;margin-bottom:10px}
+.info-card ul{margin-left:16px;font-size:13px;color:#ccc;line-height:1.8;margin-bottom:10px}
+.info-close{width:100%;background:#FFD700;color:#000;border:none;padding:12px;border-radius:12px;font-weight:800;margin-top:10px;cursor:pointer}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="topbar"><div class="logo"><div class="logo-icon">🏫</div><div><b>SMA NEGERI 1<br>HARAPAN</b><br><span>MAJU • BERPRESTASI • BERKARAKTER</span></div></div><button class="menu-btn">☰ Menu</button></div>
+  <div class="topbar"><div class="logo"><div class="logo-icon">🏫</div><div><b>SMA NEGERI 1<br>HARAPAN</b><br><span>MAJU • BERPRESTASI • BERKARAKTER</span></div></div><button class="menu-btn" onclick="bukaMenu()">☰ Menu</button></div>
   <div class="hero"><small>✦ PPDB 2026/2027 DIBUKA</small><h1>Selamat Datang di<br><span>SMA Negeri 1 Harapan</span></h1><p>Sekolah unggulan dengan kurikulum merdeka, pembinaan karakter, dan prestasi akademik & non-akademik tingkat nasional.</p><div class="btn-row"><button class="btn-gold" onclick="location.href='ppdb.html'">DAFTAR PPDB →</button><button class="btn-dark" onclick="location.href='profil.html'">Lihat Profil</button></div></div>
   <div class="stats"><div class="stat"><b>1.250+</b><span>Siswa Aktif</span></div><div class="stat"><b>78</b><span>Guru & Staff</span></div><div class="stat"><b>98%</b><span>Lulus PTN</span></div></div>
   <div class="section" id="pengumuman"><h3>📢 Pengumuman Terbaru <a href="#pengumuman">Lihat Semua →</a></h3>
@@ -95,6 +116,27 @@ body{color:#fff;min-height:100vh;background:linear-gradient(to bottom left,#FFD7
   <div class="footer">SMA Negeri 1 Harapan<br>Jl. Pendidikan No. 1, Bandung, Jawa Barat<br>Telp: (022) 123-4567 | WA: 0812-3456-7890<br>© 2026 SMA Negeri 1 Harapan</div><div style="height:70px"></div>
 </div>
 <div class="bottom-nav"><a href="index.html" class="active"><span>🏠</span>Beranda</a><a href="profil.html"><span>👤</span>Profil</a><a href="ppdb.html"><span>📝</span>PPDB</a><a href="#pengumuman"><span>📢</span>Info</a><a href="javascript:void(0)" onclick="toggleChat()"><span>📞</span>Kontak</a></div>
+
+<!-- MENU GARIS 3 -->
+<div class="menu-overlay" id="menuOverlay" onclick="tutupMenu()"></div>
+<div class="menu-drawer" id="menuDrawer">
+  <div class="menu-head"><div><b>☰ MENU</b><br><small style="font-size:11px;opacity:.7">SMA Negeri 1 Harapan</small></div><button onclick="tutupMenu()">✕</button></div>
+  <div class="menu-item" onclick="bukaInfo('tentang')"><span>🏫</span><div><b>1. Tentang Sekolah</b><small>Kenalan sama sekolah kita</small></div></div>
+  <div class="menu-item" onclick="bukaInfo('sejarah')"><span>📜</span><div><b>2. Sejarah Sekolah</b><small>Dari dulu sampai sekarang</small></div></div>
+  <div class="menu-item" onclick="bukaInfo('visi')"><span>🎯</span><div><b>3. Visi Misi & Permisi</b><small>Visi, Misi, + Permisi ke kantin 😁</small></div></div>
+  <div class="menu-item" onclick="bukaMaps()"><span>🗺️</span><div><b>4. Maps</b><small>Lokasi sekolah di Google Maps</small></div></div>
+  <div class="menu-foot">SMA Negeri 1 Harapan<br>Jl. Pendidikan No. 1, Bandung<br>Telp: (022) 123-4567</div>
+</div>
+
+<!-- POPUP INFO -->
+<div class="info-overlay" id="infoOverlay" onclick="if(event.target===this) tutupInfo()">
+  <div class="info-card">
+    <h2 id="infoJudul">Tentang Sekolah</h2>
+    <div id="infoIsi"></div>
+    <button class="info-close" onclick="tutupInfo()">⬅ KEMBALI</button>
+  </div>
+</div>
+
 <div class="chat-float" onclick="toggleChat()">💬<div class="chat-badge" id="chatBadge">1</div></div>
 <div class="chat-box" id="chatBox">
   <div class="chat-header"><img src="https://i.pravatar.cc/100?img=5"><div><b>Admin SMA N 1 Harapan</b><br><span>● Online - Balas &lt; 5 menit</span></div><button class="chat-close" onclick="toggleChat()">✕</button></div>
@@ -135,6 +177,29 @@ let chatOpen = false;
 let pendingLogin = null;
 let pinInput = "";
 let pinLength = 6;
+// MENU GARIS 3 - GAK USAH MIKIR, UDAH GUA ISIKAN!
+function bukaMenu(){ document.getElementById('menuOverlay').classList.add('show'); document.getElementById('menuDrawer').classList.add('show'); }
+function tutupMenu(){ document.getElementById('menuOverlay').classList.remove('show'); document.getElementById('menuDrawer').classList.remove('show'); }
+function bukaInfo(tipe){
+  tutupMenu();
+  let judul = document.getElementById('infoJudul');
+  let isi = document.getElementById('infoIsi');
+  if(tipe==='tentang'){
+    judul.textContent = '🏫 Tentang Sekolah';
+    isi.innerHTML = `<p><b>SMA Negeri 1 Harapan</b> adalah sekolah unggulan di Bandung yang berkomitmen mencetak generasi cerdas, berkarakter, dan berakhlak mulia.</p><p>Kami memadukan <b>Kurikulum Merdeka</b>, pembinaan karakter, dan teknologi digital agar siswa siap bersaing di tingkat nasional maupun global.</p><p>Dengan 1.250+ siswa, 78 guru & staff, dan 25+ ekstrakurikuler, sekolah kami menjadi tempat terbaik untuk tumbuh, belajar, dan berprestasi.</p>`;
+  }
+  if(tipe==='sejarah'){
+    judul.textContent = '📜 Sejarah Sekolah';
+    isi.innerHTML = `<p>Berdiri dengan semangat <b>mencerdaskan anak bangsa</b>, SMA Negeri 1 Harapan awalnya hanya memiliki beberapa ruang kelas sederhana.</p><p>Berkat kerja keras guru, siswa, dan dukungan masyarakat, sekolah ini terus berkembang hingga menjadi salah satu sekolah kebanggaan di Bandung.</p><p>Hari ini, SMA Negeri 1 Harapan dikenal dengan prestasi akademik, juara olimpiade, dan lulusan yang 98% diterima di PTN favorit.</p><p><i>Sejarahnya masih terus ditulis... oleh kamu, siswa angkatan berikutnya!</i></p>`;
+  }
+  if(tipe==='visi'){
+    judul.textContent = '🎯 Visi Misi & Permisi';
+    isi.innerHTML = `<p><b>VISI:</b><br>Terwujudnya siswa yang cerdas, disiplin, berkarakter, dan siap bersaing global.</p><p><b>MISI:</b></p><ul><li>Menumbuhkan iman, takwa, dan akhlak mulia</li><li>Meningkatkan prestasi akademik & non-akademik</li><li>Mengembangkan bakat, minat, dan kreativitas siswa</li><li>Membiasakan disiplin, jujur, dan tanggung jawab</li></ul><p><b>PERMISI:</b><br>Permisi pak, bu... mau numpang lewat, mau ke kantin dulu! 😁🤣<br><i>Yang ini becanda ya, jangan dimasukin ke brosur sekolah!</i></p>`;
+  }
+  document.getElementById('infoOverlay').classList.add('show');
+}
+function tutupInfo(){ document.getElementById('infoOverlay').classList.remove('show'); }
+function bukaMaps(){ tutupMenu(); window.open('https://www.google.com/maps/search/?api=1&query=SMA+Negeri+1+Harapan+Bandung','_blank'); }
 function toggleChat(){
   chatOpen = !chatOpen;
   document.getElementById('chatBox').style.display = chatOpen ? 'block' : 'none';
@@ -143,18 +208,13 @@ function toggleChat(){
 async function saveToDatabase(nama, pertanyaan, jawaban){
   await supabaseClient.from('chat_messages').insert([{ nama: nama || 'Tamu', pertanyaan, jawaban, status: 'Baru' }]);
 }
-// ===== PERBAIKAN: @ # $ & ITU PERINTAH CARI! BUKAN CHAT! =====
-// @budi -> cari "budi", #timun -> cari "timun", $kodok -> cari "kodok", &masphus -> cari "masphus"
-// @ # $ & nya DIBUANG, yang dicari cuma kata setelahnya!
 function extractTrigger(text){
   let m = String(text).match(/[@#\$&]\s*([a-zA-Z0-9_]+)/);
   if(m) return m[1].toLowerCase();
   return null;
 }
-// ===== PERBAIKAN: CARI CUMA DI 2 TEMPAT! guru.code + admin.code! =====
 async function checkSecretCode(keyword){
   let k = String(keyword).toLowerCase().trim();
-  // 1. CARI DI TABEL GURU -> KOLOM CODE!
   let g = await supabaseClient.from('guru').select('*').limit(100);
   if(g.data){
     for(let row of g.data){
@@ -165,7 +225,6 @@ async function checkSecretCode(keyword){
       }
     }
   }
-  // 2. KALO DI GURU GAK ADA, CARI DI TABEL ADMIN -> KOLOM CODE!
   let a = await supabaseClient.from('admin').select('*').limit(100);
   if(a.data){
     for(let row of a.data){
@@ -245,7 +304,6 @@ function checkPin(){
     document.getElementById('pinStatus').textContent = '✅ Terbuka...';
     document.getElementById('pinStatus').className = 'pin-status';
     saveToDatabase('Login Berhasil', 'Login code: ' + pendingLogin.code, 'PIN cocok -> ' + pendingLogin.target);
-    // ===== BAGI KARCIS: CUMA CODE + PIN! GAK PAKE ID! SOALNYA CODE ITU UNIK! =====
     let row = pendingLogin.row || {};
     if(pendingLogin.table === 'guru'){
       let codeAsli = row.code || pendingLogin.code;
@@ -299,9 +357,7 @@ async function sendChat(){
     addMsg('Dibatalkan. Ada yang bisa kami bantu lagi?', 'admin');
     return;
   }
-  // ===== INI KUNCINYA, KO! JANGAN SAMPE BOT GAGAL PAHAM LAGI! =====
   let keyword = extractTrigger(text);
-  // ADA @ # $ & ? -> WAJIB CARI DI DATABASE! BUKAN CHAT BIASA!
   if(keyword){
     let result = await checkSecretCode(keyword);
     if(result.found){
@@ -309,14 +365,12 @@ async function sendChat(){
       saveToDatabase('Tamu - Trigger', text, 'Membuka layar kunci PIN - ' + result.table + ' - code: ' + keyword);
       openPinLock();
     } else {
-      // PERBAIKAN: Kalo gak ketemu, ngomong jujur! Jangan ngomong "Terima kasih" kayak chat biasa!
       pendingLogin = null;
       addMsg('CODE <b>' + keyword + '</b> gak ketemu di tabel guru & admin, Ko! Cek lagi CODE-nya! Contoh: @budi, @timun, @kodok', 'admin');
       saveToDatabase('Tamu', text, 'Kode ' + keyword + ' tidak ketemu di guru.code / admin.code');
     }
-    return; // STOP! Udah ditanganin sebagai perintah cari! Gak boleh lanjut ke chat biasa!
+    return;
   }
-  // GAK ADA @ # $ & ? -> BARU INI CHAT BIASA! JANGAN CARI DATABASE!
   let botJawaban = await cariJawabanBot(text);
   let reply;
   if(botJawaban){
@@ -332,7 +386,6 @@ async function sendChat(){
 }
 function quickChat(text){ addMsg(text,'user'); setTimeout(()=>{ sendChatAuto(text) },600); }
 async function sendChatAuto(text){
-  // Tombol cepat PPDB / Biaya / Jadwal itu CHAT BIASA! Gak ada @ # $ &, jadi gak cari database!
   let botJawaban = await cariJawabanBot(text);
   let reply;
   if(botJawaban){
